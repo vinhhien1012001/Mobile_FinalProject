@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -6,7 +7,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      // appBar: appBar,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -28,7 +29,9 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 // 2 buttons here
-                loginAsButtons(),
+                loginAsButtons(
+                  context,
+                ),
                 // Last text
                 const Padding(
                   padding: EdgeInsets.only(left: 20, right: 20),
@@ -62,7 +65,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Padding loginAsButtons() {
+  Padding loginAsButtons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 20),
       child: Column(
@@ -70,7 +73,9 @@ class HomePage extends StatelessWidget {
           SizedBox(
             width: 120,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.login);
+              },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
@@ -86,7 +91,9 @@ class HomePage extends StatelessWidget {
           SizedBox(
             width: 120,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.login);
+              },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
