@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -59,7 +60,12 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
               ),
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfileNotLoggedInPage()));
+              },
               icon: const Icon(Icons.account_circle),
               label: const Text('Profiles'),
               style: ElevatedButton.styleFrom(
