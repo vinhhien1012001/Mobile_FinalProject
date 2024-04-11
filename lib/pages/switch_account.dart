@@ -1,4 +1,4 @@
-import 'package:final_project_mobile/components/custom_app_bar.dart';
+import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
 

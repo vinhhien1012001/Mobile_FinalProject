@@ -1,5 +1,5 @@
-import 'package:final_project_mobile/components/custom_app_bar.dart';
-import 'package:final_project_mobile/pages/dashboard.dart';
+import 'package:final_project_mobile/widgets/custom_app_bar.dart';
+import 'package:final_project_mobile/pages/sub-pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
