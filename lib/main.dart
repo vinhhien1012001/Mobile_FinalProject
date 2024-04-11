@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/components/custom_app_bar.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/home.dart';
@@ -11,25 +12,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {},
-        ),
-      ],
-    );
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),
       navigatorKey: Routes.mainNavigatorKey,
       onGenerateRoute: Routes.generateRoute,
       home: Scaffold(
-        appBar: appBar,
+        appBar: const CustomAppBar(),
         body: const HomePage(),
       ),
     );

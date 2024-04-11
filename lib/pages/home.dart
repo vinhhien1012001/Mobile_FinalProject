@@ -109,19 +109,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  AppBar appBar() {
-    return AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {},
-        ),
-        //
-      ],
-    );
-  }
 }

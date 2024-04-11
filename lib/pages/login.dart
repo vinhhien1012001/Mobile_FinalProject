@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/components/custom_app_bar.dart';
 import 'package:final_project_mobile/screens/join_as.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: const CustomAppBar(),
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(20),
@@ -82,21 +83,6 @@ class LoginScreen extends StatelessWidget {
               ],
             )),
       ),
-    );
-  }
-
-  AppBar appBar() {
-    return AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {},
-        ),
-        //
-      ],
     );
   }
 }

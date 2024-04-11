@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/components/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:final_project_mobile/pages/welcome.dart';
 import 'package:flutter/material.dart';
@@ -5,30 +6,10 @@ import 'package:flutter/material.dart';
 class ProfileLoggedInPage extends StatelessWidget {
   const ProfileLoggedInPage({super.key});
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SwitchAccountPage()));
-          },
-        ),
-        //
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context),
+      appBar: const CustomAppBar(),
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(20),

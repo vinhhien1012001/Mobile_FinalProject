@@ -1,3 +1,5 @@
+import 'package:final_project_mobile/components/custom_app_bar.dart';
+import 'package:final_project_mobile/pages/post_jobs_step.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -39,10 +41,10 @@ class _DashboardScreen extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: const CustomAppBar(),
       body: Center(
         child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Stack(
               children: [
                 Column(
@@ -55,9 +57,15 @@ class _DashboardScreen extends State<DashboardScreen> {
                           child: Text('Your jobs'),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 20, left: 10),
+                          padding: const EdgeInsets.only(top: 20, left: 10),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PostJobStepScreen()));
+                            },
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
@@ -124,22 +132,6 @@ class _DashboardScreen extends State<DashboardScreen> {
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
-    );
-  }
-
-  AppBar appBar() {
-    return AppBar(
-      automaticallyImplyLeading: false, // Add this line
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {},
-        ),
-        //
-      ],
     );
   }
 }

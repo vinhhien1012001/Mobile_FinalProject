@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/components/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/login.dart';
 import 'package:final_project_mobile/pages/sign_up.dart';
 import 'package:flutter/material.dart';
@@ -5,25 +6,10 @@ import 'package:flutter/material.dart';
 class JoinAs extends StatelessWidget {
   const JoinAs({super.key});
 
-  AppBar appBar() {
-    return AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {},
-        ),
-        //
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: const CustomAppBar(),
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(20),

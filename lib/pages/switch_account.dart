@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/components/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +25,7 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: appBar(),
+        appBar: const CustomAppBar(),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -105,19 +106,4 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
       ),
     );
   }
-}
-
-AppBar appBar() {
-  return AppBar(
-    title: const Text('StudentHub'),
-    centerTitle: false,
-    backgroundColor: Colors.blue,
-    actions: <Widget>[
-      IconButton(
-        icon: const Icon(Icons.person),
-        onPressed: () {},
-      ),
-      //
-    ],
-  );
 }
