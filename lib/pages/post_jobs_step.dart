@@ -11,8 +11,8 @@ class PostJobStepScreen extends StatefulWidget {
 class _PostJobStepScreen extends State<PostJobStepScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(),
+    return const Scaffold(
+      appBar: CustomAppBar(),
     );
   }
 }

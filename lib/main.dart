@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(fontFamily: 'Poppins'),
       navigatorKey: Routes.mainNavigatorKey,
       onGenerateRoute: Routes.generateRoute,
-      home: Scaffold(
-        appBar: const CustomAppBar(),
-        body: const HomePage(),
+      home: const Scaffold(
+        appBar: CustomAppBar(),
+        body: HomePage(),
       ),
     );
   }
