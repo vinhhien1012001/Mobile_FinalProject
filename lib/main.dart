@@ -2,9 +2,10 @@ import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/home.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

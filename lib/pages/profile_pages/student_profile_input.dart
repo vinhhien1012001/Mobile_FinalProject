@@ -14,7 +14,7 @@ class Skill {
 }
 
 class EducationInput extends StatefulWidget {
-  const EducationInput({Key? key}) : super(key: key);
+  const EducationInput({super.key});
 
   @override
   _EducationInputState createState() => _EducationInputState();
@@ -27,7 +27,7 @@ class _EducationInputState extends State<EducationInput> {
   final _formKey = GlobalKey<FormState>();
   String _schoolType = 'Primary';
   String _schoolName = '';
-  String _studyTime = '';
+  final String _studyTime = '';
 
   int currentYear = DateTime.now().year;
   List<int> yearList = [];
@@ -201,7 +201,7 @@ class StudentProfileInputPage extends StatefulWidget {
 }
 
 class StudentProfileInputState extends State<StudentProfileInputPage> {
-  static List<Skill> _skills = [
+  static final List<Skill> _skills = [
     Skill(id: 1, name: 'iOS Development'),
     Skill(id: 2, name: 'C'),
     Skill(id: 3, name: 'Java'),
