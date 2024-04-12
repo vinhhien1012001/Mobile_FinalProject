@@ -1,4 +1,6 @@
+import 'package:final_project_mobile/pages/project_detail_student.dart';
 import 'package:flutter/material.dart';
+// Import the project detail screen
 
 class ProjectWidgets {
   static Widget buildProjectList(List<Map<String, dynamic>> projects) {
@@ -6,12 +8,22 @@ class ProjectWidgets {
       itemCount: projects.length,
       itemBuilder: (context, index) {
         final project = projects[index];
-        return ProjectWidgets.buildProjectCard(
-          title: project['title'],
-          created: project['created'],
-          proposals: project['proposals'],
-          messages: project['messages'],
-          hired: project['hired'],
+        return GestureDetector(
+          onTap: () {
+            // Navigate to project detail screen when clicked
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ProjectDetailsStudent()),
+            );
+          },
+          child: ProjectWidgets.buildProjectCard(
+            title: project['title'],
+            created: project['created'],
+            proposals: project['proposals'],
+            messages: project['messages'],
+            hired: project['hired'],
+          ),
         );
       },
     );
@@ -38,7 +50,9 @@ class ProjectWidgets {
                   child: Text(
                     title,
                     style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 IconButton(
@@ -67,11 +81,14 @@ class ProjectWidgets {
                   child: Column(
                     children: [
                       Text(
-                          '• Clear expectations about your project or deliverables'),
+                        '• Clear expectations about your project or deliverables',
+                      ),
                       Text(
-                          '• Clear expectations about your project or deliverables'),
+                        '• Clear expectations about your project or deliverables',
+                      ),
                       Text(
-                          '• Clear expectations about your project or deliverables'),
+                        '• Clear expectations about your project or deliverables',
+                      ),
                     ],
                   ),
                 )
