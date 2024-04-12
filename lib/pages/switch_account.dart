@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/pages/profile_pages/student_profile_input.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,12 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
               ),
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const StudentProfileInputPage()));
+              },
               icon: const Icon(Icons.settings),
               label: const Text('Settings'),
               style: ElevatedButton.styleFrom(
