@@ -1,4 +1,3 @@
-import 'package:final_project_mobile/pages/profile_pages/student_profile_experiences.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:final_project_mobile/pages/welcome.dart';
 import 'package:flutter/material.dart';
@@ -14,26 +13,25 @@ class Skill {
   });
 }
 
-class EducationInput extends StatefulWidget {
-  const EducationInput({super.key});
+class ProjectInput extends StatefulWidget {
+  const ProjectInput({Key? key}) : super(key: key);
 
   @override
-  _EducationInputState createState() => _EducationInputState();
+  _ProjectInputState createState() => _ProjectInputState();
 }
 
-class _EducationInputState extends State<EducationInput> {
+class _ProjectInputState extends State<ProjectInput> {
   final _schoolTypes = ['Primary', 'Secondary', 'High School', 'University'];
   final _schools = <Map<String, String>>[];
 
   final _formKey = GlobalKey<FormState>();
   String _schoolType = 'Primary';
   String _schoolName = '';
-  final String _studyTime = '';
 
   int currentYear = DateTime.now().year;
   List<int> yearList = [];
 
-  _EducationInputState() {
+  _ProjectInputState() {
     int currentYear = DateTime.now().year;
     yearList = [for (var i = 1900; i <= currentYear; i++) i];
   }
@@ -46,7 +44,7 @@ class _EducationInputState extends State<EducationInput> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add School'),
+          title: const Text('Add Projects'),
           content: Form(
             key: _formKey,
             child: Column(
@@ -129,18 +127,6 @@ class _EducationInputState extends State<EducationInput> {
                     ),
                   ],
                 ),
-                // DropdownButton<int>(
-                //   value: endYear,
-                //   onChanged: (int? newValue) {
-                //     endYear = newValue!;
-                //   },
-                //   items: yearList.map<DropdownMenuItem<int>>((int value) {
-                //     return DropdownMenuItem<int>(
-                //       value: value,
-                //       child: Text(value.toString()),
-                //     );
-                //   }).toList(),
-                // ),
               ],
             ),
           ),
@@ -178,7 +164,7 @@ class _EducationInputState extends State<EducationInput> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Education',
+                  'Projects',
                   style: TextStyle(
                     fontSize: 15,
                   ),
@@ -208,18 +194,19 @@ class _EducationInputState extends State<EducationInput> {
 }
 
 void main() {
-  runApp(const StudentProfileInputPage());
+  runApp(const StudentProfileExperiencePage());
 }
 
-class StudentProfileInputPage extends StatefulWidget {
-  const StudentProfileInputPage({super.key});
+class StudentProfileExperiencePage extends StatefulWidget {
+  const StudentProfileExperiencePage({super.key});
 
   @override
-  State<StudentProfileInputPage> createState() => StudentProfileInputState();
+  State<StudentProfileExperiencePage> createState() =>
+      StudentProfileInputState();
 }
 
-class StudentProfileInputState extends State<StudentProfileInputPage> {
-  static final List<Skill> _skills = [
+class StudentProfileInputState extends State<StudentProfileExperiencePage> {
+  static List<Skill> _skills = [
     Skill(id: 1, name: 'iOS Development'),
     Skill(id: 2, name: 'C'),
     Skill(id: 3, name: 'Java'),
@@ -301,7 +288,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
               child: Column(
                 children: [
                   const Text(
-                    'Welcome to Student Hub',
+                    'Experiences',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -325,53 +312,8 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                       ),
                     ],
                   ),
-                  // Techstack
-                  Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 10, top: 10),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Techstack',
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                      DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                            labelText: 'Select your role'),
-                        items: <String>[
-                          'Fullstack Engineer',
-                          'Frontend Engineer',
-                          'Backend Engineer',
-                          'DevOps Engineer',
-                          'Data Scientist',
-                          'Mobile Developer',
-                          'Machine Learning Engineer',
-                          'Security Engineer',
-                          'Game Developer',
-                          'Cloud Engineer',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          // Do something with the selected value
-                        },
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select your role';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
+
+                  const ProjectInput(),
 
                   // Skillset
                   Column(
@@ -464,7 +406,6 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                   ),
 
                   // Education part
-                  const EducationInput(),
 
                   // Continue button
                   Padding(
@@ -482,7 +423,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const StudentProfileExperiencePage()));
+                                            const WelcomeScreen()));
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
