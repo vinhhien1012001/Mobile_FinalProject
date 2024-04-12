@@ -1,24 +1,13 @@
-# final_project_mobile
+# Đồ án cuối kỳ môn Lập trình ứng dụng FLutter
 
-A new Flutter project.
+Danh sách thành viên nhóm:
 
-## Getting Started
+<ol>
+  <li>Hoàng Nhật Minh - 20127239</li>
+  <li>Phan Thiên Vinh Hiển - 19127396</li>
+  <li><s>❌ Trần Quang Lực - 18127147 ❌</s> Bỏ vì không tham gia, không có trách nhiệm với nhóm</li>
+</ol>
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the [online documentation](https://docs.flutter.dev/), which offers tutorials, samples, guidance on mobile development, and a full API reference.
-
-If you got this error: Because final_project_mobile requires SDK version >=3.3.0 <4.0.0, version solving failed.
-
-Run
-
-    flutter upgrade
-
-then run
-
-    flutter pub get
+Link video demo: https://drive.google.com/drive/folders/1X79v6--1_WSHL31IVDBMQ1SQ7tuj7VgT?usp=sharing
