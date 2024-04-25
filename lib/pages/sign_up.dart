@@ -1,12 +1,17 @@
+import 'package:final_project_mobile/screens/join_as.dart';
+import 'package:final_project_mobile/utils/utils.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/login.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends ConsumerWidget {
   const SignUpPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedRole = ref.watch(selectedRoleProvider);
+    final roleDisplayName = getRoleDisplayName(selectedRole);
     return Scaffold(
       appBar: const CustomAppBar(),
       body: Center(
@@ -16,9 +21,9 @@ class SignUpPage extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    const Text(
-                      'Sign up as Company ',
-                      style: TextStyle(
+                    Text(
+                      'Sign up as $roleDisplayName ',
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),

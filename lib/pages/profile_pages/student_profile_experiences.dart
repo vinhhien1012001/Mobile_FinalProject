@@ -14,7 +14,7 @@ class Skill {
 }
 
 class ProjectInput extends StatefulWidget {
-  const ProjectInput({Key? key}) : super(key: key);
+  const ProjectInput({super.key});
 
   @override
   _ProjectInputState createState() => _ProjectInputState();
@@ -206,7 +206,7 @@ class StudentProfileExperiencePage extends StatefulWidget {
 }
 
 class StudentProfileInputState extends State<StudentProfileExperiencePage> {
-  static List<Skill> _skills = [
+  static final List<Skill> _skills = [
     Skill(id: 1, name: 'iOS Development'),
     Skill(id: 2, name: 'C'),
     Skill(id: 3, name: 'Java'),

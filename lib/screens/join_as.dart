@@ -2,12 +2,13 @@ import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/login.dart';
 import 'package:final_project_mobile/pages/sign_up.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class JoinAs extends StatelessWidget {
+class JoinAs extends ConsumerWidget {
   const JoinAs({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: Center(
@@ -25,7 +26,7 @@ class JoinAs extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const RadioExample(),
+                    const RoleRadio(),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -79,20 +80,20 @@ class JoinAs extends StatelessWidget {
   }
 }
 
-class RadioExample extends StatefulWidget {
-  const RadioExample({super.key});
+final selectedRoleProvider = StateProvider<RoleEnum>((ref) => RoleEnum.student);
 
+class RoleRadio extends ConsumerStatefulWidget {
+  const RoleRadio({super.key});
   @override
-  State<RadioExample> createState() => _CompanyOrStudentRole();
+  ConsumerState<RoleRadio> createState() => _CompanyOrStudentRole();
 }
 
 enum RoleEnum { company, student }
 
-class _CompanyOrStudentRole extends State<RadioExample> {
-  RoleEnum? _role = RoleEnum.company;
-
+class _CompanyOrStudentRole extends ConsumerState<RoleRadio> {
   @override
   Widget build(BuildContext context) {
+    final selectedRole = ref.watch(selectedRoleProvider);
     return Column(
       children: <Widget>[
         Padding(
@@ -100,9 +101,9 @@ class _CompanyOrStudentRole extends State<RadioExample> {
               const EdgeInsets.only(bottom: 16.0), // Add space between boxes
           child: GestureDetector(
             onTap: () {
-              setState(() {
-                _role = RoleEnum.company;
-              });
+              ref
+                  .read(selectedRoleProvider.notifier)
+                  .update((state) => RoleEnum.company);
             },
             child: Container(
               decoration: BoxDecoration(
@@ -123,11 +124,11 @@ class _CompanyOrStudentRole extends State<RadioExample> {
                   ),
                   Radio<RoleEnum>(
                     value: RoleEnum.company,
-                    groupValue: _role,
+                    groupValue: selectedRole,
                     onChanged: (RoleEnum? value) {
-                      setState(() {
-                        _role = value;
-                      });
+                      ref
+                          .read(selectedRoleProvider.notifier)
+                          .update((state) => RoleEnum.company);
                     },
                   ),
                 ],
@@ -137,9 +138,9 @@ class _CompanyOrStudentRole extends State<RadioExample> {
         ),
         GestureDetector(
           onTap: () {
-            setState(() {
-              _role = RoleEnum.student;
-            });
+            ref
+                .read(selectedRoleProvider.notifier)
+                .update((state) => RoleEnum.student);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -159,11 +160,11 @@ class _CompanyOrStudentRole extends State<RadioExample> {
                 ),
                 Radio<RoleEnum>(
                   value: RoleEnum.student,
-                  groupValue: _role,
+                  groupValue: selectedRole,
                   onChanged: (RoleEnum? value) {
-                    setState(() {
-                      _role = value;
-                    });
+                    ref
+                        .read(selectedRoleProvider.notifier)
+                        .update((state) => RoleEnum.student);
                   },
                 ),
               ],

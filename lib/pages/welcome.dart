@@ -1,12 +1,17 @@
+import 'dart:developer';
+
+import 'package:final_project_mobile/services/auth_services.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/sub-pages/dashboard.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userProfile = ref.watch(authServiceProvider).getMyProfile();
     return Scaffold(
       appBar: const CustomAppBar(),
       body: Center(

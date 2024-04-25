@@ -1,6 +1,5 @@
 import 'package:final_project_mobile/pages/profile_pages/student_profile_experiences.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
-import 'package:final_project_mobile/pages/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 

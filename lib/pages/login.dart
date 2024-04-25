@@ -1,10 +1,19 @@
+import 'package:final_project_mobile/notifiers/auth_notifier.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/screens/join_as.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,32 +33,50 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      decoration: const InputDecoration(
                         labelText: 'Username or Email',
                         border: OutlineInputBorder(),
                       ),
+                      onChanged: (value) {
+                        emailController.text = value;
+                      },
                     ),
                     const SizedBox(height: 20),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      decoration: const InputDecoration(
                         labelText: 'Password',
                         border: OutlineInputBorder(),
                       ),
+                      onChanged: (value) {
+                        passwordController.text = value;
+                      },
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                        ),
-                        foregroundColor: MaterialStateProperty.all(Colors.blue),
-                      ),
-                      child: const Text('Sign In'),
-                    ),
+                    Consumer(builder: (context, ref, _) {
+                      bool isLoading = ref.watch(authNotifierProvider);
+
+                      return isLoading
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: () {
+                                ref.read(authNotifierProvider.notifier).login(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    context: context);
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                ),
+                                foregroundColor:
+                                    MaterialStateProperty.all(Colors.blue),
+                              ),
+                              child: const Text('Sign In'),
+                            );
+                    })
                   ],
                 ),
                 Positioned(
