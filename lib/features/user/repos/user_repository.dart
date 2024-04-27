@@ -16,6 +16,22 @@ class UserRepository {
     log('2nd');
     final response = await httpService.request(
         method: RequestMethod.get, url: '$baseUrl/auth/me');
+    log(response.toString());
+    return UserProfile.fromJson(response['result']);
+  }
+
+  Future<UserProfile> signIn(
+      String email, String password, String fullname, int role) async {
+    final response = await httpService.request(
+        method: RequestMethod.post,
+        url: '$baseUrl/auth/sign-up',
+        body: {
+          'email': email,
+          'password': password,
+          'fullname': fullname,
+          'role': role
+        });
+    log(response.toString());
     return UserProfile.fromJson(response['result']);
   }
 }

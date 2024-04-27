@@ -12,6 +12,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   UserProfileBloc({required UserRepository repository})
       : super(const UserProfileState()) {
     on<GetUserProfile>(_getMyProfile);
+    on<SignIn>(_signIn);
   }
 
   final UserRepository userRepository = UserRepository();
@@ -21,5 +22,11 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     log('1st');
     final userProfile = await userRepository.getMyProfile();
     emit(state.copyWith(userProfile: userProfile));
+  }
+
+  Future<void> _signIn(SignIn event, Emitter<UserProfileState> emit) async {
+    final message = await userRepository.signIn(
+        event.email, event.password, event.fullname, event.role);
+    emit(state.copyWith(userProfile: message));
   }
 }

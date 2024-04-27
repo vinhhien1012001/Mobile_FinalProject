@@ -1,6 +1,13 @@
+import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
+import 'package:final_project_mobile/features/project/bloc/project_event.dart';
+import 'package:final_project_mobile/features/project/repos/project_repository.dart';
+import 'package:final_project_mobile/models/project.dart';
+import 'package:final_project_mobile/pages/sub-pages/dashboard.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostJobStepScreen extends StatefulWidget {
   const PostJobStepScreen({super.key});
@@ -13,50 +20,92 @@ class _PostJobStepScreenState extends State<PostJobStepScreen> {
   int currentStep = 1;
   String title = '';
   String duration = '';
-  String numStudents = '';
+  int numStudents = 0;
+  String projectDescription = '';
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildStep(currentStep),
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (currentStep > 1)
-                  CustomButton(
-                    text: 'Back',
-                    onPressed: () {
-                      setState(() {
-                        currentStep--;
-                      });
-                    },
-                  ),
-                const Spacer(),
-                if (currentStep < 4)
-                  CustomButton(
-                    text: 'Next',
-                    onPressed: () {
-                      if (currentStep == 1) {
-                        // Save data from step 1
-                      } else if (currentStep == 2) {
-                        // Save data from step 2
-                      }
-                      setState(() {
-                        currentStep++;
-                      });
-                    },
-                  )
-              ],
+    return BlocProvider<ProjectBloc>(
+      create: (_) => ProjectBloc(projectRepository: ProjectRepository()),
+      child: BlocBuilder<ProjectBloc, ProjectState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: const CustomAppBar(),
+            body: BlocListener<ProjectBloc, ProjectState>(
+              listener: (context, state) {
+                if (state is ProjectOperationFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: ${state.error}')));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Project nothing happened')));
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildStep(currentStep),
+                    const SizedBox(height: 20.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (currentStep > 1)
+                          CustomButton(
+                            text: 'Back',
+                            onPressed: () {
+                              setState(() {
+                                currentStep--;
+                              });
+                            },
+                          ),
+                        const Spacer(),
+                        if (currentStep < 4)
+                          CustomButton(
+                            text: 'Next',
+                            onPressed: () {
+                              if (currentStep == 1) {
+                                // Save data from step 1
+                              } else if (currentStep == 2) {
+                                // Save data from step 2
+                              }
+                              setState(() {
+                                currentStep++;
+                              });
+                            },
+                          ),
+                        if (currentStep == 4)
+                          CustomButton(
+                            text: 'Post Job',
+                            onPressed: () {
+                              Project project = Project(
+                                companyId: "1412",
+                                projectScopeFlag: 1,
+                                title: title,
+                                description: projectDescription,
+                                numberOfStudents: numStudents,
+                              );
+                              context
+                                  .read<ProjectBloc>()
+                                  .add(CreateProject(project: project));
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DashboardScreen()));
+                            },
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -78,17 +127,24 @@ class _PostJobStepScreenState extends State<PostJobStepScreen> {
           },
           onNumStudentsChanged: (value) {
             setState(() {
-              numStudents = value!;
+              numStudents = int.parse(value!);
             });
           },
         );
       case 3:
-        return const StepThree();
+        return StepThree(
+          onProjectDescriptionChanged: (value) {
+            setState(() {
+              projectDescription = value!;
+            });
+          },
+        );
       case 4:
         return StepFour(
           title: title,
           duration: duration,
           numStudents: numStudents,
+          projectDescription: projectDescription,
         );
       default:
         return Container();
@@ -172,10 +228,10 @@ class StepTwo extends StatefulWidget {
   });
 
   @override
-  _StepTwoState createState() => _StepTwoState();
+  StepTwoState createState() => StepTwoState();
 }
 
-class _StepTwoState extends State<StepTwo> {
+class StepTwoState extends State<StepTwo> {
   String? _selectedDuration;
 
   @override
@@ -224,36 +280,45 @@ class _StepTwoState extends State<StepTwo> {
         ),
         const SizedBox(height: 4.0),
         TextField(
-          onChanged: widget.onNumStudentsChanged,
+          decoration:
+              const InputDecoration(labelText: "Enter number of students"),
           keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            hintText: 'Enter number of students',
-          ),
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ], // Only numbers can be entered
+          onChanged: widget.onNumStudentsChanged,
         ),
       ],
     );
   }
 }
 
-class StepThree extends StatelessWidget {
-  const StepThree({super.key});
+class StepThree extends StatefulWidget {
+  final void Function(String?)? onProjectDescriptionChanged;
+  const StepThree({super.key, required this.onProjectDescriptionChanged});
 
   @override
+  StepThreeState createState() => StepThreeState();
+}
+
+class StepThreeState extends State<StepThree> {
+  String? _projectDescription;
+  @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Next, provide project description',
           style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 8.0),
-        Text(
+        const SizedBox(height: 8.0),
+        const Text(
           'Students are looking for:',
           style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 4.0),
-        Column(
+        const SizedBox(height: 4.0),
+        const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('- Clear expectations about your project or deliverables'),
@@ -261,17 +326,23 @@ class StepThree extends StatelessWidget {
             Text('- Details about your project'),
           ],
         ),
-        SizedBox(height: 8.0),
-        Text(
+        const SizedBox(height: 8.0),
+        const Text(
           'Describe your project:',
           style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 4.0),
+        const SizedBox(height: 4.0),
         TextField(
           maxLines: null,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Enter project description',
           ),
+          onChanged: (value) {
+            setState(() {
+              _projectDescription = value;
+            });
+            widget.onProjectDescriptionChanged?.call(value);
+          },
         ),
       ],
     );
@@ -281,13 +352,15 @@ class StepThree extends StatelessWidget {
 class StepFour extends StatelessWidget {
   final String title;
   final String duration;
-  final String numStudents;
+  final int numStudents;
+  final String projectDescription;
 
   const StepFour({
     super.key,
     required this.title,
     required this.duration,
     required this.numStudents,
+    required this.projectDescription,
   });
 
   @override
@@ -297,20 +370,21 @@ class StepFour extends StatelessWidget {
       children: [
         const Text(
           'Project details',
-          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8.0),
         Text(
-          'Title of the job: $title',
+          'Job title: $title',
+          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: 8.0),
-        Text(
-          'Duration: $duration',
-        ),
-        const SizedBox(height: 8.0),
-        Text(
-          'Number of students: $numStudents',
-        ),
+        // const SizedBox(height: 8.0),
+        // Text(
+        //   'Duration: $duration',
+        // ),
+        // const SizedBox(height: 8.0),
+        // Text(
+        //   'Number of students: $numStudents',
+        // ),
         const SizedBox(height: 16.0),
         const Divider(),
         const SizedBox(height: 16.0),
@@ -319,30 +393,52 @@ class StepFour extends StatelessWidget {
           style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4.0),
-        const Column(
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('- Clear expectations'),
-            Text('- The skills required'),
-            Text('- Details'),
+            Text(projectDescription),
           ],
         ),
         const SizedBox(height: 16.0),
         const Divider(),
         const SizedBox(height: 16.0),
-        const Row(
+        Row(
           children: [
-            Icon(Icons.alarm),
-            SizedBox(width: 8.0),
-            Text('Project Scope'),
+            const Icon(Icons.alarm),
+            const SizedBox(width: 8.0),
+            Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 24.0),
+                  child: const Text('Project Scope'),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 32.0),
+                  child: duration == '1-3'
+                      ? const Text(' • 1 to 3 months')
+                      : const Text(' • 3 to 6 months'),
+                ),
+              ],
+            )
           ],
         ),
         const SizedBox(height: 8.0),
-        const Row(
+        Row(
           children: [
-            Icon(Icons.people),
-            SizedBox(width: 8.0),
-            Text('Student required'),
+            const Icon(Icons.people),
+            const SizedBox(width: 8.0),
+            Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 12.0),
+                  child: const Text('Student required'),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 24.0),
+                  child: Text(' • $numStudents students'),
+                ),
+              ],
+            )
           ],
         ),
       ],

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:final_project_mobile/services/secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -24,29 +25,38 @@ class HttpService {
       final jwt = await SecureStorage().readSecureData('jwt');
       final headers = {
         'Authorization': 'Bearer $jwt',
+        'Content-type': "Application/json"
       };
       switch (method) {
         case RequestMethod.get:
           response = await client.get(uri, headers: headers);
           break;
         case RequestMethod.post:
-          response = await client.post(uri, body: body, headers: headers);
+          log(body.toString());
+          response =
+              await client.post(uri, body: jsonEncode(body), headers: headers);
+          log(response.body);
           break;
         case RequestMethod.put:
-          response = await client.put(uri, body: body, headers: headers);
+          response =
+              await client.put(uri, body: jsonEncode(body), headers: headers);
           break;
         case RequestMethod.delete:
           response = await client.delete(uri, headers: headers);
         case RequestMethod.patch:
-          response = await client.patch(uri, body: body, headers: headers);
+          response =
+              await client.patch(uri, body: jsonEncode(body), headers: headers);
           break;
       }
+      log(response.body);
 
       if (response.statusCode > 400) {
+        log(response.body);
         throw Exception('Error: Http status ${response.statusCode}');
       }
       return jsonDecode(response.body);
     } catch (e) {
+      log(e.toString());
       rethrow;
     }
   }
