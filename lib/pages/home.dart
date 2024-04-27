@@ -1,5 +1,5 @@
 import 'package:final_project_mobile/routes/routes.dart';
-import 'package:final_project_mobile/src/models/activity.dart';
+import 'package:final_project_mobile/models/activity.dart';
 import 'package:final_project_mobile/src/providers/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

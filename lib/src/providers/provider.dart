@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:final_project_mobile/src/models/activity.dart';
+import 'package:final_project_mobile/models/activity.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
