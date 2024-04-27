@@ -1,7 +1,9 @@
 import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:final_project_mobile/pages/welcome.dart';
+import 'package:final_project_mobile/widgets/custom_multiselect.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class Skill {
   final int id;
@@ -287,6 +289,7 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // Header
                   const Text(
                     'Experiences',
                     style: TextStyle(
@@ -294,6 +297,8 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
+                  // Brief description
                   const Column(
                     children: [
                       Padding(
@@ -313,12 +318,12 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
                     ],
                   ),
 
-                  const ProjectInput(),
+                  // const ProjectInput(),
 
                   // Skillset
-                  Column(
+                  const Column(
                     children: [
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.only(bottom: 10, top: 20),
                         child: Align(
                           alignment: Alignment.centerLeft,
@@ -330,82 +335,9 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
                           ),
                         ),
                       ),
-                      MultiSelectDialogField(
-                        key: _multiSelectKey,
-                        onConfirm: (val) {
-                          _selectedSkills = val;
-                        },
-                        items: _items,
-                        initialValue: _selectedSkills,
-                        searchable: true,
-                        chipDisplay: MultiSelectChipDisplay<Skill>(
-                          onTap: (value) {
-                            setState(() {
-                              _selectedSkills.remove(value);
-                              _multiSelectKey.currentState
-                                  ?.didChange(_selectedSkills);
-                            });
-                          },
-                        ),
-                      )
+                      MutiselectDropdown()
                     ],
                   ),
-
-                  // Languages
-                  Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 10, top: 20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Languages',
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                      MultiSelectDialogField<String>(
-                        onConfirm: (values) {
-                          setState(() {
-                            _selectedLanguages = values;
-                          });
-                        },
-                        items: _languages,
-                        initialValue: _selectedLanguages,
-                        searchable: true,
-                        chipDisplay: MultiSelectChipDisplay<String>(
-                          onTap: (value) {
-                            setState(() {
-                              _selectedLanguages.remove(value);
-                            });
-                          },
-                        ),
-                      ),
-                      DropdownButton<String>(
-                        value: _selectedProficiency,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedProficiency = newValue!;
-                          });
-                        },
-                        items: <String>[
-                          'Beginner',
-                          'Intermediate',
-                          'Advanced',
-                          'Native'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-
-                  // Education part
 
                   // Continue button
                   Padding(

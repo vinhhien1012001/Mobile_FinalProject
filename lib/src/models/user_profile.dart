@@ -10,4 +10,12 @@ final class UserProfile extends Equatable {
 
   @override
   List<Object> get props => [id, fullname, roles];
+
+  static UserProfile fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      id: json['id'],
+      fullname: json['fullname'],
+      roles: List<int>.from(json['roles'].map((x) => x)),
+    );
+  }
 }
