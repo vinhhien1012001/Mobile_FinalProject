@@ -35,3 +35,11 @@ class ProjectDeleteSuccess extends ProjectState {
   @override
   List<Object?> get props => [message];
 }
+
+class ProjectLoadingDone extends ProjectState {
+  final String projectId;
+  const ProjectLoadingDone({required this.projectId});
+
+  @override
+  List<Object?> get props => [projectId];
+}

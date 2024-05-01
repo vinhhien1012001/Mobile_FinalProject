@@ -1,11 +1,9 @@
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/project/repos/project_repository.dart';
 import 'package:final_project_mobile/models/project.dart';
-import 'package:flutter/material.dart';
 part 'project_state.dart';
 
 class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
@@ -55,7 +53,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       GetProjectById event, Emitter<ProjectState> emit) async {
     try {
       final project = await projectRepository.getProjectById(event.projectId);
-      emit(ProjectLoadSuccess(projects: [project]));
+      emit(ProjectLoadingDone(projectId: event.projectId));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

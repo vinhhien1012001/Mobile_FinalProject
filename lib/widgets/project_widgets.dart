@@ -32,7 +32,8 @@ class ProjectWidgets {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const ProjectDetailsStudent()),
+                  builder: (context) =>
+                      ProjectDetailsStudent(project: project)),
             );
           },
           child: ProjectWidgets.buildProjectCard(
@@ -76,10 +77,10 @@ class ProjectWidgets {
             context: context,
             type: ToastificationType.success,
             style: ToastificationStyle.flat,
-            title: Text('Delete project successfully'),
+            title: const Text('Delete project successfully'),
             alignment: Alignment.bottomRight,
             autoCloseDuration: const Duration(seconds: 4),
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             borderRadius: BorderRadius.circular(12.0),
             showProgressBar: true,
           );

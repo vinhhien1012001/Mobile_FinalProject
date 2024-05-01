@@ -12,11 +12,14 @@ class ProjectRepository {
     httpService = HttpService();
   }
 
-  Future<List<Project>> getProjects() async {
+  Future<List<Project>> getProjects(
+      {int? pageNumber = 1, int? perPage = 10}) async {
     log('Getting projects');
     final response = await httpService.request(
       method: RequestMethod.get,
-      url: '$baseUrl/project',
+      url: pageNumber != null && perPage != null
+          ? '$baseUrl/project?page=$pageNumber&perPage=$perPage'
+          : '$baseUrl/project',
     );
     final projects = (response['result'] as List)
         .map((json) => Project.fromJson(json))

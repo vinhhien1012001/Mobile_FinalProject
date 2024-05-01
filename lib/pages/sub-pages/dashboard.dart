@@ -122,9 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (state is ProjectLoadSuccess) {
           projects = state.projects;
         }
-        if (state is! ProjectLoadSuccess) {
-          return const Center(child: CircularProgressIndicator());
-        }
+
         return Padding(
           padding: const EdgeInsets.all(20),
           child: Column(

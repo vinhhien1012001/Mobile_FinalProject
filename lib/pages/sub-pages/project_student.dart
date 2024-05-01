@@ -1,19 +1,22 @@
+
+import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
+import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/saved_project.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 part "../../widgets/search_bar.dart";
 
 class ProjectStudentContent extends StatefulWidget {
   const ProjectStudentContent({super.key});
 
   @override
-  _ProjectStudentContentState createState() => _ProjectStudentContentState();
+  State<ProjectStudentContent> createState() => _ProjectStudentContentState();
 }
 
 class _ProjectStudentContentState extends State<ProjectStudentContent> {
   List<Project> projects = [];
-
   List<Project> filteredProjects = [];
   bool isFilterApplied = false;
   String projectLengthFilter = '';
@@ -24,7 +27,7 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
   @override
   void initState() {
     super.initState();
-    filteredProjects.addAll(projects);
+    BlocProvider.of<ProjectBloc>(context).add(GetProject());
   }
 
   void _onSearchTextChanged(String searchText) {
@@ -208,22 +211,30 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          SearchBar(
-            onChanged: _onSearchTextChanged,
-            onFavoritePressed: _onSavedProjectsClicked,
-            isFilterApplied: isFilterApplied,
-            isTyping: _isTyping,
-            onFilterPressed: _showFilterModal,
+    return BlocBuilder<ProjectBloc, ProjectState>(
+      builder: (context, state) {
+        if (state is ProjectLoadSuccess) {
+          projects = state.projects;
+          filteredProjects.addAll(projects);
+        }
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              SearchBar(
+                onChanged: _onSearchTextChanged,
+                onFavoritePressed: _onSavedProjectsClicked,
+                isFilterApplied: isFilterApplied,
+                isTyping: _isTyping,
+                onFilterPressed: _showFilterModal,
+              ),
+              Expanded(
+                child: ProjectWidgets.buildProjectList(filteredProjects),
+              ),
+            ],
           ),
-          Expanded(
-            child: ProjectWidgets.buildProjectList(filteredProjects),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
