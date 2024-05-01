@@ -1,24 +1,10 @@
+import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
 import 'package:flutter/material.dart';
 
 class SavedProjectScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> allProjects = [
-    {
-      'title': 'Lalala',
-      'created': '3 days ago',
-      'proposals': 10,
-      'messages': 5,
-      'hired': 3,
-    },
-    {
-      'title': 'Senior frontend developer (fintech)',
-      'created': '3 days ago',
-      'proposals': 10,
-      'messages': 5,
-      'hired': 3,
-    },
-  ];
+  final List<Project> allProjects = [];
 
   SavedProjectScreen({super.key});
   @override

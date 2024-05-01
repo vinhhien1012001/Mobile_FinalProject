@@ -3,7 +3,6 @@ import 'package:final_project_mobile/pages/welcome.dart';
 import 'package:final_project_mobile/widgets/custom_multiselect.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class Skill {
   final int id;
@@ -232,7 +231,7 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
       .map((skill) => MultiSelectItem<Skill>(skill, skill.name))
       .toList();
 
-  List<Skill> _selectedSkills = [];
+  final List<Skill> _selectedSkills = [];
   final _multiSelectKey = GlobalKey<FormFieldState>();
 
   final _languages = [
@@ -256,8 +255,8 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
     // Add all your languages here
   ].map((language) => MultiSelectItem<String>(language, language)).toList();
 
-  List<String> _selectedLanguages = [];
-  String _selectedProficiency = 'Beginner';
+  final List<String> _selectedLanguages = [];
+  final String _selectedProficiency = 'Beginner';
 
   AppBar appBar(BuildContext context) {
     return AppBar(

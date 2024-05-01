@@ -19,10 +19,10 @@ class CreateProject extends ProjectEvent {
   List<Object?> get props => [project];
 }
 
-class GetProjectByCompanyId extends ProjectEvent {
+class GetProjectsByCompanyId extends ProjectEvent {
   final String companyId;
 
-  const GetProjectByCompanyId({required this.companyId});
+  const GetProjectsByCompanyId({required this.companyId});
 
   @override
   List<Object?> get props => [companyId];

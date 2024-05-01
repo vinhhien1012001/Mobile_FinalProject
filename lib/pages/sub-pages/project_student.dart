@@ -1,3 +1,4 @@
+import 'package:final_project_mobile/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/saved_project.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
@@ -11,38 +12,9 @@ class ProjectStudentContent extends StatefulWidget {
 }
 
 class _ProjectStudentContentState extends State<ProjectStudentContent> {
-  List<Map<String, dynamic>> projects = [
-    {
-      'title': 'Senior frontend developer (fintech)',
-      'created': '3 days ago',
-      'proposals': 10,
-      'messages': 5,
-      'hired': 3,
-    },
-    {
-      'title': 'Senior frontend developer (fintech)',
-      'created': '3 days ago',
-      'proposals': 10,
-      'messages': 5,
-      'hired': 3,
-    },
-    {
-      'title': 'Senior frontend developer (fintech)',
-      'created': '3 days ago',
-      'proposals': 10,
-      'messages': 5,
-      'hired': 3,
-    },
-    {
-      'title': '121312',
-      'created': '3 days ago',
-      'proposals': 10,
-      'messages': 5,
-      'hired': 3,
-    },
-  ];
+  List<Project> projects = [];
 
-  List<Map<String, dynamic>> filteredProjects = [];
+  List<Project> filteredProjects = [];
   bool isFilterApplied = false;
   String projectLengthFilter = '';
   int studentNeededFilter = 0;
@@ -63,9 +35,10 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
         filteredProjects.addAll(projects);
       } else {
         filteredProjects.addAll(projects.where((project) {
-          return project['title']
-              .toLowerCase()
-              .contains(searchText.toLowerCase());
+          return (project.title
+                  ?.toLowerCase()
+                  .contains(searchText.toLowerCase())) ??
+              false;
         }));
       }
     });
@@ -218,17 +191,17 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
     });
   }
 
-  bool _checkProjectLength(Map<String, dynamic> project) {
+  bool _checkProjectLength(Project project) {
     // Implement logic to check project length
     return true; // Placeholder logic, replace with actual logic
   }
 
-  bool _checkStudentNeeded(Map<String, dynamic> project) {
+  bool _checkStudentNeeded(Project project) {
     // Implement logic to check student needed
     return true; // Placeholder logic, replace with actual logic
   }
 
-  bool _checkProposalCount(Map<String, dynamic> project) {
+  bool _checkProposalCount(Project project) {
     // Implement logic to check proposal count
     return true; // Placeholder logic, replace with actual logic
   }

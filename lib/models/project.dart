@@ -10,7 +10,7 @@ class Project extends Equatable {
   final String? title;
   final int? numberOfStudents;
   final String? description;
-
+  final int? typeFlag;
   const Project({
     this.id,
     this.createdAt,
@@ -21,6 +21,7 @@ class Project extends Equatable {
     this.title,
     this.numberOfStudents,
     this.description,
+    this.typeFlag,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -34,6 +35,7 @@ class Project extends Equatable {
       title: json['title'],
       numberOfStudents: json['numberOfStudents'],
       description: json['description'],
+      typeFlag: json['typeFlag'],
     );
   }
 

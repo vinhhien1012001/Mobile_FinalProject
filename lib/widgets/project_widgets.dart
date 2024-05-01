@@ -1,9 +1,13 @@
+import 'dart:developer';
+
+import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
 import 'package:flutter/material.dart';
 // Import the project detail screen
 
 class ProjectWidgets {
-  static Widget buildProjectList(List<Map<String, dynamic>> projects) {
+  static Widget buildProjectList(List<Project> projects) {
+    log("projects.toString() ${projects.toString()}");
     return ListView.builder(
       itemCount: projects.length,
       itemBuilder: (context, index) {
@@ -18,11 +22,11 @@ class ProjectWidgets {
             );
           },
           child: ProjectWidgets.buildProjectCard(
-            title: project['title'],
-            created: project['created'],
-            proposals: project['proposals'],
-            messages: project['messages'],
-            hired: project['hired'],
+            title: project.title!,
+            created: project.createdAt!,
+            proposals: 1,
+            messages: project.numberOfStudents!,
+            hired: project.numberOfStudents!,
           ),
         );
       },

@@ -14,7 +14,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   ProjectBloc({required this.projectRepository}) : super(ProjectInitial()) {
     on<GetProject>(_getProject);
     on<CreateProject>(_createProject);
-    on<GetProjectByCompanyId>(_getProjectByCompanyId);
+    on<GetProjectsByCompanyId>(_getProjectsByCompanyId);
     on<GetProjectById>(_getProjectById);
     on<DeleteProject>(_deleteProject);
     on<UpdateProject>(_updateProject);
@@ -40,8 +40,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     }
   }
 
-  Future<void> _getProjectByCompanyId(
-      GetProjectByCompanyId event, Emitter<ProjectState> emit) async {
+  Future<void> _getProjectsByCompanyId(
+      GetProjectsByCompanyId event, Emitter<ProjectState> emit) async {
     try {
       final projects =
           await projectRepository.getProjectsByCompanyId(event.companyId);

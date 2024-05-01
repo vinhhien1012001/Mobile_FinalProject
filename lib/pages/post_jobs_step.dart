@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
-import 'package:final_project_mobile/features/project/repos/project_repository.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/sub-pages/dashboard.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
@@ -23,26 +25,35 @@ class _PostJobStepScreenState extends State<PostJobStepScreen> {
   int numStudents = 0;
   String projectDescription = '';
 
-  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    context.read<UserProfileBloc>().add(const GetUserProfile());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ProjectBloc>(
-      create: (_) => ProjectBloc(projectRepository: ProjectRepository()),
-      child: BlocBuilder<ProjectBloc, ProjectState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: const CustomAppBar(),
-            body: BlocListener<ProjectBloc, ProjectState>(
-              listener: (context, state) {
-                if (state is ProjectOperationFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: ${state.error}')));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Project nothing happened')));
-                }
-              },
-              child: Container(
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UserProfileBloc, UserProfileState>(
+          listener: (context, state) {
+            if (state is UserProfileEvent) {
+              log('User profile event $state');
+            }
+          },
+        ),
+        BlocListener<ProjectBloc, ProjectState>(
+          listener: (context, state) {},
+        ),
+      ],
+      child: BlocBuilder<UserProfileBloc, UserProfileState>(
+        builder: (context, userProfileState) {
+          final companyId = userProfileState.userProfile.company?.id;
+          return BlocListener<ProjectBloc, ProjectState>(
+            listener: (context, state) {},
+            child: Scaffold(
+              appBar: const CustomAppBar(),
+              body: Container(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,10 +89,10 @@ class _PostJobStepScreenState extends State<PostJobStepScreen> {
                           ),
                         if (currentStep == 4)
                           CustomButton(
-                            text: 'Post Job',
+                            text: 'Post Job $companyId',
                             onPressed: () {
                               Project project = Project(
-                                companyId: "1412",
+                                companyId: "$companyId",
                                 projectScopeFlag: 1,
                                 title: title,
                                 description: projectDescription,
