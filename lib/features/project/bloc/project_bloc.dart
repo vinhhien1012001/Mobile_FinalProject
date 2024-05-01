@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/project/repos/project_repository.dart';
 import 'package:final_project_mobile/models/project.dart';
-
+import 'package:flutter/material.dart';
 part 'project_state.dart';
 
 class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
@@ -65,8 +65,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       DeleteProject event, Emitter<ProjectState> emit) async {
     try {
       await projectRepository.deleteProject(event.projectId);
-      final projects = await projectRepository.getProjects();
-      emit(ProjectLoadSuccess(projects: projects));
+      emit(ProjectDeleteSuccess(
+          projectId: event.projectId, message: 'Project deleted'));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

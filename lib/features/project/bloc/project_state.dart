@@ -26,3 +26,12 @@ class ProjectOperationFailure extends ProjectState {
   @override
   List<Object?> get props => [error];
 }
+
+class ProjectDeleteSuccess extends ProjectState {
+  final String message;
+  final String projectId;
+  const ProjectDeleteSuccess({required this.projectId, required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

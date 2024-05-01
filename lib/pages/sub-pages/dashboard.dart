@@ -68,8 +68,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProfileState = context.read<UserProfileBloc>().state;
+    final companyId = userProfileState.userProfile.company?.id;
     return BlocListener<ProjectBloc, ProjectState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is ProjectDeleteSuccess) {
+          context
+              .read<ProjectBloc>()
+              .add(GetProjectsByCompanyId(companyId: "$companyId"));
+        }
+      },
       child: BlocBuilder<ProjectBloc, ProjectState>(
         builder: (context, projectState) {
           return Scaffold(
@@ -113,6 +121,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       builder: (context, state) {
         if (state is ProjectLoadSuccess) {
           projects = state.projects;
+        }
+        if (state is! ProjectLoadSuccess) {
+          return const Center(child: CircularProgressIndicator());
         }
         return Padding(
           padding: const EdgeInsets.all(20),
