@@ -34,4 +34,10 @@ class UserRepository {
     log(response.toString());
     return UserProfile.fromJson(response['result']);
   }
+
+  Future<void> signOut() async {
+    log('Signing out');
+    await httpService.request(
+        method: RequestMethod.post, url: '$baseUrl/auth/logout');
+  }
 }

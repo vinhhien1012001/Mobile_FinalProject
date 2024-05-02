@@ -1,6 +1,7 @@
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
+import 'package:final_project_mobile/pages/7-student-submit-proposal/submit_proposal.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -41,8 +42,7 @@ class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
               children: [
                 const Text(
                   'Project details',
-                  style: TextStyle(
-                      fontSize: 24.0, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8.0),
                 Text(
@@ -109,17 +109,23 @@ class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
                 const Spacer(
                   flex: 1,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 20.0),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 45.0),
                   child: Row(
                     children: [
+                      const CustomButton(
+                        text: 'Saved',
+                      ),
+                      const Spacer(),
                       CustomButton(
                         text: 'Apply Now',
                         width: 140,
-                      ),
-                      Spacer(),
-                      CustomButton(
-                        text: 'Saved',
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SubmitProposal()));
+                        },
                       )
                     ],
                   ),

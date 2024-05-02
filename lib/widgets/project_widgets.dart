@@ -16,7 +16,8 @@ enum ProjectAction {
   viewHired,
   viewJobPosting,
   editPosting,
-  removePosting
+  removePosting,
+  addToFavorite,
 }
 
 class ProjectWidgets {
@@ -40,9 +41,9 @@ class ProjectWidgets {
             projectId: project.id!,
             title: project.title!,
             created: project.createdAt!,
-            proposals: 1,
+            proposals: project.countProposals!,
             messages: project.numberOfStudents!,
-            hired: project.numberOfStudents!,
+            hired: project.countHired ?? 0,
             context: context,
           ),
         );
@@ -127,6 +128,10 @@ class ProjectWidgets {
                       const PopupMenuItem<ProjectAction>(
                         value: ProjectAction.editPosting,
                         child: Text('Edit posting'),
+                      ),
+                      const PopupMenuItem<ProjectAction>(
+                        value: ProjectAction.addToFavorite,
+                        child: Text('Add to favorite'),
                       ),
                     ],
                   ),

@@ -1,4 +1,3 @@
-
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
@@ -195,18 +194,33 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
   }
 
   bool _checkProjectLength(Project project) {
-    // Implement logic to check project length
-    return true; // Placeholder logic, replace with actual logic
+    if (projectLengthFilter.isEmpty) {
+      return true; // No filter applied, so all projects pass
+    }
+
+    switch (projectLengthFilter) {
+      case 'Less than 1 month':
+        return project.projectScopeFlag == 0;
+      case '1 to 3 months':
+        return project.projectScopeFlag == 1;
+      case '3 to 6 months':
+        return project.projectScopeFlag == 2;
+      case 'More than 6 months':
+        return project.projectScopeFlag == 3;
+      default:
+        return true; // Default to true if the filter doesn't match any case
+    }
   }
 
   bool _checkStudentNeeded(Project project) {
-    // Implement logic to check student needed
-    return true; // Placeholder logic, replace with actual logic
+    if (project.numberOfStudents == null) {
+      return true;
+    }
+    return project.numberOfStudents! >= studentNeededFilter;
   }
 
   bool _checkProposalCount(Project project) {
-    // Implement logic to check proposal count
-    return true; // Placeholder logic, replace with actual logic
+    return project.countProposals! <= proposalLessThanFilter;
   }
 
   @override

@@ -1,7 +1,9 @@
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_input.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const SwitchAccountPage());
@@ -96,7 +98,9 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
               ),
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                BlocProvider.of<UserProfileBloc>(context).add(const SignOut());
+              },
               icon: const Icon(Icons.logout),
               label: const Text('Logout'),
               style: ElevatedButton.styleFrom(

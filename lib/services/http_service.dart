@@ -43,6 +43,7 @@ class HttpService {
           break;
         case RequestMethod.delete:
           response = await client.delete(uri, headers: headers);
+          break;
         case RequestMethod.patch:
           response =
               await client.patch(uri, body: jsonEncode(body), headers: headers);

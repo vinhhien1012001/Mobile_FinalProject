@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:final_project_mobile/models/proposal.dart';
 
 class Project extends Equatable {
   final int? id;
@@ -11,6 +12,12 @@ class Project extends Equatable {
   final int? numberOfStudents;
   final String? description;
   final int? typeFlag;
+  final List<Proposal>? proposals;
+  final String? companyName;
+  final int? countProposals;
+  final int? countMessages;
+  final int? countHired;
+
   const Project({
     this.id,
     this.createdAt,
@@ -22,9 +29,22 @@ class Project extends Equatable {
     this.numberOfStudents,
     this.description,
     this.typeFlag,
+    this.proposals,
+    this.companyName,
+    this.countProposals,
+    this.countMessages,
+    this.countHired,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
+    // Parse the list of proposals
+    List<dynamic>? jsonProposals = json['proposals'];
+    List<Proposal>? proposals;
+    if (jsonProposals != null) {
+      proposals =
+          jsonProposals.map((proposal) => Proposal.fromJson(proposal)).toList();
+    }
+
     return Project(
       id: json['id'] ?? json['projectId'] ?? 0,
       createdAt: json['createdAt'],
@@ -36,6 +56,11 @@ class Project extends Equatable {
       numberOfStudents: json['numberOfStudents'],
       description: json['description'],
       typeFlag: json['typeFlag'],
+      proposals: proposals,
+      companyName: json['companyName'],
+      countProposals: json['countProposals'],
+      countMessages: json['countMessages'],
+      countHired: json['countHired'],
     );
   }
 
@@ -46,11 +71,19 @@ class Project extends Equatable {
       'title': title,
       'numberOfStudents': numberOfStudents,
       'description': description,
+      // Other fields as needed
     };
   }
 
   @override
   List<Object?> get props {
-    return [companyId, projectScopeFlag, title, numberOfStudents, description];
+    return [
+      companyId,
+      projectScopeFlag,
+      title,
+      numberOfStudents,
+      description,
+      // Other fields as needed
+    ];
   }
 }

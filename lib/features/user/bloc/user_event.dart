@@ -1,5 +1,6 @@
 part of 'user_bloc.dart';
 
+@immutable
 abstract class UserProfileEvent {
   const UserProfileEvent();
 }
@@ -19,4 +20,8 @@ class SignIn extends UserProfileEvent {
   final String password;
   final String fullname;
   final int role;
+}
+
+class SignOut extends UserProfileEvent {
+  const SignOut();
 }
