@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:final_project_mobile/models/student.dart';
 
 class UserProfile extends Equatable {
   const UserProfile({
@@ -6,13 +7,14 @@ class UserProfile extends Equatable {
     required this.fullname,
     required this.roles,
     this.company, // Add company field
+    this.student,
   });
 
   final int id;
   final String fullname;
   final List<int> roles;
   final Company? company; // Declare company field
-
+  final Student? student;
   @override
   List<Object?> get props =>
       [id, fullname, roles, company]; // Include company in props
@@ -25,6 +27,8 @@ class UserProfile extends Equatable {
       company: json['company'] != null
           ? Company.fromJson(json['company'])
           : null, // Parse company if available
+      student:
+          json['student'] != null ? Student.fromJson(json['student']) : null,
     );
   }
 }

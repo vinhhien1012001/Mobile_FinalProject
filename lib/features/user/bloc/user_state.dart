@@ -12,3 +12,25 @@ class UserProfileState extends Equatable {
     return UserProfileState(userProfile: userProfile ?? this.userProfile);
   }
 }
+
+class UserProfileInitial extends UserProfileState {}
+
+class UserProfileLoadInProgress extends UserProfileState {}
+
+class UserProfileLoadSuccess extends UserProfileState {
+  final UserProfile userProfile;
+
+  const UserProfileLoadSuccess(this.userProfile);
+
+  @override
+  List<Object?> get props => [userProfile];
+}
+
+class UserProfileLoadFailure extends UserProfileState {
+  final String error;
+
+  const UserProfileLoadFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
+}

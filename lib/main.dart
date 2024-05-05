@@ -2,6 +2,7 @@ import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/repos/project_repository.dart';
 import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
 import 'package:final_project_mobile/features/proposal/repos/proposal_repository.dart';
+import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/features/user/repos/user_repository.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
@@ -36,7 +37,11 @@ class MyApp extends StatelessWidget {
           create: (_) => ProposalBloc(
             repository: ProposalRepository(),
           ),
-        )
+        ),
+        BlocProvider(
+            create: (_) => RoleBloc(
+                  const RoleInitial(0),
+                ))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

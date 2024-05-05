@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -23,6 +24,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     log('1st');
     final userProfile = await userRepository.getMyProfile();
     emit(state.copyWith(userProfile: userProfile));
+    emit(UserProfileLoadSuccess(userProfile));
   }
 
   Future<void> _signIn(SignIn event, Emitter<UserProfileState> emit) async {

@@ -1,4 +1,3 @@
-
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/features/user/repos/user_repository.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
@@ -58,12 +57,23 @@ class _WelcomeViewState extends State<WelcomeView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Welcome, ${state.userProfile.fullname} !',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              BlocConsumer<UserProfileBloc, UserProfileState>(
+                                listener: (context, state) {
+                                  // TODO: implement listener
+                                },
+                                builder: (context, state) {
+                                  if (state is! UserProfileLoadSuccess) {
+                                    return const CircularProgressIndicator();
+                                  } else {
+                                    return Text(
+                                      'Welcome, ${state.userProfile.fullname} !',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                               const Text(
                                 'Let\'s start with your first project post.',
