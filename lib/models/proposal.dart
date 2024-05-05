@@ -38,17 +38,14 @@ class Proposal extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'deletedAt': deletedAt,
-      'projectId': projectId,
-      'studentId': studentId,
-      'coverLetter': coverLetter,
-      'statusFlag': statusFlag,
-      'disableFlag': disableFlag,
-    };
+    final Map<String, dynamic> json = {};
+    if (id != null) json['id'] = id;
+    if (createdAt != null) json['createdAt'] = createdAt;
+    if (updatedAt != null) json['updatedAt'] = updatedAt;
+    if (projectId != null) json['projectId'] = projectId;
+    if (studentId != null) json['studentId'] = studentId;
+    if (coverLetter != null) json['coverLetter'] = coverLetter;
+    return json;
   }
 
   @override

@@ -1,17 +1,35 @@
 part of 'proposal_bloc.dart';
 
-class ProposalState extends Equatable {
-  final Proposal proposal;
-  final List<Proposal> proposals;
+abstract class ProposalState extends Equatable {
+  const ProposalState();
 
-  const ProposalState(
-      {this.proposals = const <Proposal>[], this.proposal = const Proposal()});
   @override
   List<Object?> get props => [];
+}
 
-  ProposalState copyWith({List<Proposal>? proposals}) {
-    return ProposalState(
-      proposals: proposals ?? this.proposals,
-    );
-  }
+class ProposalInitial extends ProposalState {}
+
+class ProposalCreateSuccess extends ProposalState {
+  final Proposal proposal;
+  const ProposalCreateSuccess({required this.proposal});
+
+  @override
+  List<Object?> get props => [proposal];
+}
+
+class ProposalOperationFailure extends ProposalState {
+  final String error;
+  const ProposalOperationFailure({required this.error});
+
+  @override
+  List<Object?> get props => [error];
+}
+
+class ProposalCreateNE extends ProposalState {
+  final String message;
+  final Proposal? proposal;
+  const ProposalCreateNE({required this.message, this.proposal});
+
+  @override
+  List<Object?> get props => [message];
 }

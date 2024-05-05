@@ -69,6 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final userProfileState = context.read<UserProfileBloc>().state;
+    log('userProfileState.userProfile.roles: ${userProfileState.userProfile}');
     final companyId = userProfileState.userProfile.company?.id;
     return BlocListener<ProjectBloc, ProjectState>(
       listener: (context, state) {

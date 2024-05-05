@@ -35,7 +35,7 @@ class HttpService {
           log(body.toString());
           response =
               await client.post(uri, body: jsonEncode(body), headers: headers);
-          log(response.body);
+          log("response.body: ${response.body}");
           break;
         case RequestMethod.put:
           response =

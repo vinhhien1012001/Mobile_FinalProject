@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => ProposalBloc(
-            proposalRepository: ProposalRepository(),
+            repository: ProposalRepository(),
           ),
         )
       ],

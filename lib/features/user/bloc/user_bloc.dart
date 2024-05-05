@@ -10,14 +10,13 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
+  final UserRepository userRepository = UserRepository();
   UserProfileBloc({required UserRepository repository})
       : super(const UserProfileState()) {
     on<GetUserProfile>(_getMyProfile);
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
   }
-
-  final UserRepository userRepository = UserRepository();
 
   Future<void> _getMyProfile(
       GetUserProfile event, Emitter<UserProfileState> emit) async {
@@ -27,9 +26,13 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   }
 
   Future<void> _signIn(SignIn event, Emitter<UserProfileState> emit) async {
-    final message = await userRepository.signIn(
-        event.email, event.password, event.fullname, event.role);
-    emit(state.copyWith(userProfile: message));
+    try {
+      final userProfile = await userRepository.signIn(
+          event.email, event.password, event.fullname, event.role);
+      emit(state.copyWith(userProfile: userProfile));
+    } catch (error) {
+      emit(state.copyWith(userProfile: null));
+    }
   }
 
   Future<void> _signOut(SignOut event, Emitter<UserProfileState> emit) async {

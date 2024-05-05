@@ -38,12 +38,19 @@ class ProposalRepository {
     return Proposal.fromJson(response['result']);
   }
 
-  Future<void> submitProposal(Proposal proposal) async {
-    await httpService.request(
+  Future<Map<String, dynamic>> submitProposal(
+      String projectId, String coverLetter, String studentId) async {
+    log('submitProposal');
+    final newwProposal = await httpService.request(
       method: RequestMethod.post,
-      url: '$baseUrl/proposals',
-      body: proposal.toJson(),
+      url: '$baseUrl/proposal',
+      body: {
+        'projectId': projectId,
+        'coverLetter': coverLetter,
+        'studentId': studentId,
+      },
     );
+    return newwProposal;
   }
 
   Future<void> updateProposal(Proposal proposal) async {

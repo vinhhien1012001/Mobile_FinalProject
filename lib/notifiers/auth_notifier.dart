@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:final_project_mobile/pages/welcome.dart';
 import 'package:final_project_mobile/services/auth_services.dart';
 import 'package:flutter/material.dart';
