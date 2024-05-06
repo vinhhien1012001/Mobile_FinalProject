@@ -1,17 +1,140 @@
+import 'package:final_project_mobile/pages/profile_pages/student_profile_cv.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:final_project_mobile/pages/welcome.dart';
-import 'package:final_project_mobile/widgets/custom_multiselect.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class Skill {
-  final int id;
   final String name;
 
   Skill({
-    required this.id,
     required this.name,
   });
+
+  @override
+  String toString() {
+    return 'Skill(name: $name)';
+  }
+}
+
+// SKILL SET INPUT
+class SkillsetDropdown extends StatefulWidget {
+  const SkillsetDropdown({super.key});
+
+  @override
+  State<SkillsetDropdown> createState() => _SkillsetDropdownState();
+
+  static const _headerStyle = TextStyle(
+    fontSize: 12,
+    color: Colors.blue,
+  );
+}
+
+class _SkillsetDropdownState extends State<SkillsetDropdown> {
+  final MultiSelectController<String> _controller = MultiSelectController();
+
+  final List<ValueItem<String>> _selectedOptions = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MultiSelectDropDown<String>(
+              controller: _controller,
+              clearIcon: const Icon(Icons.reddit),
+              onOptionSelected: (options) {},
+              options: [
+                Skill(name: 'iOS Development'),
+                Skill(name: 'C'),
+                Skill(name: 'Java'),
+                Skill(name: 'Kubernetes'),
+                Skill(name: 'PostgreSQL'),
+                Skill(name: 'Redis'),
+                Skill(name: 'Android'),
+                Skill(name: 'Node.js'),
+                Skill(name: 'Objective-C'),
+                Skill(name: 'React Native'),
+                Skill(name: 'Microservices'),
+                Skill(name: 'Socket.io'),
+                Skill(name: 'AWS'),
+                Skill(name: 'React'),
+                Skill(name: 'Git'),
+                Skill(name: 'WebScrape'),
+              ]
+                  .map((skill) =>
+                      ValueItem<String>(label: skill.name, value: skill.name))
+                  .toList(),
+              // maxItems: 4,
+              singleSelectItemStyle:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              chipConfig: const ChipConfig(
+                  wrapType: WrapType.wrap, backgroundColor: Colors.blue),
+              optionTextStyle: const TextStyle(fontSize: 16),
+              selectedOptionIcon: const Icon(
+                Icons.check_circle,
+                color: Colors.pink,
+              ),
+              searchEnabled: true,
+              selectedOptionBackgroundColor: Colors.grey.shade300,
+              selectedOptionTextColor: Colors.blue,
+              dropdownMargin: 2,
+              onOptionRemoved: (index, option) {},
+              optionBuilder: (context, valueItem, isSelected) {
+                return ListTile(
+                  title: Text(valueItem.label.toString()),
+                  // subtitle: Text(valueItem.value.toString()),
+                  trailing: isSelected
+                      ? const Icon(Icons.check_circle)
+                      : const Icon(Icons.radio_button_unchecked),
+                );
+              },
+            ),
+            Wrap(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    _controller.setSelectedOptions([
+                      // Skill(name: 'Git'),
+                      // Skill(name: 'WebScrape'),
+                      ValueItem(label: 'Git', value: 'Git'),
+                      ValueItem(label: 'WebScrape', value: 'WebScrape'),
+                    ]);
+                    setState(() {
+                      _selectedOptions.addAll(_controller.selectedOptions);
+                    });
+                  },
+                  child: const Text('CLEAR'),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedOptions.clear();
+                      _selectedOptions.addAll(_controller.selectedOptions);
+                    });
+                  },
+                  child: const Text('Get Selected Options'),
+                ),
+              ],
+            ),
+            Text(
+              'Selected Options: $_selectedOptions',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class ProjectInput extends StatefulWidget {
@@ -22,12 +145,17 @@ class ProjectInput extends StatefulWidget {
 }
 
 class _ProjectInputState extends State<ProjectInput> {
-  final _schoolTypes = ['Primary', 'Secondary', 'High School', 'University'];
-  final _schools = <Map<String, String>>[];
-
+  // Necessary
   final _formKey = GlobalKey<FormState>();
-  String _schoolType = 'Primary';
-  String _schoolName = '';
+  final _projects = <Map<String, dynamic>>[];
+  String _projectName = '';
+  String _projectDescription = '';
+
+  final MultiSelectController<String> _controller = MultiSelectController();
+
+  final List<ValueItem<String>> _selectedOptions = [];
+
+  // Can be reused
 
   int currentYear = DateTime.now().year;
   List<int> yearList = [];
@@ -38,158 +166,463 @@ class _ProjectInputState extends State<ProjectInput> {
   }
 
   int startYear = DateTime.now().year;
+  int startMonth = DateTime.now().month;
   int endYear = DateTime.now().year;
+  int endMonth = DateTime.now().month;
 
-  void _addSchool() {
+  void _addProject() {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Projects'),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                DropdownButton<String>(
-                  value: _schoolType,
-                  onChanged: (String? newValue) {
-                    _schoolType = newValue!;
-                  },
-                  items: _schoolTypes
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-                TextFormField(
-                  onChanged: (value) => _schoolName = value,
-                  decoration: const InputDecoration(
-                    labelText: 'School Name',
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              contentPadding: const EdgeInsets.all(16),
+              title: const Text('Add Project'),
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // School Name
+                        TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              _projectName = value;
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'Project Name',
+                          ),
+                        ),
+
+                        // School Brief Description
+                        TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              _projectDescription = value;
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'Project Description',
+                          ),
+                          minLines: 3,
+                          maxLines: 5,
+                        ),
+
+                        // Start time
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Start Time',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                DropdownButton<int>(
+                                  value: startMonth,
+                                  onChanged: (int? newValue) {
+                                    setState(() {
+                                      startMonth = newValue!;
+                                    });
+                                  },
+                                  items: List<int>.generate(
+                                          12,
+                                          (i) =>
+                                              i +
+                                              1) // generates a list of 12 months
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                    return DropdownMenuItem<int>(
+                                      value: value,
+                                      child: Text(value.toString()),
+                                    );
+                                  }).toList(),
+                                ),
+                                DropdownButton<int>(
+                                  value: startYear,
+                                  onChanged: (int? newValue) {
+                                    if (newValue! <= endYear) {
+                                      setState(() {
+                                        startYear = newValue;
+                                      });
+                                    }
+                                  },
+                                  items: yearList
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                    return DropdownMenuItem<int>(
+                                      value: value,
+                                      child: Text(value.toString()),
+                                    );
+                                  }).toList(),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        // End time
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'End Time',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                DropdownButton<int>(
+                                  value: endMonth,
+                                  onChanged: (int? newValue) {
+                                    setState(() {
+                                      endMonth = newValue!;
+                                    });
+                                  },
+                                  items: List<int>.generate(
+                                          12,
+                                          (i) =>
+                                              i +
+                                              1) // generates a list of 12 months
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                    return DropdownMenuItem<int>(
+                                      value: value,
+                                      child: Text(value.toString()),
+                                    );
+                                  }).toList(),
+                                ),
+                                DropdownButton<int>(
+                                  value: endYear,
+                                  onChanged: (int? newValue) {
+                                    if (newValue! >= startYear) {
+                                      setState(() {
+                                        endYear = newValue;
+                                      });
+                                    }
+                                  },
+                                  items: yearList
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                    return DropdownMenuItem<int>(
+                                      value: value,
+                                      child: Text(value.toString()),
+                                    );
+                                  }).toList(),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        // Skillset
+                        Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 0, top: 20),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Skillset',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    MultiSelectDropDown<String>(
+                                      controller: _controller,
+                                      clearIcon: const Icon(Icons.reddit),
+                                      onOptionSelected: (options) {},
+                                      options: [
+                                        Skill(name: 'iOS Development'),
+                                        Skill(name: 'C'),
+                                        Skill(name: 'Java'),
+                                        Skill(name: 'Kubernetes'),
+                                        Skill(name: 'PostgreSQL'),
+                                        Skill(name: 'Redis'),
+                                        Skill(name: 'Android'),
+                                        Skill(name: 'Node.js'),
+                                        Skill(name: 'Objective-C'),
+                                        Skill(name: 'React Native'),
+                                        Skill(name: 'Microservices'),
+                                        Skill(name: 'Socket.io'),
+                                        Skill(name: 'AWS'),
+                                        Skill(name: 'React'),
+                                        Skill(name: 'Git'),
+                                        Skill(name: 'WebScrape'),
+                                      ]
+                                          .map((skill) => ValueItem<String>(
+                                              label: skill.name,
+                                              value: skill.name))
+                                          .toList(),
+                                      // maxItems: 4,
+                                      singleSelectItemStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                      chipConfig: const ChipConfig(
+                                          wrapType: WrapType.wrap,
+                                          backgroundColor: Colors.blue),
+                                      optionTextStyle:
+                                          const TextStyle(fontSize: 16),
+                                      selectedOptionIcon: const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.pink,
+                                      ),
+                                      searchEnabled: true,
+                                      selectedOptionBackgroundColor:
+                                          Colors.grey.shade300,
+                                      selectedOptionTextColor: Colors.blue,
+                                      dropdownMargin: 2,
+                                      onOptionRemoved: (index, option) {},
+                                      optionBuilder:
+                                          (context, valueItem, isSelected) {
+                                        return ListTile(
+                                          title:
+                                              Text(valueItem.label.toString()),
+                                          // subtitle: Text(valueItem.value.toString()),
+                                          trailing: isSelected
+                                              ? const Icon(Icons.check_circle)
+                                              : const Icon(
+                                                  Icons.radio_button_unchecked),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Start Year',
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      child: DropdownButton<int>(
-                        value: startYear,
-                        onChanged: (int? newValue) {
-                          startYear = newValue!;
-                        },
-                        items: yearList.map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'End Year',
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      child: DropdownButton<int>(
-                        value: endYear,
-                        onChanged: (int? newValue) {
-                          endYear = newValue!;
-                          setState(() {
-                            endYear = newValue;
-                          });
-                        },
-                        items: yearList.map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      DateTime startDate = DateTime(startYear, startMonth);
+                      DateTime endDate = DateTime(endYear, endMonth);
+                      int durationInMonths = endDate.month -
+                          startDate.month +
+                          12 * (endDate.year - startDate.year) +
+                          1;
+                      setState(() {
+                        _selectedOptions.clear();
+                        _selectedOptions.addAll(_controller.selectedOptions);
+                      });
+                      this.setState(() {
+                        _projects.add({
+                          'name': _projectName,
+                          'description': _projectDescription,
+                          'time': '$startMonth/$startYear - $endMonth/$endYear',
+                          'duration': durationInMonths.toString(),
+                          'skillset': _selectedOptions,
+                        });
+                        print(_projects);
+                        // _controller.clearAllSelection();
+                        // setState(() {
+                        //   _selectedOptions.clear();
+                        // });
+                      });
+                      // setState(() {
+                      //   _controller.clearAllSelection();
+                      //   _selectedOptions.clear();
+                      //   _selectedOptions.addAll(_controller.selectedOptions);
+                      // });
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('Save'),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  setState(() {
-                    _schools.add({
-                      'type': _schoolType,
-                      'name': _schoolName,
-                      'time': '$startYear - $endYear',
-                    });
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
   }
 
+  void _deleteProject(int index) {
+    setState(() {
+      _projects.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 10, top: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Projects',
-                  style: TextStyle(
-                    fontSize: 15,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10, top: 20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Projects',
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
                   ),
                 ),
               ),
-            ),
-            IconButton(
-              onPressed: _addSchool,
-              icon: const Icon(Icons.add_outlined),
-            ),
-          ],
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: _schools.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(_schools[index]['name']!),
-              subtitle: Text(
-                  '${_schools[index]['type']} - ${_schools[index]['time']}'),
-            );
-          },
-        ),
-      ],
+              IconButton(
+                onPressed: _addProject,
+                icon: const Icon(Icons.add_outlined),
+              ),
+            ],
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: _projects.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Project name
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 0, top: 10),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Project: ${_projects[index]['name']}',
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: _addProject,
+                              icon: const Icon(Icons.edit_rounded),
+                              iconSize: 18,
+                            ),
+                            IconButton(
+                              onPressed: () => _deleteProject(index),
+                              icon: const Icon(Icons.delete_rounded),
+                              iconSize: 18,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    // Project time and duration
+                    Text(
+                      '${_projects[index]['time']}, ${_projects[index]['duration']} months',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Project description
+                    Text(
+                      '${_projects[index]['description']}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+
+                    // Skillset
+                    Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 0, top: 20),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Skillset',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MultiSelectDropDown<String>(
+                                  // controller: _controller,
+                                  clearIcon: const Icon(Icons.reddit),
+                                  onOptionSelected: (options) {},
+                                  options: _projects[index]['skillset'],
+                                  selectedOptions: _projects[index]['skillset'],
+                                  // maxItems: 4,
+                                  singleSelectItemStyle: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  chipConfig: const ChipConfig(
+                                      wrapType: WrapType.wrap,
+                                      backgroundColor: Colors.blue),
+                                  optionTextStyle:
+                                      const TextStyle(fontSize: 16),
+                                  selectedOptionIcon: const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.pink,
+                                  ),
+                                  searchEnabled: true,
+                                  selectedOptionBackgroundColor:
+                                      Colors.grey.shade300,
+                                  selectedOptionTextColor: Colors.blue,
+                                  dropdownMargin: 2,
+                                  onOptionRemoved: (index, option) {},
+                                  optionBuilder:
+                                      (context, valueItem, isSelected) {
+                                    return ListTile(
+                                      title: Text(valueItem.label.toString()),
+                                      // subtitle: Text(valueItem.value.toString()),
+                                      trailing: isSelected
+                                          ? const Icon(Icons.check_circle)
+                                          : const Icon(
+                                              Icons.radio_button_unchecked),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    const Divider(color: Colors.black, thickness: 2),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -207,57 +640,6 @@ class StudentProfileExperiencePage extends StatefulWidget {
 }
 
 class StudentProfileInputState extends State<StudentProfileExperiencePage> {
-  static final List<Skill> _skills = [
-    Skill(id: 1, name: 'iOS Development'),
-    Skill(id: 2, name: 'C'),
-    Skill(id: 3, name: 'Java'),
-    Skill(id: 4, name: 'Kubernetes'),
-    Skill(id: 5, name: 'PostgreSQL'),
-    Skill(id: 6, name: 'Redis'),
-    Skill(id: 7, name: 'Android'),
-    Skill(id: 8, name: 'Node.js'),
-    Skill(id: 9, name: 'Objective-C'),
-    Skill(id: 10, name: 'React Native'),
-    Skill(id: 11, name: 'Microservices'),
-    Skill(id: 12, name: 'Socket.io'),
-    Skill(id: 13, name: 'AWS'),
-    Skill(id: 14, name: 'React'),
-    Skill(id: 15, name: 'Git'),
-    Skill(id: 16, name: 'WebScrape'),
-    // Add all your skills here
-  ];
-
-  final _items = _skills
-      .map((skill) => MultiSelectItem<Skill>(skill, skill.name))
-      .toList();
-
-  final List<Skill> _selectedSkills = [];
-  final _multiSelectKey = GlobalKey<FormFieldState>();
-
-  final _languages = [
-    'English',
-    'Spanish',
-    'French',
-    'German',
-    'Chinese',
-    'Japanese',
-    'Korean',
-    'Russian',
-    'Arabic',
-    'Portuguese',
-    'Italian',
-    'Dutch',
-    'Turkish',
-    'Polish',
-    'Swedish',
-    'Danish',
-    'Vietnamese',
-    // Add all your languages here
-  ].map((language) => MultiSelectItem<String>(language, language)).toList();
-
-  final List<String> _selectedLanguages = [];
-  final String _selectedProficiency = 'Beginner';
-
   AppBar appBar(BuildContext context) {
     return AppBar(
       title: const Text('StudentHub'),
@@ -317,26 +699,26 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
                     ],
                   ),
 
-                  // const ProjectInput(),
+                  const ProjectInput(),
 
                   // Skillset
-                  const Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10, top: 20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Skillset',
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                      MutiselectDropdown()
-                    ],
-                  ),
+                  // const Column(
+                  //   children: [
+                  //     Padding(
+                  //       padding: EdgeInsets.only(bottom: 10, top: 20),
+                  //       child: Align(
+                  //         alignment: Alignment.centerLeft,
+                  //         child: Text(
+                  //           'Skillset',
+                  //           style: TextStyle(
+                  //             fontSize: 15,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     SkillsetDropdown()
+                  //   ],
+                  // ),
 
                   // Continue button
                   Padding(
@@ -354,7 +736,7 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const WelcomeScreen()));
+                                            const StudentProfileCVScreen()));
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(

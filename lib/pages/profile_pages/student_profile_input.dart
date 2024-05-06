@@ -21,11 +21,16 @@ class EducationInput extends StatefulWidget {
 }
 
 class _EducationInputState extends State<EducationInput> {
-  final _schoolTypes = ['Primary', 'Secondary', 'High School', 'University'];
+  final _schoolTypes = [
+    'Primary School',
+    'Secondary School',
+    'High School',
+    'University'
+  ];
   final _schools = <Map<String, String>>[];
 
   final _formKey = GlobalKey<FormState>();
-  String _schoolType = 'Primary';
+  String _schoolType = 'Primary School';
   String _schoolName = '';
   int currentYear = DateTime.now().year;
   List<int> yearList = [];
@@ -203,9 +208,9 @@ class _EducationInputState extends State<EducationInput> {
           itemCount: _schools.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(_schools[index]['name']!),
-              subtitle: Text(
-                  '${_schools[index]['type']} - ${_schools[index]['time']}'),
+              title: Text(
+                  '${_schools[index]['name']!} - ${_schools[index]['type']}'),
+              subtitle: Text('${_schools[index]['time']}'),
             );
           },
         ),
