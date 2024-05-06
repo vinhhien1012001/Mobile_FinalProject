@@ -1,8 +1,10 @@
+import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/project/repos/project_repository.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 part 'project_state.dart';
 
@@ -16,6 +18,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<GetProjectById>(_getProjectById);
     on<DeleteProject>(_deleteProject);
     on<UpdateProject>(_updateProject);
+    on<GetProjectsByProjectIds>(_getProjectsByProjectIds);
   }
 
   Future<void> _getProject(GetProject event, Emitter<ProjectState> emit) async {
@@ -43,7 +46,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     try {
       final projects =
           await projectRepository.getProjectsByCompanyId(event.companyId);
-      emit(ProjectLoadSuccess(projects: projects));
+      emit(MyProjectLoadSuccess(projects: projects));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }
@@ -53,7 +56,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       GetProjectById event, Emitter<ProjectState> emit) async {
     try {
       final project = await projectRepository.getProjectById(event.projectId);
-      emit(ProjectLoadingDone(projectId: event.projectId));
+      emit(ProjectLoadingDone(project: project));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }
@@ -77,6 +80,17 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
           event.projectId, event.updatedProject);
       final projects = await projectRepository.getProjects();
       emit(ProjectLoadSuccess(projects: projects));
+    } catch (error) {
+      emit(ProjectOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _getProjectsByProjectIds(
+      GetProjectsByProjectIds event, Emitter<ProjectState> emit) async {
+    try {
+      final projects =
+          await projectRepository.getProjectsByProjectIds(event.projectIds);
+      emit(ProjectsByIdsLoadingDone(projects: projects));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

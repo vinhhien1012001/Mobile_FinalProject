@@ -22,7 +22,6 @@ enum ProjectAction {
 
 class ProjectWidgets {
   static Widget buildProjectList(List<Project> projects) {
-    log("projects.toString() ${projects.toString()}");
     return ListView.builder(
       itemCount: projects.length,
       itemBuilder: (context, index) {
@@ -55,6 +54,7 @@ class ProjectWidgets {
     return Text(
       title,
       style: const TextStyle(
+        color: Colors.blueAccent,
         fontSize: 18,
         fontWeight: FontWeight.bold,
       ),

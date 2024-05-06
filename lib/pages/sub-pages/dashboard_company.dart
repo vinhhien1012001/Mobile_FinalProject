@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
+import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/post_jobs_step.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
@@ -16,6 +18,17 @@ class DashboardCompany extends StatefulWidget {
 }
 
 class _DashboardCompanyState extends State<DashboardCompany> {
+  @override
+  void initState() {
+    super.initState();
+    final userProfileState = context.read<UserProfileBloc>().state;
+    final companyId = userProfileState.userProfile.company?.id;
+    if (companyId != null) {
+      BlocProvider.of<ProjectBloc>(context)
+          .add(GetProjectsByCompanyId(companyId: '$companyId'));
+    }
+  }
+
   List<Project> projects = [];
   @override
   Widget build(BuildContext context) {
@@ -26,10 +39,9 @@ class _DashboardCompanyState extends State<DashboardCompany> {
         log('RoleBloc listener: $state');
         return BlocBuilder<ProjectBloc, ProjectState>(
           builder: (context, state) {
-            if (state is ProjectLoadSuccess) {
+            if (state is MyProjectLoadSuccess) {
               projects = state.projects;
             }
-
             return Padding(
               padding: const EdgeInsets.all(20),
               child: Column(

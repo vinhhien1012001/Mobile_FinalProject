@@ -55,3 +55,12 @@ class UpdateProject extends ProjectEvent {
   @override
   List<Object?> get props => [projectId, updatedProject];
 }
+
+class GetProjectsByProjectIds extends ProjectEvent {
+  final List<String> projectIds;
+
+  const GetProjectsByProjectIds({required this.projectIds});
+
+  @override
+  List<Object?> get props => [projectIds];
+}

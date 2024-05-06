@@ -13,7 +13,6 @@ class AuthServices {
     try {
       final res = await http.post(Uri.https(baseURL, '/api/auth/sign-in'),
           body: {'email': email, 'password': password});
-      log(res.body);
       if (res.statusCode == 201) {
         final resBody = jsonDecode(res.body)['result']['token'];
         final jwtToken = resBody;

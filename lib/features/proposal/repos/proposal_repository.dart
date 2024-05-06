@@ -40,7 +40,6 @@ class ProposalRepository {
 
   Future<Map<String, dynamic>> submitProposal(
       String projectId, String coverLetter, String studentId) async {
-    log('submitProposal');
     final newwProposal = await httpService.request(
       method: RequestMethod.post,
       url: '$baseUrl/proposal',

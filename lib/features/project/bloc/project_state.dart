@@ -1,6 +1,6 @@
 part of 'project_bloc.dart';
 
-abstract class ProjectState extends Equatable {
+abstract class ProjectState {
   const ProjectState();
 
   @override
@@ -13,6 +13,15 @@ class ProjectLoadSuccess extends ProjectState {
   final List<Project> projects;
 
   const ProjectLoadSuccess({required this.projects});
+
+  @override
+  List<Object?> get props => [projects];
+}
+
+class MyProjectLoadSuccess extends ProjectState {
+  final List<Project> projects;
+
+  const MyProjectLoadSuccess({required this.projects});
 
   @override
   List<Object?> get props => [projects];
@@ -37,9 +46,17 @@ class ProjectDeleteSuccess extends ProjectState {
 }
 
 class ProjectLoadingDone extends ProjectState {
-  final String projectId;
-  const ProjectLoadingDone({required this.projectId});
+  final Project project;
+  const ProjectLoadingDone({required this.project});
 
   @override
-  List<Object?> get props => [projectId];
+  List<Object?> get props => [project];
+}
+
+class ProjectsByIdsLoadingDone extends ProjectState {
+  final List<Project> projects;
+  const ProjectsByIdsLoadingDone({required this.projects});
+
+  @override
+  List<Object?> get props => [projects];
 }

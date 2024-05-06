@@ -32,10 +32,10 @@ class HttpService {
           response = await client.get(uri, headers: headers);
           break;
         case RequestMethod.post:
-          log(body.toString());
+          log("Body before call: ${body.toString()}");
           response =
               await client.post(uri, body: jsonEncode(body), headers: headers);
-          log("response.body: ${response.body}");
+          log("Response.body after call: ${response.body}");
           break;
         case RequestMethod.put:
           response =
@@ -49,15 +49,13 @@ class HttpService {
               await client.patch(uri, body: jsonEncode(body), headers: headers);
           break;
       }
-      log(response.body);
 
       if (response.statusCode > 400) {
-        log(response.body);
         throw Exception('Error: Http status ${response.statusCode}');
       }
       return jsonDecode(response.body);
     } catch (e) {
-      log(e.toString());
+      log("Error roi`: ${e.toString()}");
       rethrow;
     }
   }

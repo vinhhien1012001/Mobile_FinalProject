@@ -39,7 +39,7 @@ class ProjectRepository {
   }
 
   Future<List<Project>> getProjectsByCompanyId(String companyId) async {
-    log('Getting projects by company ID');
+    log('Getting projects by company ID; $companyId');
     final response = await httpService.request(
       method: RequestMethod.get,
       url: '$baseUrl/project/company/$companyId',
@@ -47,6 +47,7 @@ class ProjectRepository {
     final projects = (response['result'] as List)
         .map((json) => Project.fromJson(json))
         .toList();
+    log('projects ne`: $projects');
     return projects;
   }
 
@@ -74,5 +75,18 @@ class ProjectRepository {
       url: '$baseUrl/project/$projectId',
       body: updatedProject.toJson(),
     );
+  }
+
+  Future<List<Project>> getProjectsByProjectIds(List<String> projectIds) async {
+    log('Getting projects by project IDs');
+    List<Project> projects = [];
+    for (var projectId in projectIds) {
+      final response = await httpService.request(
+        method: RequestMethod.get,
+        url: '$baseUrl/project/$projectId',
+      );
+      projects.add(Project.fromJson(response['result']));
+    }
+    return projects;
   }
 }

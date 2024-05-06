@@ -48,7 +48,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    log('didChangeDependencies');
     final userProfileState = context.read<UserProfileBloc>().state;
     final companyId = userProfileState.userProfile.company?.id;
     log("companyId.toString(): ${companyId.toString()}");
@@ -67,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final userProfileState = context.read<UserProfileBloc>().state;
-    log('userProfileState.userProfile.roles: ${userProfileState.userProfile}');
+    // log('userProfileState.userProfile.roles: ${userProfileState.userProfile}');
     final companyId = userProfileState.userProfile.company?.id;
     return BlocBuilder<RoleBloc, RoleState>(
       builder: (context, state) {
