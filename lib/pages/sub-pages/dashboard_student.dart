@@ -15,6 +15,11 @@ class StudentDashboardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserProfileBloc userProfileBloc =
         BlocProvider.of<UserProfileBloc>(context);
+    final List<Proposal> proposals =
+        userProfileBloc.state.userProfile.student!.proposals;
+    final List<Proposal> activeProposals = proposals
+        .where((element) => element.statusFlag == 1)
+        .toList(); // Filter active proposals
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       BlocProvider.of<ProjectBloc>(context).add(GetProjectsByStudentId(
           studentId: userProfileBloc.state.userProfile.student!.id,
@@ -61,6 +66,8 @@ class StudentDashboardContent extends StatelessWidget {
                     children: [
                       Column(
                         children: [
+                          _buildActiveProposalBox(
+                              context, activeProposals.length),
                           Expanded(
                             child: BlocConsumer<ProjectBloc, ProjectState>(
                               listener: (context, state) {}, // Consume here
@@ -68,8 +75,7 @@ class StudentDashboardContent extends StatelessWidget {
                                 if (state is GetProjectByStudentIdDone &&
                                     state.typeFlag.contains(0) &&
                                     state.typeFlag.contains(1) &&
-                                    state.typeFlag.contains(2) &&
-                                    state.projects.isNotEmpty) {
+                                    state.typeFlag.contains(2)) {
                                   final projects = state.projects;
                                   return ListView.builder(
                                     itemCount: projects.length,
@@ -150,6 +156,33 @@ class StudentDashboardContent extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActiveProposalBox(BuildContext context, int count) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0), // Add margins
+      width: double.infinity, // Expand to full width
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding:
+            const EdgeInsets.fromLTRB(16, 16, 16, 8), // Adjust inner padding
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Active Proposals heading with count
+            Text(
+              'Active Proposals ($count)',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

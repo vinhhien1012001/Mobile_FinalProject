@@ -17,24 +17,25 @@ class Project extends Equatable {
   final int? countProposals;
   final int? countMessages;
   final int? countHired;
+  final bool? isFavorite;
 
-  const Project({
-    this.id,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-    this.companyId,
-    this.projectScopeFlag,
-    this.title,
-    this.numberOfStudents,
-    this.description,
-    this.typeFlag,
-    this.proposals,
-    this.companyName,
-    this.countProposals,
-    this.countMessages,
-    this.countHired,
-  });
+  const Project(
+      {this.id,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt,
+      this.companyId,
+      this.projectScopeFlag,
+      this.title,
+      this.numberOfStudents,
+      this.description,
+      this.typeFlag,
+      this.proposals,
+      this.companyName,
+      this.countProposals,
+      this.countMessages,
+      this.countHired,
+      this.isFavorite});
 
   factory Project.fromJson(Map<String, dynamic> json) {
     // Parse the list of proposals
@@ -47,20 +48,21 @@ class Project extends Equatable {
 
     return Project(
       id: json['id'] ?? json['projectId'] ?? 0,
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      deletedAt: json['deletedAt'],
-      companyId: json['companyId'],
+      createdAt: json['createdAt'] ?? json['createdAt'],
+      updatedAt: json['updatedAt'] ?? json['updatedAt'],
+      deletedAt: json['deletedAt'] ?? json['deletedAt'],
+      companyId: json['companyId'] ?? json['companyId'],
       projectScopeFlag: json['projectScopeFlag'],
       title: json['title'],
-      numberOfStudents: json['numberOfStudents'],
-      description: json['description'],
+      numberOfStudents: json['numberOfStudents'] ?? json['numberOfStudents'],
+      description: json['description'] ?? json['description'],
       typeFlag: json['typeFlag'],
       proposals: proposals,
       companyName: json['companyName'],
       countProposals: json['countProposals'],
       countMessages: json['countMessages'],
       countHired: json['countHired'],
+      isFavorite: json['isFavorite'],
     );
   }
 
@@ -71,7 +73,6 @@ class Project extends Equatable {
       'title': title,
       'numberOfStudents': numberOfStudents,
       'description': description,
-      // Other fields as needed
     };
   }
 
