@@ -68,7 +68,8 @@ class StudentDashboardContent extends StatelessWidget {
                                 if (state is GetProjectByStudentIdDone &&
                                     state.typeFlag.contains(0) &&
                                     state.typeFlag.contains(1) &&
-                                    state.typeFlag.contains(2)) {
+                                    state.typeFlag.contains(2) &&
+                                    state.projects.isNotEmpty) {
                                   final projects = state.projects;
                                   return ListView.builder(
                                     itemCount: projects.length,
