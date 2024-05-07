@@ -60,3 +60,13 @@ class ProjectsByIdsLoadingDone extends ProjectState {
   @override
   List<Object?> get props => [projects];
 }
+
+class GetProjectByStudentIdDone extends ProjectState {
+  final List<Project> projects;
+  final List<int> typeFlag;
+  const GetProjectByStudentIdDone(
+      {required this.projects, required this.typeFlag});
+
+  @override
+  List<Object?> get props => [projects];
+}

@@ -19,6 +19,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  @override
   int _selectedIndex = 1;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -109,8 +110,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             builder: (context, projectState) {
               return Scaffold(
                 appBar: const CustomAppBar(),
-                body: Center(
-                  child: _widgetOptions.elementAt(_selectedIndex),
+                body: IndexedStack(
+                  index: _selectedIndex,
+                  children: _widgetOptions,
                 ),
                 bottomNavigationBar: BottomNavigationBar(
                   items: const <BottomNavigationBarItem>[

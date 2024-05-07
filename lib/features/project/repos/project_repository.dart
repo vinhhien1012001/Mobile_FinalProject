@@ -89,4 +89,22 @@ class ProjectRepository {
     }
     return projects;
   }
+
+  Future<List<Project>> getProjectsByStudentId(
+      int studentId, List<int> typeFlag) async {
+    log('Getting projects by student ID');
+    List<Project> projects = [];
+    for (var type in typeFlag) {
+      final response = await httpService.request(
+        method: RequestMethod.get,
+        url: '$baseUrl/project/student/$studentId?typeFlag=$type',
+      );
+      projects = (response['result'] as List)
+          .map((json) => Project.fromJson(json))
+          .toList();
+    }
+    log('projects by studentId ne`: $projects');
+    log('TypeFlag ne`: $typeFlag');
+    return projects;
+  }
 }

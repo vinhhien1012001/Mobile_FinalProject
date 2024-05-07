@@ -64,3 +64,14 @@ class GetProjectsByProjectIds extends ProjectEvent {
   @override
   List<Object?> get props => [projectIds];
 }
+
+class GetProjectsByStudentId extends ProjectEvent {
+  final int studentId;
+  final List<int> typeFlag;
+
+  const GetProjectsByStudentId(
+      {required this.studentId, required this.typeFlag});
+
+  @override
+  List<Object?> get props => [studentId, typeFlag];
+}

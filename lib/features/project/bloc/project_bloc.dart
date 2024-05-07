@@ -19,6 +19,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<DeleteProject>(_deleteProject);
     on<UpdateProject>(_updateProject);
     on<GetProjectsByProjectIds>(_getProjectsByProjectIds);
+    on<GetProjectsByStudentId>(_getProjectsByStudentId);
   }
 
   Future<void> _getProject(GetProject event, Emitter<ProjectState> emit) async {
@@ -91,6 +92,18 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       final projects =
           await projectRepository.getProjectsByProjectIds(event.projectIds);
       emit(ProjectsByIdsLoadingDone(projects: projects));
+    } catch (error) {
+      emit(ProjectOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _getProjectsByStudentId(
+      GetProjectsByStudentId event, Emitter<ProjectState> emit) async {
+    try {
+      final projects = await projectRepository.getProjectsByStudentId(
+          event.studentId, event.typeFlag);
+      emit(GetProjectByStudentIdDone(
+          projects: projects, typeFlag: event.typeFlag));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }
