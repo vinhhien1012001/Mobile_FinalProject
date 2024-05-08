@@ -5,6 +5,7 @@ import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
+import 'package:final_project_mobile/pages/sub-pages/message.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/post_jobs_step.dart';
 import 'package:final_project_mobile/pages/sub-pages/project_student.dart';
@@ -78,10 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _widgetOptions = <Widget>[
             const ProjectStudentContent(),
             dashboardContent(), // Display dashboard content
-            const Text(
-              'Index 2: Message',
-              style: optionStyle,
-            ),
+            const MessagePage(),
             const Text(
               'Index 3: Alerts',
               style: optionStyle,
@@ -91,10 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _widgetOptions = <Widget>[
             const ProjectStudentContent(),
             studentDashboardContent(),
-            const Text(
-              'Index 2: Message',
-              style: optionStyle,
-            ),
+            const MessagePage(),
             const Text(
               'Index 3: Alerts',
               style: optionStyle,
@@ -132,7 +127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.notifications),
-                      label: 'Alerts',
+                      label: 'Notification',
                     ),
                   ],
                   currentIndex: _selectedIndex,
@@ -279,8 +274,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       border: Border.all(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(
                                           left: 16,
                                           top: 16,
                                           right: 16,
