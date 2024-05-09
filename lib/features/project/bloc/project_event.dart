@@ -75,3 +75,25 @@ class GetProjectsByStudentId extends ProjectEvent {
   @override
   List<Object?> get props => [studentId, typeFlag];
 }
+
+class GetFavoriteProjectsByStudentId extends ProjectEvent {
+  final int studentId;
+
+  const GetFavoriteProjectsByStudentId({required this.studentId});
+
+  @override
+  List<Object?> get props => [studentId];
+}
+
+class UpdateFavoriteProject extends ProjectEvent {
+  final int studentId;
+  final int projectId;
+  final int disableFlag;
+  const UpdateFavoriteProject(
+      {required this.studentId,
+      required this.projectId,
+      required this.disableFlag});
+
+  @override
+  List<Object?> get props => [studentId, projectId, disableFlag];
+}

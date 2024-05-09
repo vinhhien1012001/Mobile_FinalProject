@@ -70,3 +70,21 @@ class GetProjectByStudentIdDone extends ProjectState {
   @override
   List<Object?> get props => [projects];
 }
+
+class FavoriteProjectsLoadSuccess extends ProjectState {
+  final List<Project> projects;
+
+  const FavoriteProjectsLoadSuccess({required this.projects});
+
+  @override
+  List<Object?> get props => [projects];
+}
+
+class FavoriteProjectUpdateSuccess extends ProjectState {
+  final int projectId;
+  final bool disableFlag;
+  const FavoriteProjectUpdateSuccess({required this.projectId, required this.disableFlag});
+
+  @override
+  List<Object?> get props => [projectId];
+}

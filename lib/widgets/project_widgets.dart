@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
+import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:toastification/toastification.dart';
 
 // Import the project detail screen
@@ -41,8 +44,10 @@ class ProjectWidgets {
             title: project.title!,
             created: project.createdAt!,
             proposals: project.countProposals!,
-            messages: project.numberOfStudents!,
+            messages: project.countMessages ?? 0,
             hired: project.countHired ?? 0,
+            description: project.description!,
+            isFavorite: project.isFavorite ?? true,
             context: context,
           ),
         );
@@ -69,7 +74,11 @@ class ProjectWidgets {
     required int hired,
     required int projectId,
     required BuildContext context,
+    required String description,
+    required bool isFavorite,
   }) {
+    String createdAt = DateFormat('dd/MM/yyyy').format(DateTime.parse(created));
+    final userProfile = context.read<UserProfileBloc>().state.userProfile;
     return BlocListener<ProjectBloc, ProjectState>(
       listener: (context, state) {
         if (state is ProjectDeleteSuccess &&
@@ -99,12 +108,33 @@ class ProjectWidgets {
                 children: [
                   Expanded(
                     child: Text(
-                      title,
+                      title.toUpperCase(),
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.w500,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
                     ),
+                  ),
+                  IconButton(
+                    icon: isFavorite
+                        ? const Icon(
+                            Icons.favorite_border,
+                            color: Colors.redAccent,
+                          )
+                        : const Icon(Icons.favorite_border),
+                    onPressed: () {
+                      BlocProvider.of<ProjectBloc>(context).add(
+                        UpdateFavoriteProject(
+                          studentId: userProfile.student!.id,
+                          projectId: projectId,
+                          disableFlag: isFavorite ? 1 : 0,
+                        ),
+                      );
+                    },
                   ),
                   PopupMenuButton<ProjectAction>(
                     onSelected: (ProjectAction result) {
@@ -114,7 +144,6 @@ class ProjectWidgets {
                               DeleteProject(projectId: projectId.toString()));
                           break;
                         case ProjectAction.editPosting:
-                          // Handle delete project
                           break;
                         default:
                       }
@@ -138,30 +167,32 @@ class ProjectWidgets {
                 ],
               ),
               Text(
-                'Created $created',
+                'Created $createdAt',
                 style: const TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 10),
               const Text(
-                'Student are looking for',
+                'Project description: ',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 20),
+                    padding: const EdgeInsets.only(left: 0),
                     child: Column(
                       children: [
                         Text(
-                          '• Clear expectations about your project or deliverables',
-                        ),
-                        Text(
-                          '• Clear expectations about your project or deliverables',
-                        ),
-                        Text(
-                          '• Clear expectations about your project or deliverables',
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                          description.toCapitalized(),
+                          textAlign: TextAlign.justify,
+                          maxLines: 4,
+                          locale: const Locale('vi', 'VN'),
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),

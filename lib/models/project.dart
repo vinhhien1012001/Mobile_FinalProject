@@ -17,9 +17,9 @@ class Project extends Equatable {
   final int? countProposals;
   final int? countMessages;
   final int? countHired;
-  final bool? isFavorite;
+  bool? isFavorite;
 
-  const Project(
+  Project(
       {this.id,
       this.createdAt,
       this.updatedAt,

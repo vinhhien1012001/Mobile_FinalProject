@@ -136,4 +136,32 @@ class ProjectRepository {
     log('TypeFlag ne`: $typeFlag');
     return projects;
   }
+
+  Future<List<Project>> getFavoriteProjectsByStudentID(int studentId) async {
+    log('Getting favorite projects for student ID: $studentId');
+    final response = await httpService.request(
+      method: RequestMethod.get,
+      url: '$baseUrl/favoriteProject/$studentId',
+    );
+    final projects = (response['result'] as List)
+        .map((json) => Project.fromJson(json))
+        .toList();
+    log('Favorite projects: $projects');
+    return projects;
+  }
+
+  Future<void> updateFavoriteProject(
+      int studentId, int projectId, int disableFlag) async {
+    log('Updating favorite project for student ID: $studentId');
+    final body = {
+      'projectId': projectId,
+      'disableFlag': disableFlag,
+    };
+    await httpService.request(
+      method: RequestMethod.patch,
+      url: '$baseUrl/favoriteProject/$studentId',
+      body: body,
+    );
+    log('Favorite project updated successfully');
+  }
 }

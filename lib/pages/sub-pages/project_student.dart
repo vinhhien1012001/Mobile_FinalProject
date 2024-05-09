@@ -231,6 +231,15 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
           projects = state.projects;
           filteredProjects.addAll(projects);
         }
+        if (state is ProjectDeleteSuccess) {
+          filteredProjects
+              .removeWhere((project) => "${project.id}" == state.projectId);
+        }
+        if (state is FavoriteProjectUpdateSuccess ){
+          filteredProjects.where((element) => element.id == state.projectId).forEach((element) {
+            element.isFavorite = !state.disableFlag;
+          });
+        }
         return Padding(
           padding: const EdgeInsets.all(20),
           child: Column(

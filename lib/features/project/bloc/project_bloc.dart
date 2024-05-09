@@ -20,6 +20,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<UpdateProject>(_updateProject);
     on<GetProjectsByProjectIds>(_getProjectsByProjectIds);
     on<GetProjectsByStudentId>(_getProjectsByStudentId);
+    on<UpdateFavoriteProject>(_updateFavoriteProject);
+    on<GetFavoriteProjectsByStudentId>(_getFavoriteProjectsByStudentId);
   }
 
   Future<void> _getProject(GetProject event, Emitter<ProjectState> emit) async {
@@ -104,6 +106,28 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
           event.studentId, event.typeFlag);
       emit(GetProjectByStudentIdDone(
           projects: projects, typeFlag: event.typeFlag));
+    } catch (error) {
+      emit(ProjectOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _updateFavoriteProject(
+      UpdateFavoriteProject event, Emitter<ProjectState> emit) async {
+    try {
+      await projectRepository.updateFavoriteProject(
+          event.studentId, event.projectId, event.disableFlag);
+      emit(FavoriteProjectUpdateSuccess(projectId: event.projectId, disableFlag: event.disableFlag == 1 ? true : false));
+    } catch (error) {
+      emit(ProjectOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _getFavoriteProjectsByStudentId(
+      GetFavoriteProjectsByStudentId event, Emitter<ProjectState> emit) async {
+    try {
+      final projects = await projectRepository
+          .getFavoriteProjectsByStudentID(event.studentId);
+      emit(FavoriteProjectsLoadSuccess(projects: projects));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

@@ -6,7 +6,7 @@ class UserProfile extends Equatable {
     required this.id,
     required this.fullname,
     required this.roles,
-    this.company, // Add company field
+    this.company, // Declare company field
     this.student,
   });
 
