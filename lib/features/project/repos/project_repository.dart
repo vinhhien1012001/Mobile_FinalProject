@@ -144,7 +144,7 @@ class ProjectRepository {
       url: '$baseUrl/favoriteProject/$studentId',
     );
     final projects = (response['result'] as List)
-        .map((json) => Project.fromJson(json))
+        .map((item) => Project.fromJson(item['project']))
         .toList();
     log('Favorite projects: $projects');
     return projects;

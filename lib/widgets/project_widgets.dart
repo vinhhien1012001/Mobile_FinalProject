@@ -41,7 +41,7 @@ class ProjectWidgets {
           },
           child: ProjectWidgets.buildProjectCard(
             projectId: project.id!,
-            title: project.title!,
+            title: project.title ?? '',
             created: project.createdAt!,
             proposals: project.countProposals!,
             messages: project.countMessages ?? 0,

@@ -11,6 +11,7 @@ class Project extends Equatable {
   final String? title;
   final int? numberOfStudents;
   final String? description;
+  final int? status;
   final int? typeFlag;
   final List<Proposal>? proposals;
   final String? companyName;
@@ -30,6 +31,7 @@ class Project extends Equatable {
       this.numberOfStudents,
       this.description,
       this.typeFlag,
+      this.status,
       this.proposals,
       this.companyName,
       this.countProposals,
@@ -57,6 +59,7 @@ class Project extends Equatable {
       numberOfStudents: json['numberOfStudents'] ?? json['numberOfStudents'],
       description: json['description'] ?? json['description'],
       typeFlag: json['typeFlag'],
+      status: json['status'],
       proposals: proposals,
       companyName: json['companyName'],
       countProposals: json['countProposals'],

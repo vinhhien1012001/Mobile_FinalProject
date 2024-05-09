@@ -2,7 +2,7 @@ import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project_mobile/pages/saved_project.dart';
+import 'package:final_project_mobile/pages/favorite_project.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part "../../widgets/search_bar.dart";
@@ -46,11 +46,11 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
     });
   }
 
-  void _onSavedProjectsClicked() {
+  void _onFavoriteProjectsClicked() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SavedProjectScreen(),
+        builder: (context) => FavoriteProjectsScreen(),
       ),
     );
   }
@@ -235,8 +235,10 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
           filteredProjects
               .removeWhere((project) => "${project.id}" == state.projectId);
         }
-        if (state is FavoriteProjectUpdateSuccess ){
-          filteredProjects.where((element) => element.id == state.projectId).forEach((element) {
+        if (state is FavoriteProjectUpdateSuccess) {
+          filteredProjects
+              .where((element) => element.id == state.projectId)
+              .forEach((element) {
             element.isFavorite = !state.disableFlag;
           });
         }
@@ -246,7 +248,7 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
             children: [
               SearchBar(
                 onChanged: _onSearchTextChanged,
-                onFavoritePressed: _onSavedProjectsClicked,
+                onFavoritePressed: _onFavoriteProjectsClicked,
                 isFilterApplied: isFilterApplied,
                 isTyping: _isTyping,
                 onFilterPressed: _showFilterModal,
