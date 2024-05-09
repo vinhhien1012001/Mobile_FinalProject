@@ -50,7 +50,7 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FavoriteProjectsScreen(),
+        builder: (context) => const FavoriteProjectsScreen(),
       ),
     );
   }

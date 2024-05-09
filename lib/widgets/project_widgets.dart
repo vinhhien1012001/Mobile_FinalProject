@@ -48,6 +48,8 @@ class ProjectWidgets {
             hired: project.countHired ?? 0,
             description: project.description!,
             isFavorite: project.isFavorite ?? true,
+            numberOfStudent: project.numberOfStudents ?? 0,
+            projectScopeFlag: project.projectScopeFlag ?? 0,
             context: context,
           ),
         );
@@ -76,6 +78,8 @@ class ProjectWidgets {
     required BuildContext context,
     required String description,
     required bool isFavorite,
+    required int projectScopeFlag,
+    required int numberOfStudent,
   }) {
     String createdAt = DateFormat('dd/MM/yyyy').format(DateTime.parse(created));
     final userProfile = context.read<UserProfileBloc>().state.userProfile;
@@ -171,6 +175,31 @@ class ProjectWidgets {
                 style: const TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Icon(Icons.people),
+                  const SizedBox(width: 10),
+                  Text(
+                    '$numberOfStudent',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(width: 30),
+                  const Icon(Icons.access_time),
+                  const SizedBox(width: 5),
+                  Text(
+                    // '${projectScopeFlag == 0 ? 'Public' : 'Private'}',
+                    switch (projectScopeFlag) {
+                      0 => 'Less than one month',
+                      1 => 'One to three months',
+                      2 => 'Three to sixth months',
+                      3 => 'More than six months',
+                      int() => 'Unknown',
+                    },
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
               const Text(
                 'Project description: ',
                 style: TextStyle(fontWeight: FontWeight.bold),

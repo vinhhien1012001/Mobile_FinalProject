@@ -17,6 +17,10 @@ class FavoriteProjectsScreen extends StatefulWidget {
 }
 
 class _FavoriteProjectsScreenState extends State<FavoriteProjectsScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  List<Project> _filteredProjects = [];
+  List<Project> _allProjects = [];
+
   @override
   void initState() {
     super.initState();
@@ -27,33 +31,57 @@ class _FavoriteProjectsScreenState extends State<FavoriteProjectsScreen> {
         GetFavoriteProjectsByStudentId(studentId: userProfile.student!.id));
   }
 
-  final List<Project> allProjects = [];
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProjectBloc, ProjectState>(
       builder: (context, state) {
         if (state is FavoriteProjectsLoadSuccess) {
-          log('FavoriteProjectsLoadSuccess, projects: ${state.projects}');
-          allProjects.addAll(state.projects);
+          _allProjects = state.projects;
+          _filteredProjects = _allProjects;
+          log('FavoriteProjectsLoadSuccess, projects: $_filteredProjects');
         }
         if (state is FavoriteProjectUpdateSuccess) {
-          allProjects.removeWhere((element) => element.id == state.projectId);
+          _allProjects.removeWhere((element) => element.id == state.projectId);
+          _filteredProjects = _allProjects;
         }
         return Scaffold(
-            appBar: const CustomAppBar(),
-            body: Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Expanded(
-                    // Pass filtered projects to buildProjectList method
-                    child: ProjectWidgets.buildProjectList(allProjects),
+          appBar: const CustomAppBar(),
+          body: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _searchController,
+                  onChanged: _filterProjects,
+                  decoration: const InputDecoration(
+                    hintText: 'Search projects',
+                    prefixIcon: Icon(Icons.search),
                   ),
-                ],
-              ),
-            ));
+                ),
+                Expanded(
+                  child: ProjectWidgets.buildProjectList(_filteredProjects),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
+  }
+
+  void _filterProjects(String query) {
+    setState(() {
+      _filteredProjects = _allProjects
+          .where((project) =>
+              project.title!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void _searchPressed(BuildContext context) {
+    setState(() {
+      _searchController.text = '';
+      _filteredProjects = _allProjects;
+    });
   }
 }
