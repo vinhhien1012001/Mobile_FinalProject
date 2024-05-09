@@ -43,7 +43,7 @@ class ProjectWidgets {
             projectId: project.id!,
             title: project.title ?? '',
             created: project.createdAt!,
-            proposals: project.countProposals!,
+            proposalsCount: project.countProposals!,
             messages: project.countMessages ?? 0,
             hired: project.countHired ?? 0,
             description: project.description!,
@@ -71,7 +71,7 @@ class ProjectWidgets {
   static Widget buildProjectCard({
     required String title,
     required String created,
-    required int proposals,
+    required int proposalsCount,
     required int messages,
     required int hired,
     required int projectId,
@@ -232,7 +232,7 @@ class ProjectWidgets {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ProjectWidgets.buildStatusColumn('Proposals', proposals),
+                  ProjectWidgets.buildStatusColumn('Proposals', proposalsCount),
                   ProjectWidgets.buildStatusColumn('Messages', messages),
                   ProjectWidgets.buildStatusColumn('Hired', hired),
                 ],
