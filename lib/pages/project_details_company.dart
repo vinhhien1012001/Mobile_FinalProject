@@ -1,13 +1,12 @@
 import 'package:final_project_mobile/models/project.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:final_project_mobile/pages/project_detail_student.dart';
+import 'package:final_project_mobile/widgets/project_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ProjectDetailsCompany extends StatefulWidget {
   final Project project;
 
-  const ProjectDetailsCompany({Key? key, required this.project})
-      : super(key: key);
+  const ProjectDetailsCompany({super.key, required this.project});
 
   @override
   State<ProjectDetailsCompany> createState() => _ProjectDetailsCompanyState();
@@ -16,10 +15,12 @@ class ProjectDetailsCompany extends StatefulWidget {
 class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  Project? project;
 
   @override
   void initState() {
     super.initState();
+    project = widget.project;
     _tabController = TabController(length: 4, vsync: this);
   }
 
@@ -33,11 +34,16 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        automaticallyImplyLeading: true,
+        title: const Text('StudentHub'),
+        centerTitle: false,
+        backgroundColor: Colors.blue,
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
-            Tab(text: 'Proposal'),
+          tabs: const [
+            Tab(
+              text: 'Proposal',
+            ),
             Tab(text: 'Details'),
             Tab(text: 'Message'),
             Tab(text: 'Hired'),
@@ -72,9 +78,27 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                 ],
               ),
             ),
-            Center(child: Text('Details Tab')),
-            Center(child: Text('Message Tab')),
-            Center(child: Text('Hired Tab')),
+            Column(
+              children: [
+                // Center(
+                //   child: ProjectWidgets.buildProjectCard(
+                //       title: project?.title ?? '',
+                //       created: project?.createdAt ?? '',
+                //       proposalsCount: project?.countProposals ?? 0,
+                //       messages: project?.countMessages ?? 0,
+                //       hired: project?.countHired ?? 0,
+                //       projectId: project?.id ?? 0,
+                //       context: context,
+                //       description: project?.description ?? '',
+                //       isFavorite: project?.isFavorite ?? true,
+                //       projectScopeFlag: project?.projectScopeFlag ?? 0,
+                //       numberOfStudent: project?.numberOfStudents ?? 0),
+                // ),
+                BuildProjectDetails(project: project ?? Project()),
+              ],
+            ),
+            const Center(child: Text('Message Tab')),
+            const Center(child: Text('Hired Tab')),
           ],
         ),
       ),
@@ -83,7 +107,7 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
 }
 
 class StudentProfileCard extends StatelessWidget {
-  const StudentProfileCard({Key? key});
+  const StudentProfileCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +118,7 @@ class StudentProfileCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Image widget
@@ -114,7 +138,7 @@ class StudentProfileCard extends StatelessWidget {
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5),
                     Text('Number of years student'),
                   ],
                 ),
@@ -124,7 +148,7 @@ class StudentProfileCard extends StatelessWidget {
             const Divider(),
             // Job title and Level
             const SizedBox(height: 10),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(

@@ -7,12 +7,95 @@ import 'package:final_project_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+class BuildProjectDetails extends StatelessWidget {
+  final Project project;
+
+  const BuildProjectDetails({
+    required this.project,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Project details',
+          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8.0),
+        Text("Job title: ${project.title}"),
+        const SizedBox(height: 8.0),
+        const Divider(),
+        const SizedBox(height: 8.0),
+        const Text(
+          'Students are looking for:',
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 4.0),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              project.description != null
+                  ? project.description!
+                  : 'No description',
+            ),
+          ],
+        ),
+        const Divider(),
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(Icons.alarm),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Project scope:'),
+                      project.projectScopeFlag == 1
+                          ? const Text(' • 1 to 3 months')
+                          : const Text('  • 3 to 6 months'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(Icons.people),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Student required:'),
+                      Text('  • ${project.numberOfStudents} students'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class ProjectDetailsStudent extends StatefulWidget {
   final Project project;
+
   const ProjectDetailsStudent({
-    super.key,
+    Key? key,
     required this.project,
-  });
+  }) : super(key: key);
+
   @override
   State<ProjectDetailsStudent> createState() => _ProjectDetailsStudentState();
 }
@@ -40,72 +123,9 @@ class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Project details',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  "Job title: ${projectDetails.title}",
-                ),
-                const SizedBox(height: 8.0),
-                const Divider(),
-                const SizedBox(height: 8.0),
-                const Text(
-                  'Students are looking for:',
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    projectDetails.description != null
-                        ? Text(
-                            projectDetails.description!,
-                          )
-                        : const Text('No description'),
-                  ],
-                ),
-                const Divider(),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Icon(Icons.alarm),
-                        const SizedBox(width: 12.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Project scope:'),
-                              projectDetails.projectScopeFlag == 1
-                                  ? const Text(' • 1 to 3 months')
-                                  : const Text('  • 3 to 6 months'),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Icon(Icons.people),
-                        const SizedBox(width: 12.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Student required:'),
-                              Text(
-                                  '  • ${projectDetails.numberOfStudents} students'),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                BuildProjectDetails(
+                    project:
+                        projectDetails), // Use the BuildProjectDetails widget here
                 const Spacer(
                   flex: 1,
                 ),
