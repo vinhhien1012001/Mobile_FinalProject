@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
+import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
+import 'package:final_project_mobile/pages/project_details_company.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,33 +27,46 @@ enum ProjectAction {
 
 class ProjectWidgets {
   static Widget buildProjectList(List<Project> projects) {
-    return ListView.builder(
-      itemCount: projects.length,
-      itemBuilder: (context, index) {
-        final project = projects[index];
-        return GestureDetector(
-          onTap: () {
-            // Navigate to project detail screen when clicked
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ProjectDetailsStudent(project: project)),
+    return BlocBuilder<RoleBloc, RoleState>(
+      builder: (context, state) {
+        return ListView.builder(
+          itemCount: projects.length,
+          itemBuilder: (context, index) {
+            final project = projects[index];
+            return GestureDetector(
+              onTap: () {
+                // Navigate to project detail screen when clicked
+                if (state is RoleSelected && state.roleId == 0) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ProjectDetailsStudent(project: project)),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ProjectDetailsCompany(project: project)),
+                  );
+                }
+              },
+              child: ProjectWidgets.buildProjectCard(
+                projectId: project.id!,
+                title: project.title ?? '',
+                created: project.createdAt!,
+                proposalsCount: project.countProposals!,
+                messages: project.countMessages ?? 0,
+                hired: project.countHired ?? 0,
+                description: project.description!,
+                isFavorite: project.isFavorite ?? true,
+                numberOfStudent: project.numberOfStudents ?? 0,
+                projectScopeFlag: project.projectScopeFlag ?? 0,
+                context: context,
+              ),
             );
           },
-          child: ProjectWidgets.buildProjectCard(
-            projectId: project.id!,
-            title: project.title ?? '',
-            created: project.createdAt!,
-            proposalsCount: project.countProposals!,
-            messages: project.countMessages ?? 0,
-            hired: project.countHired ?? 0,
-            description: project.description!,
-            isFavorite: project.isFavorite ?? true,
-            numberOfStudent: project.numberOfStudents ?? 0,
-            projectScopeFlag: project.projectScopeFlag ?? 0,
-            context: context,
-          ),
         );
       },
     );
