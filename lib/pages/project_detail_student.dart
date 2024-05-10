@@ -21,65 +21,98 @@ class BuildProjectDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Project details',
-          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          'Project Details',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8.0),
-        Text("Job title: ${project.title}"),
-        const SizedBox(height: 8.0),
+        Text("Job Title: ${project.title}"),
+        const SizedBox(height: 16.0),
         const Divider(),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 16.0),
         const Text(
           'Students are looking for:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4.0),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              project.description != null
-                  ? project.description!
-                  : 'No description',
+              project.description ?? 'No description',
+              style: const TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey,
+              ),
             ),
           ],
         ),
+        const SizedBox(height: 16.0),
         const Divider(),
-        Column(
+        const SizedBox(height: 16.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.alarm),
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Project scope:'),
-                      project.projectScopeFlag == 1
-                          ? const Text(' • 1 to 3 months')
-                          : const Text('  • 3 to 6 months'),
-                    ],
+            const Icon(Icons.alarm),
+            const SizedBox(width: 12.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 14.0),
+                  const Text(
+                    'Project Scope:',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                  Text(
+                    project.projectScopeFlag == 1
+                        ? ' • 1 to 3 months'
+                        : ' • 3 to 6 months',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.people),
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Student required:'),
-                      Text('  • ${project.numberOfStudents} students'),
-                    ],
+          ],
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(Icons.people),
+            const SizedBox(width: 12.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 14.0),
+                  const Text(
+                    'Student Required:',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                  Text(
+                    ' • ${project.numberOfStudents} students',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -92,9 +125,9 @@ class ProjectDetailsStudent extends StatefulWidget {
   final Project project;
 
   const ProjectDetailsStudent({
-    Key? key,
+    super.key,
     required this.project,
-  }) : super(key: key);
+  });
 
   @override
   State<ProjectDetailsStudent> createState() => _ProjectDetailsStudentState();

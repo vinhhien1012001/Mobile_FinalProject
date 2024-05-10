@@ -89,7 +89,7 @@ class _PostJobStepScreenState extends State<PostJobStepScreen> {
                           ),
                         if (currentStep == 4)
                           CustomButton(
-                            text: 'Post Job $companyId',
+                            text: 'Post Job',
                             onPressed: () {
                               Project project = Project(
                                 companyId: "$companyId",
@@ -174,13 +174,14 @@ class StepOne extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildHeaderText("Let's start with a strong title"),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 16.0),
         _buildDescriptionText(
-            "This helps your posts stand out to the right student. It's the first thing they'll see, so make it impressive."),
-        const SizedBox(height: 8.0),
+          "This helps your posts stand out to the right student. It's the first thing they'll see, so make it impressive.",
+        ),
+        const SizedBox(height: 16.0),
         _buildTextField('Write a title for your post here',
             onChanged: onTitleChanged),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 16.0),
         _buildExampleTitles(),
       ],
     );
@@ -189,12 +190,21 @@ class StepOne extends StatelessWidget {
   Widget _buildHeaderText(String text) {
     return Text(
       text,
-      style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+      style: const TextStyle(
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+        color: Colors.blue, // Custom color
+      ),
     );
   }
 
   Widget _buildDescriptionText(String text) {
-    return Text(text);
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Colors.grey, // Custom color
+      ),
+    );
   }
 
   Widget _buildTextField(String hintText, {ValueChanged<String?>? onChanged}) {
@@ -202,28 +212,49 @@ class StepOne extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
+        filled: true,
+        fillColor: Colors.white, // Custom color
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
       ),
     );
   }
 
   Widget _buildExampleTitles() {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Example titles:',
-          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue, // Custom color
+          ),
         ),
-        SizedBox(height: 4.0),
+        const SizedBox(height: 8.0),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('- Build responsive'),
-            Text('- Build interactive'),
-            Text('- Design beautiful'),
+            _buildExampleTitle('- Build responsive'),
+            _buildExampleTitle('- Build interactive'),
+            _buildExampleTitle('- Design beautiful'),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildExampleTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.green, // Custom color
+        ),
+      ),
     );
   }
 }
@@ -250,53 +281,89 @@ class StepTwoState extends State<StepTwo> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Next, estimate the scope of your job',
-          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+        const Padding(
+          padding: EdgeInsets.only(bottom: 16.0),
+          child: Text(
+            'Estimate the Scope of Your Job',
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
         ),
-        const SizedBox(height: 8.0),
         const Text(
           'Consider the size of your project and the timeline.',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Colors.grey,
+          ),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 24.0),
         const Text(
           'How long will your project take?',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 4.0),
-        DropdownButton<String>(
-          value: _selectedDuration,
-          onChanged: (value) {
-            setState(() {
-              _selectedDuration = value;
-            });
-            widget.onDurationChanged?.call(value);
-          },
-          items: const [
-            DropdownMenuItem<String>(
-              value: '1-3',
-              child: Text('1 to 3 months'),
-            ),
-            DropdownMenuItem<String>(
-              value: '3-6',
-              child: Text('3 to 6 months'),
-            ),
-          ],
-          hint: const Text('Select duration'),
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8.0),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(color: Colors.blue, width: 2.0),
+          ),
+          child: DropdownButton<String>(
+            value: _selectedDuration,
+            onChanged: (value) {
+              setState(() {
+                _selectedDuration = value;
+              });
+              widget.onDurationChanged?.call(value);
+            },
+            items: const [
+              DropdownMenuItem<String>(
+                value: '1-3',
+                child: Text('1 to 3 months'),
+              ),
+              DropdownMenuItem<String>(
+                value: '3-6',
+                child: Text('3 to 6 months'),
+              ),
+            ],
+            hint: const Text('Select duration'),
+            dropdownColor: Colors.white,
+            icon: const Icon(
+              Icons.arrow_drop_down,
+              color: Colors.blue,
+            ),
+            underline: const SizedBox(), // Remove the default underline
+          ),
+        ),
+        const SizedBox(height: 24.0),
         const Text(
           'How many students do you want for this project?',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(height: 4.0),
+        const SizedBox(height: 8.0),
         TextField(
-          decoration:
-              const InputDecoration(labelText: "Enter number of students"),
+          decoration: InputDecoration(
+            labelText: "Enter number of students",
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
-          ], // Only numbers can be entered
+            FilteringTextInputFormatter.digitsOnly,
+          ],
           onChanged: widget.onNumStudentsChanged,
         ),
       ],
@@ -306,7 +373,11 @@ class StepTwoState extends State<StepTwo> {
 
 class StepThree extends StatefulWidget {
   final void Function(String?)? onProjectDescriptionChanged;
-  const StepThree({super.key, required this.onProjectDescriptionChanged});
+
+  const StepThree({
+    super.key,
+    required this.onProjectDescriptionChanged,
+  });
 
   @override
   StepThreeState createState() => StepThreeState();
@@ -314,6 +385,7 @@ class StepThree extends StatefulWidget {
 
 class StepThreeState extends State<StepThree> {
   String? _projectDescription;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -321,32 +393,65 @@ class StepThreeState extends State<StepThree> {
       children: [
         const Text(
           'Next, provide project description',
-          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
         ),
         const SizedBox(height: 8.0),
         const Text(
           'Students are looking for:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4.0),
         const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('- Clear expectations about your project or deliverables'),
-            Text('- The skills required for your project'),
-            Text('- Details about your project'),
+            Text(
+              '- Clear expectations about your project or deliverables',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.grey,
+              ),
+            ),
+            Text(
+              '- The skills required for your project',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.grey,
+              ),
+            ),
+            Text(
+              '- Details about your project',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.grey,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 8.0),
         const Text(
           'Describe your project:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4.0),
         TextField(
           maxLines: null,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Enter project description',
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
           ),
           onChanged: (value) {
             setState(() {
@@ -380,34 +485,42 @@ class StepFour extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Project details',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          'Project Details',
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
         ),
         const SizedBox(height: 8.0),
         Text(
-          'Job title: $title',
-          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+          'Job Title: $title',
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        // const SizedBox(height: 8.0),
-        // Text(
-        //   'Duration: $duration',
-        // ),
-        // const SizedBox(height: 8.0),
-        // Text(
-        //   'Number of students: $numStudents',
-        // ),
         const SizedBox(height: 16.0),
         const Divider(),
         const SizedBox(height: 16.0),
         const Text(
           'Students are looking for:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4.0),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(projectDescription),
+            Text(
+              projectDescription,
+              style: const TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 16.0),
@@ -418,19 +531,25 @@ class StepFour extends StatelessWidget {
             const Icon(Icons.alarm),
             const SizedBox(width: 8.0),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 24.0),
-                  child: const Text('Project Scope'),
+                const SizedBox(height: 16.0),
+                const Text(
+                  'Project Scope',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(left: 32.0),
-                  child: duration == '1-3'
-                      ? const Text(' • 1 to 3 months')
-                      : const Text(' • 3 to 6 months'),
+                Text(
+                  duration == '1-3' ? ' • 1 to 3 months' : ' • 3 to 6 months',
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
-            )
+            ),
           ],
         ),
         const SizedBox(height: 8.0),
@@ -439,17 +558,25 @@ class StepFour extends StatelessWidget {
             const Icon(Icons.people),
             const SizedBox(width: 8.0),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 12.0),
-                  child: const Text('Student required'),
+                const SizedBox(height: 16.0),
+                const Text(
+                  'Student Required',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(left: 24.0),
-                  child: Text(' • $numStudents students'),
+                Text(
+                  ' • $numStudents students',
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ],

@@ -179,7 +179,7 @@ class ProjectWidgets {
                       ),
                       const PopupMenuItem<ProjectAction>(
                         value: ProjectAction.addToFavorite,
-                        child: Text('Add to favorite'),
+                        child: Text('Start working on this project'),
                       ),
                     ],
                   ),
