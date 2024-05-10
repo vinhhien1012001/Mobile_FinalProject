@@ -26,8 +26,9 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
   Future<void> _getProject(GetProject event, Emitter<ProjectState> emit) async {
     try {
-      final projects = await projectRepository.getProjects();
-      emit(ProjectLoadSuccess(projects: projects));
+      final projects =
+          await projectRepository.getProjects(pageNumber: event.page);
+      emit(ProjectLoadSuccess(projects: projects, currentPage: event.page));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }
@@ -38,7 +39,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     try {
       await projectRepository.createProject(event.project);
       final projects = await projectRepository.getProjects();
-      emit(ProjectLoadSuccess(projects: projects));
+      emit(ProjectLoadSuccess(projects: projects, currentPage: 1));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }
@@ -82,7 +83,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       await projectRepository.updateProject(
           event.projectId, event.updatedProject);
       final projects = await projectRepository.getProjects();
-      emit(ProjectLoadSuccess(projects: projects));
+      emit(ProjectLoadSuccess(projects: projects, currentPage: 1));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }
@@ -116,7 +117,9 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     try {
       await projectRepository.updateFavoriteProject(
           event.studentId, event.projectId, event.disableFlag);
-      emit(FavoriteProjectUpdateSuccess(projectId: event.projectId, disableFlag: event.disableFlag == 1 ? true : false));
+      emit(FavoriteProjectUpdateSuccess(
+          projectId: event.projectId,
+          disableFlag: event.disableFlag == 1 ? true : false));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

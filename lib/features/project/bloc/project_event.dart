@@ -8,7 +8,14 @@ abstract class ProjectEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetProject extends ProjectEvent {}
+class GetProject extends ProjectEvent {
+  final int page; // New parameter for page number
+
+  const GetProject({required this.page}); // Default value of 1 for page number
+
+  @override
+  List<Object> get props => [page];
+}
 
 class CreateProject extends ProjectEvent {
   final Project project;

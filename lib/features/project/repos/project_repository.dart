@@ -12,21 +12,23 @@ class ProjectRepository {
     httpService = HttpService();
   }
 
-  Future<List<Project>> getProjects(
-      {int? pageNumber = 1,
-      int? perPage = 10,
-      int? proposalsLessThan = 1000,
-      int? numberOfStudents,
-      int? projectScopeFlag,
-      String? title}) async {
+  Future<List<Project>> getProjects({
+    int? pageNumber,
+    int perPage = 10, // Set a default value of 10 for perPage
+    int? proposalsLessThan,
+    int? numberOfStudents,
+    int? projectScopeFlag,
+    String? title,
+  }) async {
     log('Getting projects');
+    log('Getting PageNumber: $pageNumber');
     // Construct the base URL
     String url = '$baseUrl/project';
 
     // Add query parameters if provided
-    if (pageNumber != null && perPage != null) {
-      url += '?page=$pageNumber&perPage=$perPage';
-    }
+    url +=
+        '?page=$pageNumber&perPage=$perPage'; // Include pageNumber and perPage in the URL
+
     if (proposalsLessThan != null) {
       url += '&proposalsLessThan=$proposalsLessThan';
     }
@@ -46,9 +48,7 @@ class ProjectRepository {
       method: RequestMethod.get,
       url: url,
     );
-    log('projects 1 here: $response');
     List<dynamic> _projects = (response['result'] as List);
-    log('projects 1.1 here: $_projects');
     final projects = (response['result'] as List)
         .map((json) => Project.fromJson(json))
         .toList();
