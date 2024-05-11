@@ -6,6 +6,7 @@ import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/sub-pages/message.dart';
+import 'package:final_project_mobile/pages/sub-pages/notification.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/post_jobs_step.dart';
 import 'package:final_project_mobile/pages/sub-pages/project_student.dart';
@@ -76,24 +77,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return BlocBuilder<RoleBloc, RoleState>(
       builder: (context, state) {
         if (state.roleId == 1) {
+          // Company role
           _widgetOptions = <Widget>[
             const ProjectStudentContent(),
             dashboardContent(), // Display dashboard content
             const MessagePage(),
-            const Text(
-              'Index 3: Alerts',
-              style: optionStyle,
-            ),
+            const NotificationPage(),
           ];
         } else {
+          // Student role
           _widgetOptions = <Widget>[
             const ProjectStudentContent(),
             studentDashboardContent(),
             const MessagePage(),
-            const Text(
-              'Index 3: Alerts',
-              style: optionStyle,
-            ),
+            const NotificationPage(),
           ];
         }
         return BlocListener<ProjectBloc, ProjectState>(

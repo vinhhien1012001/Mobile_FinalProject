@@ -1,6 +1,12 @@
-part of 'default_bloc.dart';
+import 'package:equatable/equatable.dart';
 
-@immutable
-abstract class DefaultEvent {}
+abstract class DefaultEvent extends Equatable {
+  const DefaultEvent();
 
-class FetchAllTechStackEvent extends DefaultEvent {}
+  @override
+  List<Object> get props => [];
+}
+
+class GetAllTechStack extends DefaultEvent {}
+
+class GetAllSkillSet extends DefaultEvent {}
