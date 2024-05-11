@@ -79,6 +79,15 @@ class SkillSet {
       name: json['name'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'name': name,
+    };
+  }
 }
 
 class TechStack {

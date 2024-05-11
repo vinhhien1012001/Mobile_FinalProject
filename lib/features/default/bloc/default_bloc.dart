@@ -12,6 +12,7 @@ class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
       : super(DefaultInitial()) {
     on<GetAllTechStack>(_fetchAllTechStack);
     on<GetAllSkillSet>(_fetchAllSkillSet);
+    on<UpdateProfile>(_updateProfile);
   }
 
   Future<void> _fetchAllTechStack(
@@ -29,6 +30,17 @@ class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
     try {
       final skillsets = await defaultRepository.getSkillSet();
       emit(SkillSetLoadSuccess(skillsets: skillsets));
+    } catch (error) {
+      emit(DefaultOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _updateProfile(
+      UpdateProfile event, Emitter<DefaultState> emit) async {
+    try {
+      await defaultRepository.updateProfile(
+          event.studentId, event.techStackId, event.skillSets);
+      emit(UpdateProfileSuccess());
     } catch (error) {
       emit(DefaultOperationFailure(error: error.toString()));
     }
