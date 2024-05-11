@@ -1,16 +1,25 @@
+import 'dart:developer';
+
+import 'package:final_project_mobile/features/default/bloc/default_bloc.dart';
+import 'package:final_project_mobile/features/default/bloc/default_event.dart';
+import 'package:final_project_mobile/models/student.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_experiences.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:final_project_mobile/widgets/custom_multiselect.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class Skill {
-  final int id;
   final String name;
+  final int id;
 
-  Skill({
-    required this.id,
-    required this.name,
-  });
+  Skill({required this.name, required this.id});
+
+  @override
+  String toString() {
+    return 'Skill(name: $name, id: $id)';
+  }
 }
 
 class EducationInput extends StatefulWidget {
@@ -400,10 +409,6 @@ class _LanguageInputState extends State<LanguageInput> {
   }
 }
 
-void main() {
-  runApp(const StudentProfileInputPage());
-}
-
 class StudentProfileInputPage extends StatefulWidget {
   const StudentProfileInputPage({super.key});
 
@@ -412,6 +417,23 @@ class StudentProfileInputPage extends StatefulWidget {
 }
 
 class StudentProfileInputState extends State<StudentProfileInputPage> {
+  List<TechStack> techStacks = [];
+  List<String?> techStackNames = [];
+  List<SkillSet> skillSets = [];
+  List<Skill> skillSetOptions = [];
+
+  final MultiSelectController<Skill> _controller = MultiSelectController();
+  final List<ValueItem> _selectedOptions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
+      BlocProvider.of<DefaultBloc>(context).add(GetAllSkillSet());
+    });
+  }
+
   AppBar appBar(BuildContext context) {
     return AppBar(
       title: const Text('StudentHub'),
@@ -434,150 +456,224 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(context),
-      body: Center(
-        child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const Text(
-                    'Welcome to Student Hub',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+    return BlocBuilder<DefaultBloc, DefaultState>(builder: (context, state) {
+      if (state is DefaultLoadSuccess) {
+        techStacks = state.stacks;
+        // techStackNames = techStacks.map((techStack) => techStack.name).toList()
+        //     as List<String>;
+        print('default load success');
+        if (techStacks.isNotEmpty) {
+          techStackNames = techStacks
+              .map((techStack) => techStack.name)
+              .where((name) => name != null)
+              .toList()
+              .cast<String>();
+        }
+      }
+      if (state is SkillSetLoadSuccess) {
+        skillSets = state.skillsets;
+        // techStackNames = techStacks.map((techStack) => techStack.name).toList()
+        //     as List<String>;
+        print('skillSets: $skillSets');
+        skillSetOptions = skillSets
+            .map((item) => Skill(name: item.name!, id: item.id!))
+            .toList();
+
+        print('skillSetOptions: $skillSetOptions');
+      }
+
+      return Scaffold(
+        appBar: appBar(context),
+        body: Center(
+          child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const Text(
+                      'Welcome to Student Hub',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10, top: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Tell us about your self and you will be on your way connect with real-world project',
-                              style: TextStyle(
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Techstack
-                  Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 10, top: 10),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Techstack',
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                      DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                            labelText: 'Select your role'),
-                        items: <String>[
-                          'Fullstack Engineer',
-                          'Frontend Engineer',
-                          'Backend Engineer',
-                          'DevOps Engineer',
-                          'Data Scientist',
-                          'Mobile Developer',
-                          'Machine Learning Engineer',
-                          'Security Engineer',
-                          'Game Developer',
-                          'Cloud Engineer',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          // Do something with the selected value
-                        },
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select your role';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-
-                  // Skillset
-                  const Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 0, top: 20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Skillset',
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                      MutiselectDropdown()
-                    ],
-                  ),
-
-                  // Languages
-                  const LanguageInput(),
-
-                  // Education part
-                  const EducationInput(),
-
-                  // Continue button
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    const Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: SizedBox(
-                            width: 140,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const StudentProfileExperiencePage()));
-                              },
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0),
-                                  ),
+                          padding: EdgeInsets.only(bottom: 10, top: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Tell us about your self and you will be on your way connect with real-world project',
+                                style: TextStyle(
+                                  fontSize: 15,
                                 ),
-                                foregroundColor:
-                                    MaterialStateProperty.all(Colors.blue),
                               ),
-                              child: const Text('Next'),
-                            ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            )),
-      ),
-    );
+                    // Techstack
+                    Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 10, top: 10),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Techstack',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                              labelText: 'Select your role'),
+                          items: techStackNames
+                              .map<DropdownMenuItem<String>>((String? value) {
+                                // if (value == null) {
+                                //   return DropdownMenuItem<String>.empty();
+                                // }
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value!),
+                                );
+                              })
+                              .where((item) => item != null)
+                              .toList()
+                              .cast<DropdownMenuItem<String>>(),
+                          onChanged: (String? newValue) {
+                            // Do something with the selected value
+                          },
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select your role';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+
+                    // Skillset
+                    Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 0, top: 20),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Skillset',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MultiSelectDropDown<Skill>(
+                                  controller: _controller,
+                                  clearIcon: const Icon(Icons.reddit),
+                                  onOptionSelected: (options) {},
+                                  options: skillSetOptions
+                                      .map((skill) => ValueItem(
+                                          label: skill.name, value: skill))
+                                      .toList(),
+                                  // .map((skill) => ValueItem(
+                                  //     label: skill.name, value: skill))
+                                  // .toList(),
+                                  // maxItems: 4,
+                                  singleSelectItemStyle: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  chipConfig: const ChipConfig(
+                                      wrapType: WrapType.wrap,
+                                      backgroundColor: Colors.blue),
+                                  optionTextStyle:
+                                      const TextStyle(fontSize: 16),
+                                  selectedOptionIcon: const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.pink,
+                                  ),
+                                  searchEnabled: true,
+                                  selectedOptionBackgroundColor:
+                                      Colors.grey.shade300,
+                                  selectedOptionTextColor: Colors.blue,
+                                  dropdownMargin: 2,
+                                  onOptionRemoved: (index, option) {},
+                                  optionBuilder:
+                                      (context, valueItem, isSelected) {
+                                    return ListTile(
+                                      title: Text(valueItem.value!.name),
+                                      // subtitle: Text(valueItem.value.toString()),
+                                      trailing: isSelected
+                                          ? const Icon(Icons.check_circle)
+                                          : const Icon(
+                                              Icons.radio_button_unchecked),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+
+                    // Languages
+                    const LanguageInput(),
+
+                    // Education part
+                    const EducationInput(),
+
+                    // Continue button
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: SizedBox(
+                              width: 140,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const StudentProfileExperiencePage()));
+                                },
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0),
+                                    ),
+                                  ),
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.blue),
+                                ),
+                                child: const Text('Next'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+        ),
+      );
+    });
   }
 }

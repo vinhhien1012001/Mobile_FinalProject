@@ -768,7 +768,7 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const StudentProfileCVScreen()));
+                                            const WelcomeScreen()));
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(

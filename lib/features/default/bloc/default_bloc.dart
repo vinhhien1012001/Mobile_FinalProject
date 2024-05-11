@@ -1,30 +1,36 @@
-// import 'dart:async';
-// import 'dart:developer';
-
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
-// import 'package:final_project_mobile/features/proposal/repos/proposal_repository.dart';
-// import 'package:final_project_mobile/models/proposal.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-part 'default_event.dart';
+import 'package:final_project_mobile/features/default/bloc/default_event.dart';
+import 'package:final_project_mobile/features/default/repos/default_repository.dart';
+import 'package:final_project_mobile/models/student.dart';
 part 'default_state.dart';
 
 class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
-  DefaultBloc() : super(DefaultInitial()) {
-    on<FetchAllTechStackEvent>(_fetchAllTechStack);
+  final DefaultRepository defaultRepository = DefaultRepository();
+
+  DefaultBloc({required DefaultRepository repository})
+      : super(DefaultInitial()) {
+    on<GetAllTechStack>(_fetchAllTechStack);
+    on<GetAllSkillSet>(_fetchAllSkillSet);
   }
 
-  FutureOr<void> _fetchAllTechStack(
-      FetchAllTechStackEvent event, Emitter<DefaultState> emit) async {
-    // try {
-    //   final stacks = await projectRepository.getProjects();
-    //   emit(ProjectLoadSuccess(projects: projects));
-    // } catch (error) {
-    //   emit(ProjectOperationFailure(error: error.toString()));
-    // }
+  Future<void> _fetchAllTechStack(
+      GetAllTechStack event, Emitter<DefaultState> emit) async {
+    try {
+      final stacks = await defaultRepository.getTechStack();
+      emit(DefaultLoadSuccess(stacks: stacks));
+    } catch (error) {
+      emit(DefaultOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _fetchAllSkillSet(
+      GetAllSkillSet event, Emitter<DefaultState> emit) async {
+    try {
+      final skillsets = await defaultRepository.getSkillSet();
+      emit(SkillSetLoadSuccess(skillsets: skillsets));
+    } catch (error) {
+      emit(DefaultOperationFailure(error: error.toString()));
+    }
   }
 }
