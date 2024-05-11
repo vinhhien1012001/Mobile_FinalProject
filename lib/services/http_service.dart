@@ -51,7 +51,7 @@ class HttpService {
       }
 
       if (response.statusCode > 400) {
-        throw Exception('Error: Http status ${response.statusCode}');
+        throw ('${jsonDecode(response.body)['errorDetails']}');
       }
       return jsonDecode(response.body);
     } catch (e) {

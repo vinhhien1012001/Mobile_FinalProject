@@ -81,7 +81,7 @@ class ProjectRepository {
   }
 
   Future<Project> getProjectById(String projectId) async {
-    log('Getting project by ID');
+    log('Getting project by ID $projectId');
     final response = await httpService.request(
       method: RequestMethod.get,
       url: '$baseUrl/project/$projectId',

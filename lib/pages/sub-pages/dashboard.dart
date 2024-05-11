@@ -45,7 +45,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<UserProfileBloc>().add(const GetUserProfile());
+    // context.read<UserProfileBloc>().add(const GetUserProfile());
+    BlocProvider.of<UserProfileBloc>(context).add(const GetUserProfile());
   }
 
   @override

@@ -177,8 +177,8 @@ class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SubmitProposalScreen()));
+                                  builder: (context) => SubmitProposalScreen(
+                                      project: projectDetails)));
                         },
                       )
                     ],

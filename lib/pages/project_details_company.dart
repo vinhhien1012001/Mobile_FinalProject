@@ -1,12 +1,18 @@
+import 'dart:developer';
+
+import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
+import 'package:final_project_mobile/models/proposal.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
-import 'package:final_project_mobile/widgets/project_widgets.dart';
+import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProjectDetailsCompany extends StatefulWidget {
   final Project project;
 
-  const ProjectDetailsCompany({super.key, required this.project});
+  const ProjectDetailsCompany({Key? key, required this.project})
+      : super(key: key);
 
   @override
   State<ProjectDetailsCompany> createState() => _ProjectDetailsCompanyState();
@@ -16,11 +22,14 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Project? project;
+  List<Proposal> proposals = [];
 
   @override
   void initState() {
     super.initState();
     project = widget.project;
+    BlocProvider.of<ProposalBloc>(context)
+        .add(GetProposalsByProjectId(projectId: project?.id ?? 0));
     _tabController = TabController(length: 4, vsync: this);
   }
 
@@ -65,15 +74,24 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView.builder(
-                      itemCount: 10, // Example count
-                      itemBuilder: (context, index) {
-                        // Return a Student Profile Card widget
-                        return const StudentProfileCard();
-                      },
-                    ),
+                  BlocBuilder<ProposalBloc, ProposalState>(
+                    builder: (context, state) {
+                      if (state is ProposalsByProjectIdLoaded) {
+                        proposals = state.proposals;
+                        log('proposals o day: $state.proposals');
+                      }
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: ListView.builder(
+                          itemCount: proposals.length, // Example count
+                          itemBuilder: (context, index) {
+                            // Return a Student Profile Card widget
+                            return StudentProfileCard(
+                                proposal: proposals[index]);
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -106,8 +124,22 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
   }
 }
 
-class StudentProfileCard extends StatelessWidget {
-  const StudentProfileCard({super.key});
+class StudentProfileCard extends StatefulWidget {
+  StudentProfileCard({super.key, required this.proposal});
+  Proposal proposal;
+
+  @override
+  State<StudentProfileCard> createState() => _StudentProfileCardState();
+}
+
+class _StudentProfileCardState extends State<StudentProfileCard> {
+  Proposal? proposal;
+
+  @override
+  void initState() {
+    super.initState();
+    proposal = widget.proposal;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,28 +150,28 @@ class StudentProfileCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Image widget
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
                   // Replace with actual image
                   backgroundImage:
                       NetworkImage('https://via.placeholder.com/150/92c952'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 // Student name and number of years student
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Student Name',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      '${widget.proposal.student?.user?.fullName ?? 0}',
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 5),
-                    Text('Number of years student'),
+                    const SizedBox(height: 5),
+                    Text('No education yet'),
                   ],
                 ),
               ],
@@ -148,11 +180,11 @@ class StudentProfileCard extends StatelessWidget {
             const Divider(),
             // Job title and Level
             const SizedBox(height: 10),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Job title',
+                  proposal?.student?.techStack?.name ?? 'No title yet !',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -163,8 +195,9 @@ class StudentProfileCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             // Self proposal
-            const Text(
-              'Self proposal: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae felis nec tortor euismod sagittis. Cras eu arcu id urna tempor lacinia.',
+            Text(
+              proposal?.coverLetter.toString().toCapitalized() ??
+                  'No cover letter yet !',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

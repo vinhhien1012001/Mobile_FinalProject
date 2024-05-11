@@ -1,14 +1,18 @@
 part of 'proposal_bloc.dart';
 
 @immutable
-abstract class ProposalEvent {}
+abstract class ProposalEvent extends Equatable {
+  const ProposalEvent();
+  @override
+  List<Object> get props => [];
+}
 
 class SubmitProposal extends ProposalEvent {
   final String projectId;
   final String studentId;
   final String coverLetter;
 
-  SubmitProposal(
+  const SubmitProposal(
       {required this.projectId,
       required this.studentId,
       required this.coverLetter});
@@ -19,6 +23,18 @@ class UpdateProposal extends ProposalEvent {
   final String coverLetter;
   final String statusFlag;
 
-  UpdateProposal(
+  const UpdateProposal(
       {required this.id, required this.coverLetter, required this.statusFlag});
+
+  @override
+  List<Object> get props => [id, coverLetter, statusFlag];
+}
+
+class GetProposalsByProjectId extends ProposalEvent {
+  final int projectId;
+
+  const GetProposalsByProjectId({required this.projectId});
+
+  @override
+  List<Object> get props => [projectId];
 }

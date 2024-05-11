@@ -1,11 +1,31 @@
 import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
+import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toastification/toastification.dart';
 
-class SubmitProposalScreen extends StatelessWidget {
-  const SubmitProposalScreen({super.key});
+class SubmitProposalScreen extends StatefulWidget {
+  const SubmitProposalScreen({super.key, required this.project});
+  final Project project;
+
+  @override
+  State<SubmitProposalScreen> createState() => _SubmitProposalScreenState();
+}
+
+class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
+  Project? project;
+  late final UserProfileBloc userProfileBloc;
+  final TextEditingController _coverLetterController =
+      TextEditingController(); // Add text controller
+
+  @override
+  void initState() {
+    super.initState();
+    project = widget.project;
+    userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +37,7 @@ class SubmitProposalScreen extends StatelessWidget {
             type: ToastificationType.success,
             style: ToastificationStyle.flat,
             title: Text(
-                'Create proposal successfully: ${state.proposal!.coverLetter}'),
+                'Create proposal successfully with cover letter: ${state.proposal?.coverLetter}'),
             alignment: Alignment.bottomRight,
             autoCloseDuration: const Duration(seconds: 4),
             icon: const Icon(Icons.check),
@@ -61,7 +81,8 @@ class SubmitProposalScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const TextField(
+              TextField(
+                controller: _coverLetterController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Cover letter',
@@ -82,9 +103,12 @@ class SubmitProposalScreen extends StatelessWidget {
                     onPressed: () {
                       BlocProvider.of<ProposalBloc>(context).add(
                         SubmitProposal(
-                          projectId: '252',
-                          studentId: '177',
-                          coverLetter: 'DCM',
+                          projectId: project!.id.toString(),
+                          coverLetter: _coverLetterController.text,
+                          studentId: userProfileBloc
+                                  .state.userProfile.student?.id
+                                  .toString() ??
+                              '',
                         ),
                       );
                     },
@@ -97,5 +121,11 @@ class SubmitProposalScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _coverLetterController.dispose(); // Dispose the controller
+    super.dispose();
   }
 }
