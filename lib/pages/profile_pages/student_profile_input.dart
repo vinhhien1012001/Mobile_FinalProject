@@ -421,6 +421,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
   List<String?> techStackNames = [];
   List<SkillSet> skillSets = [];
   List<Skill> skillSetOptions = [];
+  TechStack? selectedTechStack;
 
   final MultiSelectController<Skill> _controller = MultiSelectController();
   final List<ValueItem> _selectedOptions = [];
@@ -462,12 +463,14 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
         // techStackNames = techStacks.map((techStack) => techStack.name).toList()
         //     as List<String>;
         print('default load success');
+        print('TECHSTACKS: $techStacks');
         if (techStacks.isNotEmpty) {
           techStackNames = techStacks
               .map((techStack) => techStack.name)
               .where((name) => name != null)
               .toList()
               .cast<String>();
+          print('TECHSTACKS NAMES: $techStackNames');
         }
       }
       if (state is SkillSetLoadSuccess) {
@@ -515,6 +518,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                         ),
                       ],
                     ),
+
                     // Techstack
                     Column(
                       children: [
@@ -530,27 +534,26 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                             ),
                           ),
                         ),
-                        DropdownButtonFormField<String>(
+                        DropdownButtonFormField<TechStack>(
                           decoration: const InputDecoration(
                               labelText: 'Select your role'),
-                          items: techStackNames
-                              .map<DropdownMenuItem<String>>((String? value) {
-                                // if (value == null) {
-                                //   return DropdownMenuItem<String>.empty();
-                                // }
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value!),
-                                );
-                              })
-                              .where((item) => item != null)
-                              .toList()
-                              .cast<DropdownMenuItem<String>>(),
-                          onChanged: (String? newValue) {
-                            // Do something with the selected value
+                          items: techStacks.map<DropdownMenuItem<TechStack>>(
+                              (TechStack value) {
+                            return DropdownMenuItem<TechStack>(
+                              value: value,
+                              child: Text(value
+                                  .name!), // assuming `name` is a property of `TechStack`
+                            );
+                          }).toList(),
+                          onChanged: (TechStack? newValue) {
+                            setState(() {
+                              selectedTechStack = newValue;
+                            });
+                            print(
+                                'Selected techstack: $selectedTechStack.name');
                           },
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
+                          validator: (TechStack? value) {
+                            if (value == null) {
                               return 'Please select your role';
                             }
                             return null;
@@ -647,6 +650,8 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                               width: 140,
                               child: ElevatedButton(
                                 onPressed: () {
+                                  print(
+                                      'Selected techstack: $selectedTechStack');
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

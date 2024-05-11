@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:final_project_mobile/models/student.dart';
@@ -34,5 +35,22 @@ class DefaultRepository {
         .map((json) => SkillSet.fromJson(json))
         .toList();
     return skillset;
+  }
+
+  Future<void> updateProfile(
+      String studentId, String techStackId, List<SkillSet> skillSets) async {
+    log('Update profile');
+    // final body<String, dynamic> = {
+    //   'techStackId': techStackId,
+    //   'skillSets': skillSets.map((skillSet) => skillSet.toJson()).toList(),
+    // };
+    await httpService.request(
+      method: RequestMethod.patch,
+      url: '$baseUrl/profile/student/$studentId',
+      body: (<String, dynamic>{
+        'techStackId': techStackId,
+        'skillSets': skillSets.map((skillSet) => skillSet.toJson()).toList(),
+      }),
+    );
   }
 }
