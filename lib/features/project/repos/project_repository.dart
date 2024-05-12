@@ -67,11 +67,16 @@ class ProjectRepository {
     return newProject;
   }
 
-  Future<List<Project>> getProjectsByCompanyId(String companyId) async {
+  Future<List<Project>> getProjectsByCompanyId(
+      String companyId, int? typeFlag) async {
     log('Getting projects by company ID; $companyId');
+    String url = '$baseUrl/project/company/$companyId';
+    if (typeFlag != null) {
+      url += '?typeFlag=$typeFlag';
+    }
     final response = await httpService.request(
       method: RequestMethod.get,
-      url: '$baseUrl/project/company/$companyId',
+      url: url,
     );
     final projects = (response['result'] as List)
         .map((json) => Project.fromJson(json))
@@ -97,13 +102,43 @@ class ProjectRepository {
     );
   }
 
+  // Can not use now
   Future<void> updateProject(String projectId, Project updatedProject) async {
     log('Updating project');
-    await httpService.request(
-      method: RequestMethod.patch,
-      url: '$baseUrl/project/$projectId',
-      body: updatedProject.toJson(),
-    );
+    final result = await httpService.request(
+        method: RequestMethod.patch,
+        url: '$baseUrl/project/$projectId',
+        body: {
+          'projectScopeFlag': updatedProject.projectScopeFlag,
+          'title': updatedProject.title,
+          'description': updatedProject.description,
+          'numberOfStudents': updatedProject.numberOfStudents,
+          'typeFlag': updatedProject.typeFlag,
+          'status': updatedProject.status,
+        });
+    log('Updated project: $result');
+  }
+
+  Future<void> startWorkingOnThisProject(
+      String projectId, Project updatedProject) async {
+    log('start working on this project');
+    final Map<String, dynamic> requestBody = {
+      'projectScopeFlag': updatedProject.projectScopeFlag,
+      'title': updatedProject.title,
+      'description': updatedProject.description,
+      'numberOfStudents': updatedProject.numberOfStudents,
+      'typeFlag': updatedProject.typeFlag,
+    };
+
+    // Conditionally include companyId if provided
+    if (updatedProject.companyId != null) {
+      requestBody['companyId'] = updatedProject.companyId!;
+    }
+    final result = await httpService.request(
+        method: RequestMethod.patch,
+        url: '$baseUrl/project/$projectId',
+        body: requestBody);
+    log('start project: $result');
   }
 
   Future<List<Project>> getProjectsByProjectIds(List<String> projectIds) async {

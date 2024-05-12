@@ -50,10 +50,10 @@ class Project extends Equatable {
 
     return Project(
       id: json['id'] ?? json['projectId'] ?? 0,
-      createdAt: json['createdAt'] ?? json['createdAt'],
-      updatedAt: json['updatedAt'] ?? json['updatedAt'],
-      deletedAt: json['deletedAt'] ?? json['deletedAt'],
-      companyId: json['companyId'] ?? json['companyId'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      deletedAt: json['deletedAt'],
+      companyId: json['companyId'],
       projectScopeFlag: json['projectScopeFlag'],
       title: json['title'],
       numberOfStudents: json['numberOfStudents'] ?? json['numberOfStudents'],

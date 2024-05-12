@@ -22,6 +22,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<GetProjectsByStudentId>(_getProjectsByStudentId);
     on<UpdateFavoriteProject>(_updateFavoriteProject);
     on<GetFavoriteProjectsByStudentId>(_getFavoriteProjectsByStudentId);
+    on<StartWorkingOnProject>(_startWorkingOnProject);
   }
 
   Future<void> _getProject(GetProject event, Emitter<ProjectState> emit) async {
@@ -48,8 +49,10 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   Future<void> _getProjectsByCompanyId(
       GetProjectsByCompanyId event, Emitter<ProjectState> emit) async {
     try {
-      final projects =
-          await projectRepository.getProjectsByCompanyId(event.companyId);
+      final projects = await projectRepository.getProjectsByCompanyId(
+        event.companyId,
+        null,
+      );
       emit(MyProjectLoadSuccess(projects: projects));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
@@ -131,6 +134,19 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       final projects = await projectRepository
           .getFavoriteProjectsByStudentID(event.studentId);
       emit(FavoriteProjectsLoadSuccess(projects: projects));
+    } catch (error) {
+      emit(ProjectOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _startWorkingOnProject(
+      StartWorkingOnProject event, Emitter<ProjectState> emit) async {
+    try {
+      await projectRepository.startWorkingOnThisProject(
+          event.projectId, event.updatedProject);
+      final projects = await projectRepository.getProjectsByCompanyId(
+          event.updatedProject.companyId ?? '', null);
+      emit(MyProjectLoadSuccess(projects: projects));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

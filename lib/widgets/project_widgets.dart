@@ -164,6 +164,20 @@ class ProjectWidgets {
                           break;
                         case ProjectAction.editPosting:
                           break;
+                        case ProjectAction.startWorkingOnThisProject:
+                          BlocProvider.of<ProjectBloc>(context)
+                              .add(StartWorkingOnProject(
+                                  projectId: projectId.toString(),
+                                  updatedProject: Project(
+                                    companyId:
+                                        userProfile.company!.id.toString(),
+                                    projectScopeFlag: projectScopeFlag,
+                                    title: title,
+                                    description: description,
+                                    numberOfStudents: numberOfStudent,
+                                    typeFlag: 1,
+                                  )));
+                          break;
                         default:
                       }
                     },

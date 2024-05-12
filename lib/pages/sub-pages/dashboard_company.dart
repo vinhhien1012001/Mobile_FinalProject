@@ -30,6 +30,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
   }
 
   List<Project> projects = [];
+  List<Project> workingProjects = [];
+  List<Project> archivedProjects = [];
   @override
   Widget build(BuildContext context) {
     List<Project> archivedProjects = [];
@@ -41,6 +43,10 @@ class _DashboardCompanyState extends State<DashboardCompany> {
           builder: (context, state) {
             if (state is MyProjectLoadSuccess) {
               projects = state.projects;
+              workingProjects =
+                  projects.where((project) => project.typeFlag == 1).toList();
+              archivedProjects =
+                  projects.where((project) => project.typeFlag == 2).toList();
             }
             return Padding(
               padding: const EdgeInsets.all(20),
@@ -83,13 +89,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   const SizedBox(height: 30),
                   Expanded(
                     child: DefaultTabController(
-                      length: 2,
+                      length: 3,
                       child: Column(
                         children: [
                           const TabBar(
                             tabs: [
                               Tab(text: 'All projects'),
-                              Tab(text: 'Archived projects'),
+                              Tab(text: 'Working '),
+                              Tab(text: 'Archived '),
                             ],
                           ),
                           Expanded(
@@ -97,6 +104,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                               children: [
                                 ProjectWidgets.buildProjectList(
                                     projects), // All projects tab
+                                ProjectWidgets.buildProjectList(
+                                    workingProjects), // All projects tab
                                 ProjectWidgets.buildProjectList(
                                     archivedProjects), // Archived projects tab
                               ],
