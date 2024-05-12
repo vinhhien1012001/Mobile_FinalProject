@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
@@ -8,12 +7,12 @@ import 'package:final_project_mobile/pages/project_detail_student.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 
 class ProjectDetailsCompany extends StatefulWidget {
   final Project project;
 
-  const ProjectDetailsCompany({Key? key, required this.project})
-      : super(key: key);
+  const ProjectDetailsCompany({super.key, required this.project});
 
   @override
   State<ProjectDetailsCompany> createState() => _ProjectDetailsCompanyState();
@@ -75,7 +74,7 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  BlocBuilder<ProposalBloc, ProposalState>(
+                  BlocConsumer<ProposalBloc, ProposalState>(
                     builder: (context, state) {
                       if (state is ProposalsByProjectIdLoaded) {
                         proposals = state.proposals;
@@ -89,6 +88,22 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                           return StudentProfileCard(proposal: proposals[index]);
                         },
                       );
+                    },
+                    listener: (BuildContext context, ProposalState state) {
+                      if (state is SendHireOfferSuccess) {
+                        toastification.show(
+                          context: context,
+                          type: ToastificationType.success,
+                          style: ToastificationStyle.flat,
+                          title: Text(
+                              'Send hire offer to student with id : ${state.proposal?.student?.id ?? 0} successfully !'),
+                          alignment: Alignment.bottomRight,
+                          autoCloseDuration: const Duration(seconds: 4),
+                          icon: const Icon(Icons.check),
+                          borderRadius: BorderRadius.circular(12.0),
+                          showProgressBar: true,
+                        );
+                      }
                     },
                   ),
                 ],
@@ -157,7 +172,7 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
                   radius: 30,
                   // Replace with actual image
                   backgroundImage: NetworkImage(
-                      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-${randomAvatarNumber}.png'),
+                      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-$randomAvatarNumber.png'),
                 ),
                 const SizedBox(width: 10),
                 // Student name and number of years student
@@ -165,12 +180,12 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${widget.proposal.student?.user?.fullName ?? 0}',
+                      '${widget.proposal.student?.user?.fullname ?? 0}',
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
-                    Text('No education yet'),
+                    const Text('No education yet'),
                   ],
                 ),
               ],
@@ -184,9 +199,9 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
               children: [
                 Text(
                   proposal?.student?.techStack?.name ?? 'No title yet !',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   'Level: Excellent',
                   style: TextStyle(color: Colors.green),
                 ),
@@ -215,7 +230,13 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
                 // Button 2
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Send hire offer
+                      BlocProvider.of<ProposalBloc>(context).add(SendHireOffer(
+                          proposalId: proposal?.id.toString() ?? '',
+                          disableFlag: 0,
+                          statusFlag: 2));
+                    },
                     child: const Text('Hire'),
                   ),
                 ),

@@ -18,6 +18,7 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
     on<SubmitProposal>(_submitProposal);
     on<UpdateProposal>(_updateProposal);
     on<GetProposalsByProjectId>(_getProposalsByProjectId);
+    on<SendHireOffer>(_sendHireOffer);
   }
 
   Future<void> _updateProposal(
@@ -56,6 +57,18 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
       final List<Proposal> proposals =
           await proposalRepository.getProposalsByProjectId(event.projectId);
       emit(ProposalsByProjectIdLoaded(proposals: proposals));
+    } catch (error) {
+      emit(ProposalOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _sendHireOffer(
+      SendHireOffer event, Emitter<ProposalState> emit) async {
+    try {
+      final response = await proposalRepository.sendHireOffer(
+          event.proposalId, event.disableFlag, event.statusFlag);
+      log('SEND OFFER NE`: $response');
+      emit(SendHireOfferSuccess(proposal: response));
     } catch (error) {
       emit(ProposalOperationFailure(error: error.toString()));
     }

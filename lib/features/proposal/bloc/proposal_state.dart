@@ -41,3 +41,11 @@ class ProposalsByProjectIdLoaded extends ProposalState {
   @override
   List<Object?> get props => [proposals];
 }
+
+class SendHireOfferSuccess extends ProposalState {
+  final Proposal proposal;
+  const SendHireOfferSuccess({required this.proposal});
+
+  @override
+  List<Object?> get props => [proposal];
+}

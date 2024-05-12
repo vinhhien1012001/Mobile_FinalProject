@@ -60,7 +60,7 @@ class ProjectWidgets {
                 messages: project.countMessages ?? 0,
                 hired: project.countHired ?? 0,
                 description: project.description!,
-                isFavorite: project.isFavorite ?? true,
+                isFavorite: project.isFavorite ?? false,
                 numberOfStudent: project.numberOfStudents ?? 0,
                 projectScopeFlag: project.projectScopeFlag ?? 0,
                 context: context,

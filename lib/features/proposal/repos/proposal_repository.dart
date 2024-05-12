@@ -59,4 +59,39 @@ class ProposalRepository {
       body: proposal.toJson(),
     );
   }
+
+  Future<Proposal> sendHireOffer(
+      String proposalId, int disableFlag, int statusFlag) async {
+    final response = await httpService.request(
+      method: RequestMethod.patch,
+      url: '$baseUrl/proposal/$proposalId',
+      body: {
+        'disableFlag': disableFlag,
+        'statusFlag': statusFlag,
+      },
+    );
+    // Todo: return the proposal object
+    return Proposal(
+        id: response['result']['id'],
+        projectId: response['result']['projectId'],
+        createdAt: response['result']['createdAt'],
+        updatedAt: response['result']['updatedAt'],
+        deletedAt: response['result']['deletedAt'],
+        studentId: response['result']['studentId'],
+        coverLetter: response['result']['coverLetter'],
+        statusFlag: response['result']['statusFlag'],
+        disableFlag: response['result']['disableFlag'],
+        student: Student(
+          id: response['result']['student']['id'],
+          createdAt: response['result']['student']['createdAt'],
+          updatedAt: response['result']['student']['updatedAt'],
+          deletedAt: response['result']['student']['deletedAt'],
+          userId: response['result']['student']['userId'],
+          techStackId: response['result']['student']['techStackId'],
+          resume: response['result']['student']['resume'],
+          transcript: response['result']['student']['transcript'],
+          educations: response['result']['student']['educations'],
+          // TechStack.fromJson(response['result']['student']['techStack']),
+        ));
+  }
 }
