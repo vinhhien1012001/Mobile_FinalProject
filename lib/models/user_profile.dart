@@ -6,7 +6,7 @@ class UserProfile extends Equatable {
     required this.id,
     required this.fullname,
     required this.roles,
-    this.company, // Add company field
+    this.company, // Declare company field
     this.student,
   });
 
@@ -17,7 +17,7 @@ class UserProfile extends Equatable {
   final Student? student;
   @override
   List<Object?> get props =>
-      [id, fullname, roles, company]; // Include company in props
+      [id, fullname, roles, company, student]; // Include company in props
 
   static UserProfile fromJson(Map<String, dynamic> json) {
     return UserProfile(

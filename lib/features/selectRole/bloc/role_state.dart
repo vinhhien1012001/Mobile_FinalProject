@@ -16,7 +16,7 @@ class RoleInitial extends RoleState {
 }
 
 class RoleSelected extends RoleState {
-  const RoleSelected(int roleId) : super(roleId);
+  const RoleSelected(super.roleId);
 
   @override
   String toString() => 'RoleSelected { roleId: $roleId }';

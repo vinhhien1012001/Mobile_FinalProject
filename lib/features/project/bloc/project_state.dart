@@ -11,8 +11,17 @@ class ProjectInitial extends ProjectState {}
 
 class ProjectLoadSuccess extends ProjectState {
   final List<Project> projects;
+  final int currentPage;
+  const ProjectLoadSuccess({required this.projects, required this.currentPage});
 
-  const ProjectLoadSuccess({required this.projects});
+  @override
+  List<Object?> get props => [projects];
+}
+
+class MyProjectLoadSuccess extends ProjectState {
+  final List<Project> projects;
+
+  const MyProjectLoadSuccess({required this.projects});
 
   @override
   List<Object?> get props => [projects];
@@ -37,8 +46,45 @@ class ProjectDeleteSuccess extends ProjectState {
 }
 
 class ProjectLoadingDone extends ProjectState {
-  final String projectId;
-  const ProjectLoadingDone({required this.projectId});
+  final Project project;
+  const ProjectLoadingDone({required this.project});
+
+  @override
+  List<Object?> get props => [project];
+}
+
+class ProjectsByIdsLoadingDone extends ProjectState {
+  final List<Project> projects;
+  const ProjectsByIdsLoadingDone({required this.projects});
+
+  @override
+  List<Object?> get props => [projects];
+}
+
+class GetProjectByStudentIdDone extends ProjectState {
+  final List<Project> projects;
+  final List<int> typeFlag;
+  const GetProjectByStudentIdDone(
+      {required this.projects, required this.typeFlag});
+
+  @override
+  List<Object?> get props => [projects];
+}
+
+class FavoriteProjectsLoadSuccess extends ProjectState {
+  final List<Project> projects;
+
+  const FavoriteProjectsLoadSuccess({required this.projects});
+
+  @override
+  List<Object?> get props => [projects];
+}
+
+class FavoriteProjectUpdateSuccess extends ProjectState {
+  final int projectId;
+  final bool disableFlag;
+  const FavoriteProjectUpdateSuccess(
+      {required this.projectId, required this.disableFlag});
 
   @override
   List<Object?> get props => [projectId];

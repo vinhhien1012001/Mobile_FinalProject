@@ -10,4 +10,4 @@ Danh sách thành viên nhóm:
 
 ---
 
-Link video demo: https://drive.google.com/drive/folders/1X79v6--1_WSHL31IVDBMQ1SQ7tuj7VgT?usp=sharing
+Link video demo + docs/report: https://drive.google.com/drive/folders/1X79v6--1_WSHL31IVDBMQ1SQ7tuj7VgT?usp=sharing

@@ -13,10 +13,8 @@ class UserRepository {
   }
 
   Future<UserProfile> getMyProfile() async {
-    log('2nd');
     final response = await httpService.request(
         method: RequestMethod.get, url: '$baseUrl/auth/me');
-    log(response.toString());
     return UserProfile.fromJson(response['result']);
   }
 
@@ -31,7 +29,6 @@ class UserRepository {
           'fullname': fullname,
           'role': role
         });
-    log(response.toString());
     return UserProfile.fromJson(response['result']);
   }
 

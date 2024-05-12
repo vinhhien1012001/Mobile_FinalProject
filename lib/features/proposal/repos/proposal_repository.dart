@@ -15,9 +15,9 @@ class ProposalRepository {
   Future<List<Proposal>> getProposalsByProjectId(int projectId) async {
     final response = await httpService.request(
       method: RequestMethod.get,
-      url: '$baseUrl/proposal/project/$projectId',
+      url: '$baseUrl/proposal/getByProjectId/$projectId',
     );
-    final List<dynamic> jsonProposals = response['result'];
+    final List<dynamic> jsonProposals = response['result']['items'];
     return jsonProposals.map((json) => Proposal.fromJson(json)).toList();
   }
 
@@ -40,7 +40,6 @@ class ProposalRepository {
 
   Future<Map<String, dynamic>> submitProposal(
       String projectId, String coverLetter, String studentId) async {
-    log('submitProposal');
     final newwProposal = await httpService.request(
       method: RequestMethod.post,
       url: '$baseUrl/proposal',

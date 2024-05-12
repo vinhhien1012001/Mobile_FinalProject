@@ -21,7 +21,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   Future<void> _getMyProfile(
       GetUserProfile event, Emitter<UserProfileState> emit) async {
-    log('1st');
     final userProfile = await userRepository.getMyProfile();
     emit(state.copyWith(userProfile: userProfile));
     emit(UserProfileLoadSuccess(userProfile));

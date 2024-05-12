@@ -1,31 +1,30 @@
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_input.dart';
+import 'package:final_project_mobile/screens/join_as.dart';
+import 'package:final_project_mobile/utils/utils.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-void main() {
-  runApp(const SwitchAccountPage());
-}
-
-class SwitchAccountPage extends StatefulWidget {
+class SwitchAccountPage extends ConsumerWidget {
   const SwitchAccountPage({super.key});
 
   @override
-  State<SwitchAccountPage> createState() => _SwitchAccountPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedRole = ref.watch(selectedRoleProvider);
+    final roleDisplayName = getRoleDisplayName(selectedRole);
 
-class _SwitchAccountPageState extends State<SwitchAccountPage> {
-  String _selectedAccount = 'Account 1';
-  final List<Map<String, dynamic>> _accounts = [
-    {'name': 'Account 1', 'icon': Icons.account_circle},
-    {'name': 'Account 2', 'icon': Icons.account_circle},
-    {'name': 'Account 3', 'icon': Icons.account_circle},
-  ];
+    print(roleDisplayName);
 
-  @override
-  Widget build(BuildContext context) {
+    String _selectedAccount = 'Account 1';
+    final List<Map<String, dynamic>> _accounts = [
+      {'name': 'Account 1', 'icon': Icons.account_circle},
+      {'name': 'Account 2', 'icon': Icons.account_circle},
+      {'name': 'Account 3', 'icon': Icons.account_circle},
+    ];
+
     return MaterialApp(
       home: Scaffold(
         appBar: const CustomAppBar(),
@@ -57,18 +56,31 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
                   );
                 }).toList(),
                 onChanged: (Map<String, dynamic>? newValue) {
-                  setState(() {
-                    _selectedAccount = newValue!['name'];
-                  });
+                  // setState(() {
+                  //   _selectedAccount = newValue!['name'];
+                  // });
                 },
               ),
             ),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfileNotLoggedInPage()));
+                if (roleDisplayName == 'Company') {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const ProfileNotLoggedInPage()));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const StudentProfileInputPage()));
+                }
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const ProfileNotLoggedInPage()));
               },
               icon: const Icon(Icons.account_circle),
               label: const Text('Profiles'),
@@ -80,23 +92,23 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
                 shape: const RoundedRectangleBorder(), // Button border
               ),
             ),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const StudentProfileInputPage()));
-              },
-              icon: const Icon(Icons.settings),
-              label: const Text('Settings'),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.green, // Background color
-                padding: const EdgeInsets.all(12.0), // Button padding
-                alignment: Alignment.centerLeft,
-                shape: const RoundedRectangleBorder(), // Button border
-              ),
-            ),
+            // ElevatedButton.icon(
+            //   onPressed: () {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) => const StudentProfileInputPage()));
+            //   },
+            //   icon: const Icon(Icons.settings),
+            //   label: const Text('Settings'),
+            //   style: ElevatedButton.styleFrom(
+            //     foregroundColor: Colors.white,
+            //     backgroundColor: Colors.green, // Background color
+            //     padding: const EdgeInsets.all(12.0), // Button padding
+            //     alignment: Alignment.centerLeft,
+            //     shape: const RoundedRectangleBorder(), // Button border
+            //   ),
+            // ),
             ElevatedButton.icon(
               onPressed: () {
                 BlocProvider.of<UserProfileBloc>(context).add(const SignOut());

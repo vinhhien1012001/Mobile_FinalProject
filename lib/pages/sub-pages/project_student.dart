@@ -2,7 +2,7 @@ import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project_mobile/pages/saved_project.dart';
+import 'package:final_project_mobile/pages/favorite_project.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part "../../widgets/search_bar.dart";
@@ -23,10 +23,12 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
   int proposalLessThanFilter = 0;
   bool _isTyping = false;
 
+  int currentPage = 1;
+  int totalPages = 1;
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ProjectBloc>(context).add(GetProject());
+    BlocProvider.of<ProjectBloc>(context).add(GetProject(page: currentPage));
   }
 
   void _onSearchTextChanged(String searchText) {
@@ -37,20 +39,20 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
         filteredProjects.addAll(projects);
       } else {
         filteredProjects.addAll(projects.where((project) {
-          return (project.title
+          return project.title
                   ?.toLowerCase()
-                  .contains(searchText.toLowerCase())) ??
+                  .contains(searchText.toLowerCase()) ??
               false;
         }));
       }
     });
   }
 
-  void _onSavedProjectsClicked() {
+  void _onFavoriteProjectsClicked() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SavedProjectScreen(),
+        builder: (context) => const FavoriteProjectsScreen(),
       ),
     );
   }
@@ -227,9 +229,20 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProjectBloc, ProjectState>(
       builder: (context, state) {
-        if (state is ProjectLoadSuccess) {
+        if (state is ProjectLoadSuccess && state.currentPage >= totalPages) {
           projects = state.projects;
           filteredProjects.addAll(projects);
+        }
+        if (state is ProjectDeleteSuccess) {
+          filteredProjects
+              .removeWhere((project) => "${project.id}" == state.projectId);
+        }
+        if (state is FavoriteProjectUpdateSuccess) {
+          filteredProjects
+              .where((element) => element.id == state.projectId)
+              .forEach((element) {
+            element.isFavorite = !state.disableFlag;
+          });
         }
         return Padding(
           padding: const EdgeInsets.all(20),
@@ -237,7 +250,7 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
             children: [
               SearchBar(
                 onChanged: _onSearchTextChanged,
-                onFavoritePressed: _onSavedProjectsClicked,
+                onFavoritePressed: _onFavoriteProjectsClicked,
                 isFilterApplied: isFilterApplied,
                 isTyping: _isTyping,
                 onFilterPressed: _showFilterModal,
@@ -245,10 +258,45 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
               Expanded(
                 child: ProjectWidgets.buildProjectList(filteredProjects),
               ),
+              _buildPagination(),
             ],
           ),
         );
       },
     );
+  }
+
+  Widget _buildPagination() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => (),
+          color: Colors.black12,
+        ),
+        TextButton(
+          onPressed: () => (),
+          child: Text(
+            currentPage.toString(),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.arrow_forward),
+          onPressed: () => _fetchProjectsPage(currentPage + 1),
+        ),
+      ],
+    );
+  }
+
+  void _fetchProjectsPage(int page) {
+    setState(() {
+      currentPage = page;
+    });
+    BlocProvider.of<ProjectBloc>(context).add(GetProject(page: page));
+    totalPages++;
   }
 }

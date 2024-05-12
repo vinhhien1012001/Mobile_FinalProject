@@ -404,6 +404,33 @@ class _ProjectInputState extends State<ProjectInput> {
                                         );
                                       },
                                     ),
+                                    Wrap(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            _controller.clearAllSelection();
+                                            setState(() {
+                                              _selectedOptions.clear();
+                                            });
+                                          },
+                                          child: const Text('CLEAR'),
+                                        ),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _selectedOptions.clear();
+                                              _selectedOptions.addAll(
+                                                  _controller.selectedOptions);
+                                            });
+                                          },
+                                          child: const Text(
+                                              'Get Selected Options'),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
@@ -415,6 +442,8 @@ class _ProjectInputState extends State<ProjectInput> {
                   ),
                 ),
               ),
+
+              // Save button
               actions: [
                 TextButton(
                   onPressed: () {
@@ -435,14 +464,17 @@ class _ProjectInputState extends State<ProjectInput> {
                           'description': _projectDescription,
                           'time': '$startMonth/$startYear - $endMonth/$endYear',
                           'duration': durationInMonths.toString(),
-                          'skillset': _selectedOptions,
+                          'skillset': _selectedOptions
+                              .map((item) => ValueItem<String>(
+                                  value: item.value, label: item.label))
+                              .toList(),
                         });
-                        print(_projects);
-                        // _controller.clearAllSelection();
-                        // setState(() {
-                        //   _selectedOptions.clear();
-                        // });
                       });
+                      _controller.clearAllSelection();
+                      setState(() {
+                        _selectedOptions.clear();
+                      });
+                      print(_projects);
                       // setState(() {
                       //   _controller.clearAllSelection();
                       //   _selectedOptions.clear();

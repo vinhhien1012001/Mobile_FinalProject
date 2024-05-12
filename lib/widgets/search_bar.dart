@@ -41,7 +41,7 @@ class SearchBar extends StatelessWidget {
           ),
         ),
         // Favorite icon
-        if (!isTyping)
+        if (true)
           IconButton(
             onPressed: onFavoritePressed,
             iconSize: 24, // Adjust the size of the icon

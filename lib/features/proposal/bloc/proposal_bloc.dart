@@ -17,35 +17,46 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
       : super(ProposalInitial()) {
     on<SubmitProposal>(_submitProposal);
     on<UpdateProposal>(_updateProposal);
+    on<GetProposalsByProjectId>(_getProposalsByProjectId);
   }
 
   Future<void> _updateProposal(
       UpdateProposal event, Emitter<ProposalState> emit) async {}
 
-  // Future<void> _submitProposal(
-  //     SubmitProposal event, Emitter<ProposalState> emit) async {
-  //   try {
-  //     log('Inside submitProposal');
-  //     final response = await proposalRepository.submitProposal(
-  //         event.projectId, event.coverLetter, event.studentId);
-  //     log('response in proposal: $response');
-  //     emit(const ProposalCreateSuccess(message: "Success"));
-  //   } catch (e) {
-  //     final errorMessage = 'Failed to submit proposal at ${DateTime.now()}';
-  //     emit(ProposalOperationFailure(error: errorMessage));
-  //   }
-  // }
-
   Future<void> _submitProposal(
       SubmitProposal event, Emitter<ProposalState> emit) async {
     try {
-      final a = await proposalRepository.submitProposal(
+      final response = await proposalRepository.submitProposal(
           event.projectId, event.coverLetter, event.studentId);
-      log('response in proposal: $a');
-      emit(
-          ProposalCreateNE(message: 'Success', proposal: Proposal.fromJson(a)));
+      final result = response['result']; // Access 'result' field
+      final Proposal proposal = Proposal(
+        // Customize the creation of Proposal object field by field
+        id: result['id'],
+        createdAt: result['createdAt'],
+        updatedAt: result['updatedAt'],
+        deletedAt: result['deletedAt'],
+        projectId: int.parse(result['projectId']),
+        studentId: int.parse(result['studentId']),
+        coverLetter: result['coverLetter'],
+        statusFlag: result['statusFlag'],
+        disableFlag: result['disableFlag'],
+      );
+      emit(ProposalCreateNE(
+          message: 'Success ${event.projectId + event.studentId}',
+          proposal: proposal));
     } catch (error) {
       emit(ProposalInitial());
+      emit(ProposalOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _getProposalsByProjectId(
+      GetProposalsByProjectId event, Emitter<ProposalState> emit) async {
+    try {
+      final List<Proposal> proposals =
+          await proposalRepository.getProposalsByProjectId(event.projectId);
+      emit(ProposalsByProjectIdLoaded(proposals: proposals));
+    } catch (error) {
       emit(ProposalOperationFailure(error: error.toString()));
     }
   }
