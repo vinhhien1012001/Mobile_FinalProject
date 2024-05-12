@@ -8,27 +8,33 @@ import 'package:final_project_mobile/models/proposal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class StudentDashboardContent extends StatelessWidget {
+class StudentDashboardContent extends StatefulWidget {
   const StudentDashboardContent({Key? key});
 
+  @override
+  State<StudentDashboardContent> createState() =>
+      _StudentDashboardContentState();
+}
+
+class _StudentDashboardContentState extends State<StudentDashboardContent> {
   @override
   Widget build(BuildContext context) {
     final UserProfileBloc userProfileBloc =
         BlocProvider.of<UserProfileBloc>(context);
     final List<Proposal> proposals =
-        userProfileBloc.state.userProfile.student!.proposals;
+        userProfileBloc.state.userProfile.student?.proposals ?? [];
     final List<Proposal> activeProposals = proposals
         .where((element) => element.statusFlag == 1)
         .toList(); // Filter active proposals
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       BlocProvider.of<ProjectBloc>(context).add(GetProjectsByStudentId(
-          studentId: userProfileBloc.state.userProfile.student!.id,
+          studentId: userProfileBloc.state.userProfile.student?.id ?? 0,
           typeFlag: const [0, 1, 2]));
       BlocProvider.of<ProjectBloc>(context).add(GetProjectsByStudentId(
-          studentId: userProfileBloc.state.userProfile.student!.id,
+          studentId: userProfileBloc.state.userProfile.student?.id ?? 0,
           typeFlag: const [1]));
       BlocProvider.of<ProjectBloc>(context).add(GetProjectsByStudentId(
-          studentId: userProfileBloc.state.userProfile.student!.id,
+          studentId: userProfileBloc.state.userProfile.student?.id ?? 0,
           typeFlag: const [2]));
     });
     return SingleChildScrollView(

@@ -18,7 +18,6 @@ class ProposalRepository {
       url: '$baseUrl/proposal/getByProjectId/$projectId',
     );
     final List<dynamic> jsonProposals = response['result']['items'];
-    log('response in proposal: $jsonProposals');
     return jsonProposals.map((json) => Proposal.fromJson(json)).toList();
   }
 

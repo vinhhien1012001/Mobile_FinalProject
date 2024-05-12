@@ -29,7 +29,6 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
       final response = await proposalRepository.submitProposal(
           event.projectId, event.coverLetter, event.studentId);
       final result = response['result']; // Access 'result' field
-      log('response in proposal: $response');
       final Proposal proposal = Proposal(
         // Customize the creation of Proposal object field by field
         id: result['id'],
@@ -42,7 +41,6 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
         statusFlag: result['statusFlag'],
         disableFlag: result['disableFlag'],
       );
-      log('proposal YOU NEED $proposal');
       emit(ProposalCreateNE(
           message: 'Success ${event.projectId + event.studentId}',
           proposal: proposal));
@@ -57,7 +55,6 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
     try {
       final List<Proposal> proposals =
           await proposalRepository.getProposalsByProjectId(event.projectId);
-      log('proposals in bloc: $proposals');
       emit(ProposalsByProjectIdLoaded(proposals: proposals));
     } catch (error) {
       emit(ProposalOperationFailure(error: error.toString()));

@@ -22,7 +22,7 @@ enum ProjectAction {
   viewJobPosting,
   editPosting,
   removePosting,
-  addToFavorite,
+  startWorkingOnThisProject,
 }
 
 class ProjectWidgets {
@@ -178,7 +178,7 @@ class ProjectWidgets {
                         child: Text('Edit posting'),
                       ),
                       const PopupMenuItem<ProjectAction>(
-                        value: ProjectAction.addToFavorite,
+                        value: ProjectAction.startWorkingOnThisProject,
                         child: Text('Start working on this project'),
                       ),
                     ],

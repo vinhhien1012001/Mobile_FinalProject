@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
@@ -78,18 +79,15 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                     builder: (context, state) {
                       if (state is ProposalsByProjectIdLoaded) {
                         proposals = state.proposals;
-                        log('proposals o day: $state.proposals');
                       }
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        child: ListView.builder(
-                          itemCount: proposals.length, // Example count
-                          itemBuilder: (context, index) {
-                            // Return a Student Profile Card widget
-                            return StudentProfileCard(
-                                proposal: proposals[index]);
-                          },
-                        ),
+                      return ListView.builder(
+                        shrinkWrap: true, // Set shrinkWrap to true
+                        physics:
+                            const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+                        itemCount: proposals.length,
+                        itemBuilder: (context, index) {
+                          return StudentProfileCard(proposal: proposals[index]);
+                        },
                       );
                     },
                   ),
@@ -134,11 +132,12 @@ class StudentProfileCard extends StatefulWidget {
 
 class _StudentProfileCardState extends State<StudentProfileCard> {
   Proposal? proposal;
-
+  late int randomAvatarNumber = 1;
   @override
   void initState() {
     super.initState();
     proposal = widget.proposal;
+    randomAvatarNumber = Random().nextInt(10) + 1;
   }
 
   @override
@@ -154,11 +153,11 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Image widget
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 30,
                   // Replace with actual image
-                  backgroundImage:
-                      NetworkImage('https://via.placeholder.com/150/92c952'),
+                  backgroundImage: NetworkImage(
+                      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-${randomAvatarNumber}.png'),
                 ),
                 const SizedBox(width: 10),
                 // Student name and number of years student
