@@ -1,77 +1,38 @@
+import 'dart:developer';
+
+import 'package:final_project_mobile/features/message/bloc/message_bloc.dart';
+import 'package:final_project_mobile/features/message/bloc/message_event.dart';
+import 'package:final_project_mobile/features/message/bloc/message_state.dart';
+import 'package:final_project_mobile/models/message.dart';
 import 'package:final_project_mobile/pages/sub-pages/message_conversation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class ChatParticipant {
-  final String id;
-  final String name;
-  final List<Map<String, String>> messages;
-
-  ChatParticipant({
-    required this.id,
-    required this.name,
-    required this.messages,
-  });
-}
-
 class MessagePage extends StatefulWidget {
-  const MessagePage({super.key});
+  const MessagePage({super.key, required this.projectId});
+
+  final int projectId;
 
   @override
   MessagePageState createState() => MessagePageState();
 }
 
 class MessagePageState extends State<MessagePage> {
-  List<ChatParticipant> chatParticipants = [
-    ChatParticipant(
-      id: '1',
-      name: 'Hien',
-      messages: [
-        {
-          'name': 'Hien',
-          'message': 'Hello, how are you?',
-          'date': '2024-05-08'
-        },
-        {'name': 'Hien', 'message': 'How are you today?', 'date': '2024-05-09'},
-        {'name': 'Minh', 'message': 'How are you today?', 'date': '2024-05-09'},
-        {'name': 'Hien', 'message': 'No no', 'date': '2024-06-09'},
-        {'name': 'Hien', 'message': 'No no', 'date': '2024-06-09'},
+  List<Conversation> conversations = [];
 
-        // Add more messages here for Hien
-      ],
-    ),
-    ChatParticipant(
-      id: '2',
-      name: 'Khoa',
-      messages: [
-        {
-          'name': 'Khoa',
-          'message': 'This is a sample message',
-          'date': '2024-05-08'
-        },
-        // Add more messages here for Khoa
-      ],
-    ),
-    ChatParticipant(
-      id: '3',
-      name: 'Ngoc',
-      messages: [
-        {'name': 'Ngoc', 'message': 'Another message', 'date': '2024-05-08'},
-        // Add more messages here for Ngoc
-      ],
-    ),
-    // Add more chat participants as needed
-  ];
-
-  List<ChatParticipant> filteredChatParticipants = [];
+  List<Conversation> filteredConversations = [];
 
   final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    filteredChatParticipants = chatParticipants;
+    filteredConversations = conversations;
     searchController.addListener(searchParticipants);
+
+    BlocProvider.of<MessageBloc>(context)
+        .add(GetAllConversationsByProjectId(widget.projectId));
   }
 
   @override
@@ -84,13 +45,14 @@ class MessagePageState extends State<MessagePage> {
     String searchText = searchController.text.toLowerCase();
     if (searchText.isEmpty) {
       setState(() {
-        filteredChatParticipants = chatParticipants;
+        filteredConversations = conversations;
       });
     } else {
       setState(() {
-        filteredChatParticipants = chatParticipants
-            .where((participant) =>
-                participant.name.toLowerCase().contains(searchText))
+        filteredConversations = conversations
+            .where((participant) => participant.receiver.fullname
+                .toLowerCase()
+                .contains(searchText))
             .toList();
       });
     }
@@ -98,57 +60,64 @@ class MessagePageState extends State<MessagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: SizedBox(
-              height: 40,
-              child: TextField(
-                controller: searchController,
-                style: const TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                  hintText: 'Search',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+    return BlocConsumer<MessageBloc, MessageState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state is ConversationLoadSuccess) {
+          conversations = state.conversations;
+          filteredConversations = conversations;
+        }
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: SizedBox(
+                  height: 40,
+                  child: TextField(
+                    controller: searchController,
+                    style: const TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                      hintText: 'Search',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredChatParticipants.length,
-              itemBuilder: (context, index) {
-                ChatParticipant participant = filteredChatParticipants[index];
-                return ListTile(
-                  leading: CircleAvatar(child: Text(participant.name[0])),
-                  title: Text(participant.name),
-                  subtitle: Text(participant.messages.isNotEmpty
-                      ? '${participant.messages.last['name']}: ${participant.messages.last['message']}'
-                      : ''),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatPage(
-                          key: Key(participant.id),
-                          currentUser: 'Minh',
-                          messages: participant.messages,
-                        ),
-                      ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredConversations.length,
+                  itemBuilder: (context, index) {
+                    Conversation participant = filteredConversations[index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                          child: Text(participant.receiver.id.toString())),
+                      title: Text(participant.receiver.fullname),
+                      subtitle: Text(participant.content),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                              projectId: widget.projectId,
+                              recipientId: participant.id,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

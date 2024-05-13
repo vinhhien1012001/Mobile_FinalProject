@@ -83,7 +83,7 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
               const SizedBox(height: 10),
               TextField(
                 controller: _coverLetterController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Cover letter',
                 ),

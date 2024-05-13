@@ -4,6 +4,7 @@ import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/models/proposal.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
+import 'package:final_project_mobile/pages/sub-pages/message.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -128,7 +129,10 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                 BuildProjectDetails(project: project ?? Project()),
               ],
             ),
-            const Center(child: Text('Message Tab')),
+            Center(
+                child: MessagePage(
+              projectId: project?.id ?? 0,
+            )),
             const Center(child: Text('Hired Tab')),
           ],
         ),
@@ -153,6 +157,7 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
     super.initState();
     proposal = widget.proposal;
     randomAvatarNumber = Random().nextInt(10) + 1;
+    print('proposal: $proposal');
   }
 
   @override

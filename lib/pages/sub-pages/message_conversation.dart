@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
-  final List<Map<String, String>> messages;
-  final String currentUser;
-
+  final int projectId;
+  final int recipientId;
   const ChatPage({
-    required Key key,
-    required this.messages,
-    required this.currentUser,
-  }) : super(key: key);
+    super.key,
+    required this.projectId,
+    required this.recipientId,
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -21,7 +20,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    _messages = List.from(widget.messages);
   }
 
   @override
@@ -43,7 +41,7 @@ class _ChatPageState extends State<ChatPage> {
                     DateTime.parse(_messages[index]['date'] ?? ''),
                   );
 
-                  bool isCurrentUser = senderName == widget.currentUser;
+                  bool isCurrentUser = true;
 
                   return Align(
                     alignment: isCurrentUser
@@ -117,7 +115,6 @@ class _ChatPageState extends State<ChatPage> {
                     if (message.isNotEmpty) {
                       setState(() {
                         _messages.add({
-                          'name': widget.currentUser,
                           'message': message,
                           'date': DateTime.now().toString(),
                         });
