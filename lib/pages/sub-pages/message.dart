@@ -1,4 +1,4 @@
-import 'package:final_project_mobile/pages/sub-pages/chat_page.dart';
+import 'package:final_project_mobile/pages/sub-pages/message_conversation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
