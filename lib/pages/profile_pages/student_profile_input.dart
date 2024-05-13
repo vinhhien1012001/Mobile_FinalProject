@@ -462,15 +462,12 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
         techStacks = state.stacks;
         // techStackNames = techStacks.map((techStack) => techStack.name).toList()
         //     as List<String>;
-        print('default load success');
-        print('TECHSTACKS: $techStacks');
         if (techStacks.isNotEmpty) {
           techStackNames = techStacks
               .map((techStack) => techStack.name)
               .where((name) => name != null)
               .toList()
               .cast<String>();
-          print('TECHSTACKS NAMES: $techStackNames');
         }
       }
       if (state is SkillSetLoadSuccess) {

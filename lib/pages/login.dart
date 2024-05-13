@@ -33,6 +33,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+
+                    // Username or Email
                     TextField(
                       decoration: const InputDecoration(
                         labelText: 'Username or Email',
@@ -43,6 +45,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
+
+                    // Password
                     TextField(
                       decoration: const InputDecoration(
                         labelText: 'Password',
@@ -60,10 +64,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: () {
-                                ref.read(authNotifierProvider.notifier).login(
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                    context: context);
+                                if (emailController.text.isEmpty ||
+                                    passwordController.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('Please fill in all fields')),
+                                  );
+                                } else {
+                                  ref.read(authNotifierProvider.notifier).login(
+                                        email: emailController.text,
+                                        password: passwordController.text,
+                                        context: context,
+                                      );
+                                }
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(

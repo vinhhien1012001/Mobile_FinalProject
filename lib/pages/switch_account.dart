@@ -7,16 +7,28 @@ import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 
-class SwitchAccountPage extends ConsumerWidget {
+class SwitchAccountPage extends StatefulWidget {
   const SwitchAccountPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedRole = ref.watch(selectedRoleProvider);
-    final roleDisplayName = getRoleDisplayName(selectedRole);
+  State<SwitchAccountPage> createState() => _SwitchAccountPageState();
+}
 
-    print(roleDisplayName);
+class _SwitchAccountPageState extends State<SwitchAccountPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<UserProfileBloc>().add(const GetUserProfile());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // final selectedRole = ref.watch(selectedRoleProvider);
+    // final roleDisplayName = getRoleDisplayName(selectedRole);
 
     String _selectedAccount = 'Account 1';
     final List<Map<String, dynamic>> _accounts = [
@@ -24,6 +36,14 @@ class SwitchAccountPage extends ConsumerWidget {
       {'name': 'Account 2', 'icon': Icons.account_circle},
       {'name': 'Account 3', 'icon': Icons.account_circle},
     ];
+
+    final userProfileState = context.read<UserProfileBloc>().state;
+    final role = userProfileState.userProfile.roles[0];
+    final studentProfile = userProfileState.userProfile.student;
+    final companyProfile = userProfileState.userProfile.company;
+    print('role: $role');
+    print('user ProfileState: $studentProfile');
+    print('company ProfileState: $companyProfile');
 
     return MaterialApp(
       home: Scaffold(
@@ -64,13 +84,23 @@ class SwitchAccountPage extends ConsumerWidget {
             ),
             ElevatedButton.icon(
               onPressed: () {
-                if (roleDisplayName == 'Company') {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const ProfileNotLoggedInPage()));
-                } else {
+                // Company role
+                if (role == 1) {
+                  if (companyProfile == null) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const ProfileNotLoggedInPage()));
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfileLoggedInPage()));
+                  }
+                }
+                // Student role
+                else {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -112,6 +142,7 @@ class SwitchAccountPage extends ConsumerWidget {
             ElevatedButton.icon(
               onPressed: () {
                 BlocProvider.of<UserProfileBloc>(context).add(const SignOut());
+                Navigator.pushReplacementNamed(context, '/login');
               },
               icon: const Icon(Icons.logout),
               label: const Text('Logout'),

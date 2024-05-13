@@ -22,6 +22,19 @@ class SignIn extends UserProfileEvent {
   final int role;
 }
 
+class SignUp extends UserProfileEvent {
+  const SignUp({
+    required this.email,
+    required this.password,
+    required this.fullname,
+    required this.role,
+  });
+  final String email;
+  final String password;
+  final String fullname;
+  final int role;
+}
+
 class SignOut extends UserProfileEvent {
   const SignOut();
 }

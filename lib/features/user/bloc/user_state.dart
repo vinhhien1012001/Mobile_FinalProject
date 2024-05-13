@@ -34,3 +34,14 @@ class UserProfileLoadFailure extends UserProfileState {
   @override
   List<Object?> get props => [error];
 }
+
+class SignUpSuccess extends UserProfileState {}
+
+class SignUpFailure extends UserProfileState {
+  final String error;
+
+  const SignUpFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
+}
