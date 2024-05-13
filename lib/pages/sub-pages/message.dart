@@ -1,43 +1,77 @@
+import 'package:final_project_mobile/pages/sub-pages/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+class ChatParticipant {
+  final String id;
+  final String name;
+  final List<Map<String, String>> messages;
+
+  ChatParticipant({
+    required this.id,
+    required this.name,
+    required this.messages,
+  });
+}
 
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key});
 
   @override
-  _MessagePageState createState() => _MessagePageState();
+  MessagePageState createState() => MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
-  List<Map<String, String>> messages = [
-    {
-      'name': 'Hien',
-      'message': 'Hello, how are you?',
-      'id': '1',
-      'date': '2024-05-08'
-    },
-    {
-      'name': 'Khoa',
-      'message': 'This is a sample message',
-      'id': '2',
-      'date': '2024-05-08'
-    },
-    {
-      'name': 'Ngoc',
-      'message': 'Another message',
-      'id': '3',
-      'date': '2024-05-08'
-    },
+class MessagePageState extends State<MessagePage> {
+  List<ChatParticipant> chatParticipants = [
+    ChatParticipant(
+      id: '1',
+      name: 'Hien',
+      messages: [
+        {
+          'name': 'Hien',
+          'message': 'Hello, how are you?',
+          'date': '2024-05-08'
+        },
+        {'name': 'Hien', 'message': 'How are you today?', 'date': '2024-05-09'},
+        {'name': 'Minh', 'message': 'How are you today?', 'date': '2024-05-09'},
+        {'name': 'Hien', 'message': 'No no', 'date': '2024-06-09'},
+        {'name': 'Hien', 'message': 'No no', 'date': '2024-06-09'},
+
+        // Add more messages here for Hien
+      ],
+    ),
+    ChatParticipant(
+      id: '2',
+      name: 'Khoa',
+      messages: [
+        {
+          'name': 'Khoa',
+          'message': 'This is a sample message',
+          'date': '2024-05-08'
+        },
+        // Add more messages here for Khoa
+      ],
+    ),
+    ChatParticipant(
+      id: '3',
+      name: 'Ngoc',
+      messages: [
+        {'name': 'Ngoc', 'message': 'Another message', 'date': '2024-05-08'},
+        // Add more messages here for Ngoc
+      ],
+    ),
+    // Add more chat participants as needed
   ];
 
-  List<Map<String, String>> filteredMessages = [];
+  List<ChatParticipant> filteredChatParticipants = [];
+
   final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    filteredMessages = messages;
-    searchController.addListener(searchMessages);
+    filteredChatParticipants = chatParticipants;
+    searchController.addListener(searchParticipants);
   }
 
   @override
@@ -46,18 +80,17 @@ class _MessagePageState extends State<MessagePage> {
     super.dispose();
   }
 
-  void searchMessages() {
-    String searchText = searchController.text;
+  void searchParticipants() {
+    String searchText = searchController.text.toLowerCase();
     if (searchText.isEmpty) {
       setState(() {
-        filteredMessages = messages;
+        filteredChatParticipants = chatParticipants;
       });
     } else {
       setState(() {
-        filteredMessages = messages
-            .where((message) => message['name']!
-                .toLowerCase()
-                .contains(searchText.toLowerCase()))
+        filteredChatParticipants = chatParticipants
+            .where((participant) =>
+                participant.name.toLowerCase().contains(searchText))
             .toList();
       });
     }
@@ -72,13 +105,12 @@ class _MessagePageState extends State<MessagePage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: SizedBox(
-              height: 40, // Adjust the height of the input field
+              height: 40,
               child: TextField(
                 controller: searchController,
-                style: const TextStyle(fontSize: 16), // Adjust text size
+                style: const TextStyle(fontSize: 16),
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 8), // Adjust vertical padding
+                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
                   hintText: 'Search',
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
@@ -90,35 +122,31 @@ class _MessagePageState extends State<MessagePage> {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: filteredMessages.length,
-                itemBuilder: (context, index) {
-                  String formattedDate = DateFormat('dd/MM/yyyy')
-                      .format(DateTime.parse(filteredMessages[index]['date']!));
-
-                  return ListTile(
-                    leading: CircleAvatar(
-                        child: Text(filteredMessages[index]['name']![0])),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(filteredMessages[index]['name']!),
-                        Text(formattedDate,
-                            style: const TextStyle(fontSize: 13)),
-                      ],
-                    ),
-                    subtitle: Text(filteredMessages[index]['message']!),
-                    onTap: () {
-                      // Navigate to the message details page
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => MessageDetailsPage(message: filteredMessages[index]),
-                      //   ),
-                      // );
-                    },
-                  );
-                }),
-          )
+              itemCount: filteredChatParticipants.length,
+              itemBuilder: (context, index) {
+                ChatParticipant participant = filteredChatParticipants[index];
+                return ListTile(
+                  leading: CircleAvatar(child: Text(participant.name[0])),
+                  title: Text(participant.name),
+                  subtitle: Text(participant.messages.isNotEmpty
+                      ? '${participant.messages.last['name']}: ${participant.messages.last['message']}'
+                      : ''),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                          key: Key(participant.id),
+                          currentUser: 'Minh',
+                          messages: participant.messages,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
