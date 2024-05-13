@@ -54,3 +54,21 @@ class UpdateProfileSuccess extends DefaultState {
 //   @override
 //   List<Object?> get props => [projectId];
 // }
+
+class CreateCompanyProfileSuccess extends DefaultState {
+  final Company company;
+
+  const CreateCompanyProfileSuccess({required this.company});
+
+  @override
+  List<Object?> get props => [company];
+}
+
+class CreateProfileFailure extends DefaultState {
+  final String error;
+
+  const CreateProfileFailure({required this.error});
+
+  @override
+  List<Object?> get props => [error];
+}

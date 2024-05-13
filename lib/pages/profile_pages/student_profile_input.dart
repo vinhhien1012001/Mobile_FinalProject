@@ -5,7 +5,7 @@ import 'package:final_project_mobile/features/default/bloc/default_event.dart';
 import 'package:final_project_mobile/models/student.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_experiences.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
-import 'package:final_project_mobile/widgets/custom_multiselect.dart';
+// import 'package:final_project_mobile/widgets/custom_multiselect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
@@ -422,17 +422,18 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
   List<SkillSet> skillSets = [];
   List<Skill> skillSetOptions = [];
   TechStack? selectedTechStack;
+  SkillSet? selectedSkillSet;
 
-  final MultiSelectController<Skill> _controller = MultiSelectController();
-  final List<ValueItem> _selectedOptions = [];
+  final MultiSelectController<SkillSet> _controller = MultiSelectController();
+  // final List<ValueItem> _selectedOptions = [];
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
-      BlocProvider.of<DefaultBloc>(context).add(GetAllSkillSet());
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    // });
+    BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
+    BlocProvider.of<DefaultBloc>(context).add(GetAllSkillSet());
   }
 
   AppBar appBar(BuildContext context) {
@@ -457,32 +458,43 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DefaultBloc, DefaultState>(builder: (context, state) {
-      if (state is DefaultLoadSuccess) {
-        techStacks = state.stacks;
-        // techStackNames = techStacks.map((techStack) => techStack.name).toList()
-        //     as List<String>;
-        if (techStacks.isNotEmpty) {
-          techStackNames = techStacks
-              .map((techStack) => techStack.name)
-              .where((name) => name != null)
-              .toList()
-              .cast<String>();
+    return BlocListener<DefaultBloc, DefaultState>(
+      listener: (context, state) {
+        if (state is DefaultOperationFailure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text('Operation failed: ${state.error}'),
+              ),
+            );
         }
-      }
-      if (state is SkillSetLoadSuccess) {
-        skillSets = state.skillsets;
-        // techStackNames = techStacks.map((techStack) => techStack.name).toList()
-        //     as List<String>;
-        print('skillSets: $skillSets');
-        skillSetOptions = skillSets
-            .map((item) => Skill(name: item.name!, id: item.id!))
-            .toList();
-
-        print('skillSetOptions: $skillSetOptions');
-      }
-
-      return Scaffold(
+        if (state is DefaultLoadSuccess) {
+          print('TECH STACK LOAD DONE UI');
+          setState(() {
+            techStacks = state.stacks;
+            if (techStacks.isNotEmpty) {
+              techStackNames = techStacks
+                  .map((techStack) => techStack.name)
+                  .where((name) => name != null)
+                  .toList()
+                  .cast<String>();
+            }
+          });
+        }
+        if (state is SkillSetLoadSuccess) {
+          print('SKILLSET LOAD DONE UI');
+          setState(() {
+            skillSets = state.skillsets;
+            print('skillSets: $skillSets');
+            skillSetOptions = skillSets
+                .map((item) => Skill(name: item.name!, id: item.id!))
+                .toList();
+            print('skillSetOptions: $skillSetOptions');
+          });
+        }
+      },
+      child: Scaffold(
         appBar: appBar(context),
         body: Center(
           child: Padding(
@@ -580,13 +592,13 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                MultiSelectDropDown<Skill>(
-                                  controller: _controller,
+                                MultiSelectDropDown<SkillSet>(
+                                  // controller: _controller,
                                   clearIcon: const Icon(Icons.reddit),
                                   onOptionSelected: (options) {},
-                                  options: skillSetOptions
+                                  options: skillSets
                                       .map((skill) => ValueItem(
-                                          label: skill.name, value: skill))
+                                          label: skill.name!, value: skill))
                                       .toList(),
                                   // .map((skill) => ValueItem(
                                   //     label: skill.name, value: skill))
@@ -612,8 +624,9 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                                   onOptionRemoved: (index, option) {},
                                   optionBuilder:
                                       (context, valueItem, isSelected) {
+                                    print('valueItem builder: $valueItem');
                                     return ListTile(
-                                      title: Text(valueItem.value!.name),
+                                      title: Text(valueItem.value!.name!),
                                       // subtitle: Text(valueItem.value.toString()),
                                       trailing: isSelected
                                           ? const Icon(Icons.check_circle)
@@ -634,6 +647,18 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
 
                     // Education part
                     const EducationInput(),
+
+                    // Column(
+                    //   children: [
+                    //     const Text('SkillSets:'),
+                    //     for (var skillSet in skillSets)
+                    //       Text('Name: ${skillSet.name}, ID: ${skillSet.id}'),
+                    //     const Text('SkillSetOptions:'),
+                    //     for (var skillOption in skillSetOptions)
+                    //       Text(
+                    //           'Name: ${skillOption.name}, ID: ${skillOption.id}'),
+                    //   ],
+                    // ),
 
                     // Continue button
                     Padding(
@@ -675,7 +700,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                 ),
               )),
         ),
-      );
-    });
+      ),
+    );
   }
 }

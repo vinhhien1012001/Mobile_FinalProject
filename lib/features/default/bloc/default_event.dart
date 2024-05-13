@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:final_project_mobile/models/student.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 
 abstract class DefaultEvent extends Equatable {
   const DefaultEvent();
@@ -24,4 +25,13 @@ class UpdateProfile extends DefaultEvent {
 
   @override
   List<Object> get props => [studentId, techStackId, skillSets];
+}
+
+class CreateCompanyProfile extends DefaultEvent {
+  final Company company;
+
+  const CreateCompanyProfile({required this.company});
+
+  @override
+  List<Object> get props => [company];
 }

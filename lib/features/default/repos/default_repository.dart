@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:final_project_mobile/models/student.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/services/http_service.dart';
 
 class DefaultRepository {
@@ -22,6 +23,7 @@ class DefaultRepository {
     final stacks = (response['result'] as List)
         .map((json) => TechStack.fromJson(json))
         .toList();
+    log('stacks IN REPO: $stacks');
     return stacks;
   }
 
@@ -34,6 +36,7 @@ class DefaultRepository {
     final skillset = (response['result'] as List)
         .map((json) => SkillSet.fromJson(json))
         .toList();
+    log('skillset IN REPO: $skillset');
     return skillset;
   }
 
@@ -52,5 +55,28 @@ class DefaultRepository {
         'skillSets': skillSets.map((skillSet) => skillSet.toJson()).toList(),
       }),
     );
+  }
+
+  Future<Company> createCompanyProfile(Company company) async {
+    try {
+      log('Create company profile');
+      final newCompany = await httpService.request(
+        method: RequestMethod.post,
+        url: '$baseUrl/profile/company',
+        body: company.toJson(),
+      );
+      if (newCompany['result'] == null) {
+        String errorDetails =
+            newCompany['errorDetails'].map((e) => e.toString()).join(' ');
+        throw Exception(errorDetails);
+      }
+
+      log('newCompany: $newCompany');
+      return newCompany;
+    } catch (e) {
+      log('ERRORS CATCH:');
+      log(e.toString());
+      rethrow;
+    }
   }
 }

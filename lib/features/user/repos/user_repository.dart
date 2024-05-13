@@ -47,9 +47,6 @@ class UserRepository {
         },
       );
       if (response['result'] == null) {
-        print('ERRORS:');
-        // print(response['errorDetails'].runtimeType);
-        // String errorDetails = response['errorDetails'].join(' ');
         String errorDetails =
             response['errorDetails'].map((e) => e.toString()).join(' ');
         throw Exception(errorDetails);
@@ -57,7 +54,7 @@ class UserRepository {
     } catch (e) {
       print('ERRORS:');
       log(e.toString());
-      throw e;
+      rethrow;
     }
   }
 

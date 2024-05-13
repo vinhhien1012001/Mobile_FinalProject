@@ -51,6 +51,7 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // switch account
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: const BoxDecoration(
@@ -86,12 +87,14 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
               onPressed: () {
                 // Company role
                 if (role == 1) {
-                  if (companyProfile == null) {
+                  print('companyProfile: $companyProfile');
+                  if (companyProfile != null) {
+                    print('COMPANY NEW PROFILE');
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const ProfileNotLoggedInPage()));
+                                const ProfileCompanyCreatePage()));
                   } else {
                     Navigator.push(
                         context,

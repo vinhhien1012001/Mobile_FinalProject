@@ -130,19 +130,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                           ],
                         ),
 
-                        // SIGN UP BUTTON
                         const SizedBox(height: 20),
-                        // BlocListener<UserProfileBloc, UserProfileState>(
-                        //   listener: (context, state) {
-                        //     if (state is SignUpFailure) {
-                        //       print('STATE IS SIGN UP FAILURE');
-                        //       ScaffoldMessenger.of(context).showSnackBar(
-                        //         SnackBar(content: Text(state.error)),
-                        //       );
-                        //     }
-                        //   },
-                        // ),
-
+                        // SIGN UP BUTTON
                         ElevatedButton(
                           onPressed: () {
                             if (emailController.text.isEmpty ||

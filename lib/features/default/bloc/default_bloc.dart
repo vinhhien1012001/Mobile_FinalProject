@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:final_project_mobile/features/default/bloc/default_event.dart';
 import 'package:final_project_mobile/features/default/repos/default_repository.dart';
 import 'package:final_project_mobile/models/student.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 part 'default_state.dart';
 
 class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
@@ -13,6 +14,7 @@ class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
     on<GetAllTechStack>(_fetchAllTechStack);
     on<GetAllSkillSet>(_fetchAllSkillSet);
     on<UpdateProfile>(_updateProfile);
+    on<CreateCompanyProfile>(_createCompanyProfile);
   }
 
   Future<void> _fetchAllTechStack(
@@ -43,6 +45,20 @@ class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
       emit(UpdateProfileSuccess());
     } catch (error) {
       emit(DefaultOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _createCompanyProfile(
+      CreateCompanyProfile event, Emitter<DefaultState> emit) async {
+    try {
+      await defaultRepository.createCompanyProfile(event.company);
+      print('CREATE COMPANY PROFILE SUCCESS');
+      // emit(CreateCompanyProfileSuccess(company: event.company));
+      emit(UpdateProfileSuccess());
+    } catch (error) {
+      emit(DefaultInitial());
+      print('ERROR IN API');
+      emit(CreateProfileFailure(error: error.toString()));
     }
   }
 }
