@@ -36,25 +36,6 @@ class DefaultOperationFailure extends DefaultState {
   List<Object?> get props => [error];
 }
 
-class UpdateProfileSuccess extends DefaultState {
-  // final List<SkillSet> skillsets;
-  // final String techStackId;
-
-  // const UpdateProfileSuccess(
-  //     {required this.skillsets, required this.techStackId});
-
-  // @override
-  // List<Object?> get props => [skillsets, techStackId];
-}
-
-// class DefaultLoadingDone extends DefaultState {
-//   final String projectId;
-//   const DefaultLoadingDone({required this.projectId});
-
-//   @override
-//   List<Object?> get props => [projectId];
-// }
-
 class CreateCompanyProfileSuccess extends DefaultState {
   final Company company;
 
@@ -71,4 +52,22 @@ class CreateProfileFailure extends DefaultState {
 
   @override
   List<Object?> get props => [error];
+}
+
+class CreateStudentProfileSuccess extends DefaultState {
+  final Student student;
+
+  const CreateStudentProfileSuccess({required this.student});
+
+  @override
+  List<Object?> get props => [student];
+}
+
+class UpdateProfileSuccess extends DefaultState {
+  // final Student student;
+
+  // const UpdateProfileSuccess({required this.student});
+
+  // @override
+  // List<Object?> get props => [student];
 }

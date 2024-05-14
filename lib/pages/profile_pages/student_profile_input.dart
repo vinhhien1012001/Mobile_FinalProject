@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:final_project_mobile/features/default/bloc/default_bloc.dart';
 import 'package:final_project_mobile/features/default/bloc/default_event.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/student.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_experiences.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
@@ -9,6 +11,8 @@ import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:toastification/toastification.dart';
 
 class Skill {
   final String name;
@@ -419,12 +423,11 @@ class StudentProfileInputPage extends StatefulWidget {
 class StudentProfileInputState extends State<StudentProfileInputPage> {
   List<TechStack> techStacks = [];
   List<String?> techStackNames = [];
-  List<SkillSet> skillSets = [];
-  List<Skill> skillSetOptions = [];
-  TechStack? selectedTechStack;
-  SkillSet? selectedSkillSet;
 
-  final MultiSelectController<SkillSet> _controller = MultiSelectController();
+  TechStack? selectedTechStack;
+  List<int> selectedOptionIds = [];
+
+  final MultiSelectController _controller = MultiSelectController();
   // final List<ValueItem> _selectedOptions = [];
 
   @override
@@ -433,7 +436,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     // });
     BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
-    BlocProvider.of<DefaultBloc>(context).add(GetAllSkillSet());
+    // BlocProvider.of<DefaultBloc>(context).add(GetAllSkillSet());
   }
 
   AppBar appBar(BuildContext context) {
@@ -461,16 +464,28 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
     return BlocListener<DefaultBloc, DefaultState>(
       listener: (context, state) {
         if (state is DefaultOperationFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Operation failed: ${state.error}'),
+          if (state.error == "Role student existed") {
+            print('Role student existed khong hu');
+            final userProfileState = context.read<UserProfileBloc>().state;
+            log('userProfileState: ${userProfileState.userProfile.student!.id}');
+            BlocProvider.of<DefaultBloc>(context).add(
+              UpdateProfile(
+                studentId: userProfileState.userProfile.student!.id,
+                techStackId: selectedTechStack!.id!,
+                skillSets: selectedOptionIds,
               ),
             );
+          } else {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text('Operation failed: ${state.error}'),
+                ),
+              );
+          }
         }
         if (state is DefaultLoadSuccess) {
-          print('TECH STACK LOAD DONE UI');
           setState(() {
             techStacks = state.stacks;
             if (techStacks.isNotEmpty) {
@@ -482,16 +497,22 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
             }
           });
         }
-        if (state is SkillSetLoadSuccess) {
-          print('SKILLSET LOAD DONE UI');
-          setState(() {
-            skillSets = state.skillsets;
-            print('skillSets: $skillSets');
-            skillSetOptions = skillSets
-                .map((item) => Skill(name: item.name!, id: item.id!))
-                .toList();
-            print('skillSetOptions: $skillSetOptions');
-          });
+        if (state is UpdateProfileSuccess) {
+          print('UPDATE PROFILE SUCCESS STATE');
+          toastification.show(
+            context: context,
+            type: ToastificationType.success,
+            style: ToastificationStyle.flat,
+            title: const Text(
+              'Update student profile success!',
+              style: TextStyle(fontSize: 16),
+            ),
+            alignment: Alignment.topCenter,
+            autoCloseDuration: const Duration(seconds: 6),
+            icon: const Icon(Icons.check, size: 40),
+            borderRadius: BorderRadius.circular(12.0),
+            showProgressBar: true,
+          );
         }
       },
       child: Scaffold(
@@ -588,55 +609,47 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                MultiSelectDropDown<SkillSet>(
-                                  // controller: _controller,
-                                  clearIcon: const Icon(Icons.reddit),
-                                  onOptionSelected: (options) {},
-                                  options: skillSets
-                                      .map((skill) => ValueItem(
-                                          label: skill.name!, value: skill))
-                                      .toList(),
-                                  // .map((skill) => ValueItem(
-                                  //     label: skill.name, value: skill))
-                                  // .toList(),
-                                  // maxItems: 4,
-                                  singleSelectItemStyle: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                  chipConfig: const ChipConfig(
-                                      wrapType: WrapType.wrap,
-                                      backgroundColor: Colors.blue),
-                                  optionTextStyle:
-                                      const TextStyle(fontSize: 16),
-                                  selectedOptionIcon: const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.pink,
-                                  ),
-                                  searchEnabled: true,
-                                  selectedOptionBackgroundColor:
-                                      Colors.grey.shade300,
-                                  selectedOptionTextColor: Colors.blue,
-                                  dropdownMargin: 2,
-                                  onOptionRemoved: (index, option) {},
-                                  optionBuilder:
-                                      (context, valueItem, isSelected) {
-                                    print('valueItem builder: $valueItem');
-                                    return ListTile(
-                                      title: Text(valueItem.value!.name!),
-                                      // subtitle: Text(valueItem.value.toString()),
-                                      trailing: isSelected
-                                          ? const Icon(Icons.check_circle)
-                                          : const Icon(
-                                              Icons.radio_button_unchecked),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MultiSelectDropDown.network(
+                                onOptionSelected:
+                                    (List<ValueItem> selectedOptions) {},
+                                networkConfig: NetworkConfig(
+                                    url:
+                                        "https://api.studenthub.dev/api/skillset/getAllSkillSet",
+                                    method: RequestMethod.get,
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                    }),
+                                selectionType: SelectionType.multi,
+                                chipConfig: const ChipConfig(
+                                    wrapType: WrapType.wrap,
+                                    backgroundColor: Colors.black),
+                                dropdownHeight: 250,
+                                optionTextStyle: const TextStyle(
+                                    fontSize: 14, color: Colors.black),
+                                selectedOptionIcon: Icon(Icons.check_circle),
+                                selectedOptionTextColor: Colors.black,
+                                dropdownMargin: 20.5,
+                                searchEnabled: true,
+                                borderWidth: 1,
+                                controller: _controller,
+                                responseParser: (response) {
+                                  final list =
+                                      (response["result"] as List<dynamic>)
+                                          .map<ValueItem>((e) {
+                                    final item = e as Map<String, dynamic>;
+                                    return ValueItem(
+                                      label: item["name"],
+                                      value: item["id"],
                                     );
-                                  },
-                                ),
-                              ],
-                            ),
+                                  }).toList();
+
+                                  return Future.value(list);
+                                },
+                              ),
+                            ],
                           ),
                         )
                       ],
@@ -647,18 +660,6 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
 
                     // Education part
                     const EducationInput(),
-
-                    // Column(
-                    //   children: [
-                    //     const Text('SkillSets:'),
-                    //     for (var skillSet in skillSets)
-                    //       Text('Name: ${skillSet.name}, ID: ${skillSet.id}'),
-                    //     const Text('SkillSetOptions:'),
-                    //     for (var skillOption in skillSetOptions)
-                    //       Text(
-                    //           'Name: ${skillOption.name}, ID: ${skillOption.id}'),
-                    //   ],
-                    // ),
 
                     // Continue button
                     Padding(
@@ -672,13 +673,42 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                               width: 140,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  print(
-                                      'Selected techstack: $selectedTechStack');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const StudentProfileExperiencePage()));
+                                  if (selectedTechStack != null) {
+                                    log('Selected techstack id: ${selectedTechStack!.id}');
+                                  } else {
+                                    log('No techstack selected');
+                                  }
+                                  if (selectedTechStack == null ||
+                                      _controller.selectedOptions.isEmpty) {
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Please fill in all required fields'),
+                                        ),
+                                      );
+                                    // return;
+                                  } else {
+                                    selectedOptionIds = _controller
+                                        .selectedOptions
+                                        .map((item) => item.value)
+                                        .toList()
+                                        .cast<int>();
+
+                                    log('Skillset parse: $selectedOptionIds');
+                                    BlocProvider.of<DefaultBloc>(context).add(
+                                      CreateStudentProfile(
+                                        techStackId: selectedTechStack!.id!,
+                                        skillSets: selectedOptionIds,
+                                      ),
+                                    );
+                                  }
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) =>
+                                  //             const StudentProfileExperiencePage()));
                                 },
                                 style: ButtonStyle(
                                   shape: MaterialStateProperty.all(

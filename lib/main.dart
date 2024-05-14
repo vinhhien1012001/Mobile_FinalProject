@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/home.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));

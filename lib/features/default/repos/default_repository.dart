@@ -41,18 +41,27 @@ class DefaultRepository {
   }
 
   Future<void> updateProfile(
-      String studentId, String techStackId, List<SkillSet> skillSets) async {
-    log('Update profile');
-    // final body<String, dynamic> = {
-    //   'techStackId': techStackId,
-    //   'skillSets': skillSets.map((skillSet) => skillSet.toJson()).toList(),
-    // };
+      int studentId, int techStackId, List<int> skillSets) async {
+    log('Update student profile in repository');
     await httpService.request(
-      method: RequestMethod.patch,
+      method: RequestMethod.put,
       url: '$baseUrl/profile/student/$studentId',
       body: (<String, dynamic>{
         'techStackId': techStackId,
-        'skillSets': skillSets.map((skillSet) => skillSet.toJson()).toList(),
+        'skillSets': skillSets,
+      }),
+    );
+  }
+
+  Future<void> createStudentProfile(
+      int techStackId, List<int> skillSets) async {
+    log('Create student profile in repository');
+    await httpService.request(
+      method: RequestMethod.post,
+      url: '$baseUrl/profile/student',
+      body: (<String, dynamic>{
+        'techStackId': techStackId,
+        'skillSets': skillSets,
       }),
     );
   }
