@@ -80,6 +80,7 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                     builder: (context, state) {
                       if (state is ProposalsByProjectIdLoaded &&
                           state.projectId == project?.id) {
+                        print('project id: ${project?.id}');
                         proposals = state.proposals;
                         return ListView.builder(
                           shrinkWrap: true, // Set shrinkWrap to true

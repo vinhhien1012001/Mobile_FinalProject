@@ -4,7 +4,7 @@ class Conversation {
   final String content;
   final User sender;
   final User receiver;
-  // final Interview? interview;
+  final Interview? interview;
 
   Conversation({
     this.id,
@@ -12,7 +12,7 @@ class Conversation {
     this.createdAt,
     required this.sender,
     required this.receiver,
-    // this.interview,
+    this.interview,
   });
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
@@ -22,7 +22,20 @@ class Conversation {
       createdAt: json['createdAt'],
       sender: User.fromJson(json['sender']),
       receiver: User.fromJson(json['receiver']),
-      // interview: Interview.fromJson(json['interview']),
+      interview: json['interview'] != null
+          ? Interview(
+              createdAt: json['interview']['createdAt'],
+              updatedAt: json['interview']['updatedAt'],
+              deletedAt: json['interview']['deletedAt'],
+              title: json['interview']['title'],
+              startTime: json['interview']['startTime'],
+              endTime: json['interview']['endTime'],
+              disableFlag: json['interview']['disableFlag'],
+              meetingRoomId: json['interview']['meetingRoomId'],
+              meetingRoom:
+                  MeetingRoom.fromJson(json['interview']['meetingRoom']),
+              id: json['interview']['id'])
+          : null,
     );
   }
   Map<String, dynamic> toJson() {
@@ -32,7 +45,6 @@ class Conversation {
       'content': content,
       'sender': sender.toJson(),
       'receiver': receiver.toJson(),
-      // 'interview': interview?.toJson(),
     };
   }
 
@@ -70,6 +82,38 @@ class User {
   }
 }
 
+class MeetingRoom {
+  final int id;
+  final String createdAt;
+  final String updatedAt;
+  final String? deletedAt;
+  final String meetingRoomCode;
+  final String meetingRoomId;
+  final String expiredAt;
+
+  MeetingRoom({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.meetingRoomCode,
+    required this.meetingRoomId,
+    required this.expiredAt,
+  });
+
+  factory MeetingRoom.fromJson(Map<String, dynamic> json) {
+    return MeetingRoom(
+      id: json['id'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      deletedAt: json['deletedAt'],
+      meetingRoomCode: json['meeting_room_code'],
+      meetingRoomId: json['meeting_room_id'],
+      expiredAt: json['expired_at'],
+    );
+  }
+}
+
 class Interview {
   final int id;
   final String? createdAt;
@@ -80,7 +124,7 @@ class Interview {
   final String? endTime;
   final int? disableFlag;
   final int? meetingRoomId;
-  final MeetingRoom meetingRoom;
+  final MeetingRoom? meetingRoom;
 
   Interview({
     required this.id,
@@ -92,7 +136,7 @@ class Interview {
     this.endTime,
     this.disableFlag,
     this.meetingRoomId,
-    required this.meetingRoom,
+    this.meetingRoom,
   });
 
   factory Interview.fromJson(Map<String, dynamic> json) {
@@ -108,73 +152,5 @@ class Interview {
       meetingRoomId: json['meetingRoomId'],
       meetingRoom: MeetingRoom.fromJson(json['meetingRoom']),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'deletedAt': deletedAt,
-      'title': title,
-      'startTime': startTime,
-      'endTime': endTime,
-      'disableFlag': disableFlag,
-      'meetingRoomId': meetingRoomId,
-      'meetingRoom': meetingRoom.toJson(),
-    };
-  }
-
-  @override
-  String toString() {
-    return 'Interview{id: $id, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, title: $title, startTime: $startTime, endTime: $endTime, disableFlag: $disableFlag, meetingRoomId: $meetingRoomId, meetingRoom: $meetingRoom}';
-  }
-}
-
-class MeetingRoom {
-  final int id;
-  final String? createdAt;
-  final String? updatedAt;
-  final String? deletedAt;
-  final String? meetingRoomCode;
-  final String? meetingRoomId;
-  final String? expiredAt;
-
-  MeetingRoom({
-    required this.id,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-    this.meetingRoomCode,
-    this.meetingRoomId,
-    this.expiredAt,
-  });
-
-  factory MeetingRoom.fromJson(Map<String, dynamic> json) {
-    return MeetingRoom(
-      id: json['id'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      deletedAt: json['deletedAt'],
-      meetingRoomCode: json['meeting_room_code'],
-      meetingRoomId: json['meeting_room_id'],
-      expiredAt: json['expired_at'],
-    );
-  }
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      'deletedAt': deletedAt,
-      'meeting_room_code': meetingRoomCode,
-      'meeting_room_id': meetingRoomId,
-      'expired_at': expiredAt,
-    };
-  }
-
-  @override
-  String toString() {
-    return 'MeetingRoom{id: $id, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, meetingRoomCode: $meetingRoomCode, meetingRoomId: $meetingRoomId, expiredAt: $expiredAt}';
   }
 }
