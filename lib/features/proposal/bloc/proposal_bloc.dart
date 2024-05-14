@@ -56,7 +56,12 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
     try {
       final List<Proposal> proposals =
           await proposalRepository.getProposalsByProjectId(event.projectId);
-      emit(ProposalsByProjectIdLoaded(proposals: proposals));
+      if (proposals.isEmpty) {
+        emit(ProposalOperationFailure(error: 'No proposals found'));
+      } else {
+        emit(ProposalsByProjectIdLoaded(
+            proposals: proposals, projectId: event.projectId));
+      }
     } catch (error) {
       emit(ProposalOperationFailure(error: error.toString()));
     }

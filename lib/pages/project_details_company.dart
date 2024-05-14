@@ -78,18 +78,28 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                   const SizedBox(height: 10),
                   BlocConsumer<ProposalBloc, ProposalState>(
                     builder: (context, state) {
-                      if (state is ProposalsByProjectIdLoaded) {
+                      if (state is ProposalsByProjectIdLoaded &&
+                          state.projectId == project?.id) {
                         proposals = state.proposals;
+                        return ListView.builder(
+                          shrinkWrap: true, // Set shrinkWrap to true
+                          physics:
+                              const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+                          itemCount: proposals.length,
+                          itemBuilder: (context, index) {
+                            return StudentProfileCard(
+                                proposal: proposals[index]);
+                          },
+                        );
+                      } else if (state is ProposalOperationFailure) {
+                        return const Center(
+                          child: Text("No proposals found"),
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
-                      return ListView.builder(
-                        shrinkWrap: true, // Set shrinkWrap to true
-                        physics:
-                            const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
-                        itemCount: proposals.length,
-                        itemBuilder: (context, index) {
-                          return StudentProfileCard(proposal: proposals[index]);
-                        },
-                      );
                     },
                     listener: (BuildContext context, ProposalState state) {
                       if (state is SendHireOfferSuccess) {
@@ -217,8 +227,7 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
             const SizedBox(height: 10),
             // Self proposal
             Text(
-              widget.proposal.coverLetter.toString().toCapitalized() ??
-                  'No cover letter yet !',
+              widget.proposal.coverLetter.toString().toCapitalized(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

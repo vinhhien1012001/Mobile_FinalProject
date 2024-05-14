@@ -36,7 +36,9 @@ class ProposalCreateNE extends ProposalState {
 
 class ProposalsByProjectIdLoaded extends ProposalState {
   final List<Proposal> proposals;
-  const ProposalsByProjectIdLoaded({required this.proposals});
+  final int projectId;
+  const ProposalsByProjectIdLoaded(
+      {required this.proposals, required this.projectId});
 
   @override
   List<Object?> get props => [proposals];
