@@ -77,3 +77,22 @@ class MessageSendFailure extends MessageState {
   @override
   List<Object?> get props => [error, DateTime.now()];
 }
+
+// State for creating new interview
+class InterviewCreateSuccess extends MessageState {
+  final String roomCode;
+
+  const InterviewCreateSuccess(this.roomCode);
+
+  @override
+  List<Object?> get props => [roomCode];
+}
+
+class InterviewOperationFailure extends MessageState {
+  final String error;
+
+  const InterviewOperationFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
+}

@@ -94,4 +94,37 @@ class MessageRepository {
     );
     log('Response from sending message: $response');
   }
+
+  Future<void> createNewInterview(
+    String title,
+    String content,
+    String startTime,
+    String endTime,
+    int projectId,
+    int senderId,
+    int receiverId,
+    String roomCode,
+    String roomId,
+    String expiredAt,
+  ) async {
+    log('createNewInterview here');
+    String url = '$baseUrl/interview';
+    final response = await httpService.request(
+      method: RequestMethod.post,
+      url: url,
+      body: {
+        'title': title,
+        'content': content,
+        'startTime': startTime,
+        'endTime': endTime,
+        'projectId': projectId,
+        'senderId': senderId,
+        'receiverId': receiverId,
+        'meeting_room_code': roomCode,
+        'meeting_room_id': roomId,
+        'expired_at': expiredAt,
+      },
+    );
+    log('Response from sending message: $response');
+  }
 }

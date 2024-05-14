@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:final_project_mobile/features/message/bloc/message_event.dart';
@@ -12,6 +13,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     on<GetAllConversationsByProjectId>(_getAllConversationsByProjectId);
     on<GetAllMessagesInConversation>(_getAllMessagesInConversation);
     on<SendMessage>(_sendMessage);
+    on<CreateNewInterview>(_createNewInterview);
   }
 
   Future<void> _getAllConversationsByProjectId(
@@ -50,6 +52,34 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       emit(AllMessagesInConversationLoadSuccess(conversations));
     } catch (error) {
       emit(MessageSendFailure(error.toString()));
+    }
+  }
+
+  Future<void> _createNewInterview(
+      CreateNewInterview event, Emitter<MessageState> emit) async {
+    log('Creating new interview: $event');
+    try {
+      await messageRepository.createNewInterview(
+        event.title,
+        event.content,
+        event.startTime,
+        event.endTime,
+        event.projectId,
+        event.senderId,
+        event.receiverId,
+        event.roomCode,
+        event.roomId,
+        event.expiredAt,
+      );
+      await messageRepository.getMessagesInConversation(
+          event.projectId, event.receiverId);
+      log('Interview created');
+      emit(InterviewCreateSuccess(event.roomCode));
+      final conversations = await messageRepository.getMessagesInConversation(
+          event.projectId, event.receiverId);
+      emit(AllMessagesInConversationLoadSuccess(conversations));
+    } catch (error) {
+      emit(InterviewOperationFailure(error.toString()));
     }
   }
 }

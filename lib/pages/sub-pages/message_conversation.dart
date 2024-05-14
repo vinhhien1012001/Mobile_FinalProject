@@ -190,7 +190,11 @@ class _MessagesDetailsState extends State<MessagesDetails> {
                         // Open dialog to create a new interview
                         showDialog(
                           context: context,
-                          builder: (context) => const NewInterviewDialog(),
+                          builder: (context) => NewInterviewDialog(
+                            projectId: widget.projectId,
+                            receiverId: widget.recipientId,
+                            senderId: sender.id,
+                          ),
                         );
                       },
                       child: const Icon(Icons.add),

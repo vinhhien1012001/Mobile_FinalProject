@@ -59,3 +59,32 @@ class GetAllMessagesInConversation extends MessageEvent {
   @override
   List<Object?> get props => [projectId, recipientId];
 }
+
+class CreateNewInterview extends MessageEvent {
+  final String title;
+  final String content;
+  final String startTime;
+  final String endTime;
+  final int projectId;
+  final int senderId;
+  final int receiverId;
+  final String roomCode;
+  final String roomId;
+  final String expiredAt;
+
+  const CreateNewInterview(
+      {required this.title,
+      required this.content,
+      required this.startTime,
+      required this.endTime,
+      required this.projectId,
+      required this.senderId,
+      required this.receiverId,
+      required this.roomCode,
+      required this.roomId,
+      required this.expiredAt});
+
+  @override
+  List<Object?> get props =>
+      [projectId, title, startTime, endTime, roomCode, roomId];
+}
