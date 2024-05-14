@@ -152,14 +152,14 @@ class StudentProfileCard extends StatefulWidget {
 
 class _StudentProfileCardState extends State<StudentProfileCard> {
   late int randomAvatarNumber = 1;
-  bool hireSent = false;
+  late bool hireSent;
 
   @override
   void initState() {
     super.initState();
     randomAvatarNumber = Random().nextInt(10) + 1;
+    print('Proposal status flag: ${widget.proposal.statusFlag}');
     hireSent = widget.proposal.statusFlag == 2;
-    print('proposal : ${widget.proposal.statusFlag}');
   }
 
   @override
