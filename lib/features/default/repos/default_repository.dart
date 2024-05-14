@@ -88,4 +88,27 @@ class DefaultRepository {
       rethrow;
     }
   }
+
+  Future<void> updateLanguage(int studentId, List<Language> languages) async {
+    try {
+      log('Update language');
+      log('language list parameter: ${languages.map((item) => item.toJson()).toList()}');
+      final newLanguage = await httpService.request(
+        method: RequestMethod.put,
+        url: '$baseUrl/language/updateByStudentId/$studentId',
+        body: (<String, dynamic>{
+          'languages': languages.map((item) => item.toJson()).toList(),
+        }),
+      );
+      if (newLanguage['result'] == null) {
+        String errorDetails =
+            newLanguage['errorDetails'].map((e) => e.toString()).join(' ');
+        throw Exception(errorDetails);
+      }
+    } catch (e) {
+      log('ERRORS CATCH:');
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

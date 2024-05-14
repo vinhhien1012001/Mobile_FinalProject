@@ -46,3 +46,13 @@ class UpdateProfile extends DefaultEvent {
   @override
   List<Object> get props => [studentId, techStackId, skillSets];
 }
+
+class UpdateLanguage extends DefaultEvent {
+  final int studentId;
+  final List<Language> languages;
+
+  const UpdateLanguage({required this.studentId, required this.languages});
+
+  @override
+  List<Object> get props => [studentId, languages];
+}

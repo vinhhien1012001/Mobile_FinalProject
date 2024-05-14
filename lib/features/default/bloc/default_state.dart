@@ -71,3 +71,12 @@ class UpdateProfileSuccess extends DefaultState {
   // @override
   // List<Object?> get props => [student];
 }
+
+class UpdateLanguageSuccess extends DefaultState {
+  // final Language studentLanguage;
+
+  // const UpdateLanguageSuccess({required this.studentLanguage});
+
+  // @override
+  // List<Object?> get props => [studentLanguage];
+}

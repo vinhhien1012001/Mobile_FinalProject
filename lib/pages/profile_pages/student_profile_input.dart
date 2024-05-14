@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -55,6 +56,10 @@ class _EducationInputState extends State<EducationInput> {
 
   int startYear = DateTime.now().year;
   int endYear = DateTime.now().year;
+
+  List<Map<String, String>> getSchools() {
+    return _schools;
+  }
 
   void _addSchool() {
     showDialog(
@@ -266,7 +271,9 @@ class _LanguageInputState extends State<LanguageInput> {
   final _selectedLanguages = <Map<String, String>>[];
   final _formKey = GlobalKey<FormState>();
 
-  // void _addLanguage() {}
+  List<Map<String, String>> getLanguages() {
+    return _selectedLanguages;
+  }
 
   void _addLanguage() {
     showDialog(
@@ -428,7 +435,140 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
   List<int> selectedOptionIds = [];
 
   final MultiSelectController _controller = MultiSelectController();
-  // final List<ValueItem> _selectedOptions = [];
+  final Completer<void> _updateProfileCompleter = Completer<void>();
+
+  /* *************** LANGUAGE VARIABLE  **********************  */
+  final _languageLevels = ['Beginner', 'Intermediate', 'Advanced', 'Native'];
+  final _languages = [
+    'English',
+    'Spanish',
+    'French',
+    'German',
+    'Chinese',
+    'Japanese',
+    'Korean',
+    'Russian',
+    'Arabic',
+    'Portuguese',
+    'Italian',
+    'Dutch',
+    'Turkish',
+    'Polish',
+    'Swedish',
+    'Danish',
+    'Vietnamese',
+  ];
+  String _languageLevel = 'Beginner';
+  String _language = 'Vietnamese';
+  final _selectedLanguages = <Map<String, String>>[];
+  final _formKey = GlobalKey<FormState>();
+
+  void _addLanguage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              contentPadding: const EdgeInsets.all(16),
+              title: const Text('Add Language'),
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10, top: 5, right: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Language:',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                          DropdownButton<String>(
+                            value: _language,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _language = newValue!;
+                              });
+                            },
+                            items: _languages
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10, top: 5, right: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Level:',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                          DropdownButton<String>(
+                            value: _languageLevel,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _languageLevel = newValue!;
+                              });
+                            },
+                            items: _languageLevels
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      this.setState(() {
+                        _selectedLanguages.add({
+                          'level': _languageLevel,
+                          'name': _language,
+                        });
+                      });
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /* *************** EDUCATION VARIABLE  **********************  */
 
   @override
   void initState() {
@@ -436,7 +576,6 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     // });
     BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
-    // BlocProvider.of<DefaultBloc>(context).add(GetAllSkillSet());
   }
 
   AppBar appBar(BuildContext context) {
@@ -476,13 +615,22 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
               ),
             );
           } else {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text('Operation failed: ${state.error}'),
-                ),
-              );
+            toastification.show(
+              context: context,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flat,
+              title: Text(
+                'Sign up failed!  ${state.error.toString().replaceFirst('Exception: ', '')}',
+                style: const TextStyle(
+                    fontSize: 16), // Increase the font size here
+              ),
+              alignment: Alignment.topCenter,
+              autoCloseDuration: const Duration(seconds: 4),
+              icon: const Icon(Icons.error,
+                  size: 40), // Increase the icon size here
+              borderRadius: BorderRadius.circular(12.0),
+              showProgressBar: true,
+            );
           }
         }
         if (state is DefaultLoadSuccess) {
@@ -498,7 +646,25 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
           });
         }
         if (state is UpdateProfileSuccess) {
-          print('UPDATE PROFILE SUCCESS STATE');
+          log('Update profile success!');
+          _updateProfileCompleter.complete();
+
+          // toastification.show(
+          //   context: context,
+          //   type: ToastificationType.success,
+          //   style: ToastificationStyle.flat,
+          //   title: const Text(
+          //     'Update student profile success!',
+          //     style: TextStyle(fontSize: 16),
+          //   ),
+          //   alignment: Alignment.topCenter,
+          //   autoCloseDuration: const Duration(seconds: 6),
+          //   icon: const Icon(Icons.check, size: 40),
+          //   borderRadius: BorderRadius.circular(12.0),
+          //   showProgressBar: true,
+          // );
+        }
+        if (state is UpdateLanguageSuccess) {
           toastification.show(
             context: context,
             type: ToastificationType.success,
@@ -512,6 +678,12 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
             icon: const Icon(Icons.check, size: 40),
             borderRadius: BorderRadius.circular(12.0),
             showProgressBar: true,
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const StudentProfileExperiencePage()),
           );
         }
       },
@@ -656,7 +828,42 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                     ),
 
                     // Languages
-                    const LanguageInput(),
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 0, top: 0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Languages',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _addLanguage,
+                              icon: const Icon(Icons.add_outlined),
+                            ),
+                          ],
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _selectedLanguages.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(_selectedLanguages[index]['name']!),
+                              subtitle:
+                                  Text('${_selectedLanguages[index]['level']}'),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
 
                     // Education part
                     const EducationInput(),
@@ -672,7 +879,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                             child: SizedBox(
                               width: 140,
                               child: ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (selectedTechStack != null) {
                                     log('Selected techstack id: ${selectedTechStack!.id}');
                                   } else {
@@ -696,7 +903,6 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                                         .toList()
                                         .cast<int>();
 
-                                    log('Skillset parse: $selectedOptionIds');
                                     BlocProvider.of<DefaultBloc>(context).add(
                                       CreateStudentProfile(
                                         techStackId: selectedTechStack!.id!,
@@ -704,6 +910,28 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                                       ),
                                     );
                                   }
+
+                                  await _updateProfileCompleter.future;
+                                  if (!mounted) return; // Add this line
+
+                                  log('TIME TO HANDLE EDUCATION AND LANGUAGE');
+                                  // final Language = getLanguages();
+                                  final selectedLanguages = _selectedLanguages
+                                      .map((item) => Language(
+                                          languageName: item['name'],
+                                          level: item['level']))
+                                      .toList();
+                                  log('Selected languages: $selectedLanguages');
+                                  final userProfileState =
+                                      context.read<UserProfileBloc>().state;
+                                  BlocProvider.of<DefaultBloc>(context).add(
+                                    UpdateLanguage(
+                                      studentId: userProfileState
+                                          .userProfile.student!.id,
+                                      languages: selectedLanguages,
+                                    ),
+                                  );
+
                                   // Navigator.push(
                                   //     context,
                                   //     MaterialPageRoute(

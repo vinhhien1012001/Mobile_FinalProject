@@ -16,6 +16,7 @@ class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
     on<UpdateProfile>(_updateProfile);
     on<CreateCompanyProfile>(_createCompanyProfile);
     on<CreateStudentProfile>(_createStudentProfile);
+    on<UpdateLanguage>(_updateLanguage);
   }
 
   Future<void> _fetchAllTechStack(
@@ -64,13 +65,21 @@ class DefaultBloc extends Bloc<DefaultEvent, DefaultState> {
       CreateCompanyProfile event, Emitter<DefaultState> emit) async {
     try {
       await defaultRepository.createCompanyProfile(event.company);
-      print('CREATE COMPANY PROFILE SUCCESS');
-      // emit(CreateCompanyProfileSuccess(company: event.company));
       emit(UpdateProfileSuccess());
     } catch (error) {
       emit(DefaultInitial());
-      print('ERROR IN API');
       emit(CreateProfileFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _updateLanguage(
+      UpdateLanguage event, Emitter<DefaultState> emit) async {
+    try {
+      await defaultRepository.updateLanguage(event.studentId, event.languages);
+      emit(UpdateLanguageSuccess());
+    } catch (error) {
+      emit(DefaultInitial());
+      emit(DefaultOperationFailure(error: error.toString()));
     }
   }
 }
