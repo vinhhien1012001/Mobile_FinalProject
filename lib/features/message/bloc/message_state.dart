@@ -47,3 +47,33 @@ class ConversationLoadFailure extends MessageState {
   @override
   List<Object?> get props => [error];
 }
+
+class AllMessagesInConversationLoadSuccess extends MessageState {
+  final List<Conversation> conversations;
+
+  const AllMessagesInConversationLoadSuccess(this.conversations);
+
+  @override
+  List<Object?> get props => [conversations, DateTime.now()];
+}
+
+class AllMessagesInConversationLoadFailure extends MessageState {
+  final String error;
+
+  const AllMessagesInConversationLoadFailure(this.error);
+
+  @override
+  List<Object?> get props => [error, DateTime.now()];
+}
+
+// State for sending message
+class MessageSendSuccess extends MessageState {}
+
+class MessageSendFailure extends MessageState {
+  final String error;
+
+  const MessageSendFailure(this.error);
+
+  @override
+  List<Object?> get props => [error, DateTime.now()];
+}

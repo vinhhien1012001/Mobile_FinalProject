@@ -1,133 +1,168 @@
+import 'dart:developer';
+
+import 'package:final_project_mobile/features/message/bloc/message_bloc.dart';
+import 'package:final_project_mobile/features/message/bloc/message_event.dart';
+import 'package:final_project_mobile/features/message/bloc/message_state.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
+import 'package:final_project_mobile/models/message.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class ChatPage extends StatefulWidget {
+class MessagesDetails extends StatefulWidget {
   final int projectId;
   final int recipientId;
-  const ChatPage({
+  const MessagesDetails({
     super.key,
     required this.projectId,
     required this.recipientId,
   });
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<MessagesDetails> createState() => _MessagesDetailsState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _MessagesDetailsState extends State<MessagesDetails> {
   final TextEditingController _messageController = TextEditingController();
-  List<Map<String, String>> _messages = [];
+  late List<Conversation> conversations = [];
+  late final UserProfile sender;
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<MessageBloc>(context).add(
+      GetAllMessagesInConversation(
+        widget.projectId,
+        widget.recipientId,
+      ),
+    );
+    sender = BlocProvider.of<UserProfileBloc>(context).state.userProfile;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  String senderName = _messages[index]['name'] ?? '';
-                  String formattedDate = DateFormat('dd/MM/yyyy').format(
-                    DateTime.parse(_messages[index]['date'] ?? ''),
-                  );
-
-                  bool isCurrentUser = true;
-
-                  return Align(
-                    alignment: isCurrentUser
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      decoration: BoxDecoration(
-                        color:
-                            isCurrentUser ? Colors.blue[100] : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isCurrentUser ? 'You' : senderName,
-                            style: TextStyle(
-                              fontWeight: isCurrentUser
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            _messages[index]['message'] ?? '',
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            formattedDate,
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
+    return BlocConsumer<MessageBloc, MessageState>(
+      listener: (context, state) {
+        if (state is AllMessagesInConversationLoadSuccess) {
+          conversations = state.conversations;
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Chat'),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Type your message...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                  child: ListView.builder(
+                    itemCount: conversations.length,
+                    itemBuilder: (context, index) {
+                      Conversation conversation = conversations[index];
+                      String senderName = conversation.sender.fullname ?? '';
+                      String formattedDate =
+                          DateFormat('HH:mm          dd/M').format(
+                        DateTime.parse(conversation.createdAt ?? ''),
+                      );
+
+                      bool isCurrentUser = conversation.sender.id == sender.id;
+
+                      return Align(
+                        alignment: isCurrentUser
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            color: isCurrentUser
+                                ? Colors.blue[100]
+                                : Colors.grey[300],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                isCurrentUser ? 'You' : senderName,
+                                style: TextStyle(
+                                  fontWeight: isCurrentUser
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: isCurrentUser
+                                      ? Colors.blue
+                                      : Colors.black,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                conversation.content ?? '',
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                formattedDate,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(width: 12),
-                FloatingActionButton(
-                  onPressed: () {
-                    // Open dialog to create a new interview
-                    showDialog(
-                      context: context,
-                      builder: (context) => const NewInterviewDialog(),
-                    );
-                  },
-                  child: const Icon(Icons.add),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    // Handle send message action here
-                    String message = _messageController.text;
-                    if (message.isNotEmpty) {
-                      setState(() {
-                        _messages.add({
-                          'message': message,
-                          'date': DateTime.now().toString(),
-                        });
-                        _messageController.clear();
-                      });
-                    }
-                  },
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _messageController,
+                        decoration: InputDecoration(
+                          hintText: 'Type your message...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    FloatingActionButton(
+                      onPressed: () {
+                        // Open dialog to create a new interview
+                        showDialog(
+                          context: context,
+                          builder: (context) => const NewInterviewDialog(),
+                        );
+                      },
+                      child: const Icon(Icons.add),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        // Handle send message action here
+                        String message = _messageController.text;
+                        if (message.isNotEmpty) {
+                          BlocProvider.of<MessageBloc>(context).add(
+                            SendMessage(
+                              content: message,
+                              messageFlag: 0,
+                              projectId: widget.projectId,
+                              receiverId: widget.recipientId,
+                              senderId: 352,
+                            ),
+                          );
+                          _messageController.clear();
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

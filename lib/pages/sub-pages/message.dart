@@ -7,7 +7,6 @@ import 'package:final_project_mobile/models/message.dart';
 import 'package:final_project_mobile/pages/sub-pages/message_conversation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key, required this.projectId});
@@ -65,6 +64,7 @@ class MessagePageState extends State<MessagePage> {
       builder: (context, state) {
         if (state is ConversationLoadSuccess) {
           conversations = state.conversations;
+          log('Conversations: $conversations');
           filteredConversations = conversations;
         }
         return Padding(
@@ -98,14 +98,14 @@ class MessagePageState extends State<MessagePage> {
                       leading: CircleAvatar(
                           child: Text(participant.receiver.id.toString())),
                       title: Text(participant.receiver.fullname),
-                      subtitle: Text(participant.content),
+                      subtitle: Text(participant.content ?? ''),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChatPage(
+                            builder: (context) => MessagesDetails(
                               projectId: widget.projectId,
-                              recipientId: participant.id,
+                              recipientId: participant.receiver.id,
                             ),
                           ),
                         );

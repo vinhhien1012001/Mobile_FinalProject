@@ -1,5 +1,5 @@
 class Conversation {
-  final int id;
+  final int? id;
   final String? createdAt;
   final String content;
   final User sender;
@@ -7,7 +7,7 @@ class Conversation {
   // final Interview? interview;
 
   Conversation({
-    required this.id,
+    this.id,
     required this.content,
     this.createdAt,
     required this.sender,
