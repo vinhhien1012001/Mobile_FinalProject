@@ -44,6 +44,10 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       await messageRepository.sendMessage(event.projectId, event.receiverId,
           event.senderId, event.content, event.messageFlag);
       emit(MessageSendSuccess());
+
+      final conversations = await messageRepository.getMessagesInConversation(
+          event.projectId, event.receiverId);
+      emit(AllMessagesInConversationLoadSuccess(conversations));
     } catch (error) {
       emit(MessageSendFailure(error.toString()));
     }

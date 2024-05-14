@@ -63,8 +63,8 @@ class _MessagesDetailsState extends State<MessagesDetails> {
                       Conversation conversation = conversations[index];
                       String senderName = conversation.sender.fullname ?? '';
                       String formattedDate =
-                          DateFormat('HH:mm          dd/M').format(
-                        DateTime.parse(conversation.createdAt ?? ''),
+                          DateFormat('HH:mm           dd/MM').format(
+                        DateTime.parse(conversation.createdAt ?? '').toLocal(),
                       );
 
                       bool isCurrentUser = conversation.sender.id == sender.id;
