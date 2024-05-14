@@ -79,7 +79,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _widgetOptions = <Widget>[
             const ProjectStudentContent(),
             const DashboardCompany(),
-            const MessagePage(),
+            const MessagePage(
+              projectId: 0,
+            ),
             const NotificationPage(),
           ];
         } else {
@@ -87,7 +89,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _widgetOptions = <Widget>[
             const ProjectStudentContent(),
             const StudentDashboardContent(),
-            const MessagePage(),
+            const MessagePage(
+              projectId: 0,
+            ),
             const NotificationPage(),
           ];
         }

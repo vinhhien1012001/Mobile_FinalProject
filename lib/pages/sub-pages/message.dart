@@ -1,43 +1,38 @@
+import 'dart:developer';
+
+import 'package:final_project_mobile/features/message/bloc/message_bloc.dart';
+import 'package:final_project_mobile/features/message/bloc/message_event.dart';
+import 'package:final_project_mobile/features/message/bloc/message_state.dart';
+import 'package:final_project_mobile/models/message.dart';
+import 'package:final_project_mobile/pages/sub-pages/message_conversation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class MessagePage extends StatefulWidget {
-  const MessagePage({super.key});
+  const MessagePage({super.key, required this.projectId});
+
+  final int projectId;
 
   @override
-  _MessagePageState createState() => _MessagePageState();
+  MessagePageState createState() => MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
-  List<Map<String, String>> messages = [
-    {
-      'name': 'Hien',
-      'message': 'Hello, how are you?',
-      'id': '1',
-      'date': '2024-05-08'
-    },
-    {
-      'name': 'Khoa',
-      'message': 'This is a sample message',
-      'id': '2',
-      'date': '2024-05-08'
-    },
-    {
-      'name': 'Ngoc',
-      'message': 'Another message',
-      'id': '3',
-      'date': '2024-05-08'
-    },
-  ];
+class MessagePageState extends State<MessagePage> {
+  List<Conversation> conversations = [];
 
-  List<Map<String, String>> filteredMessages = [];
+  List<Conversation> filteredConversations = [];
+
   final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    filteredMessages = messages;
-    searchController.addListener(searchMessages);
+    filteredConversations = conversations;
+    searchController.addListener(searchParticipants);
+
+    BlocProvider.of<MessageBloc>(context)
+        .add(GetAllConversationsByProjectId(widget.projectId));
   }
 
   @override
@@ -46,18 +41,18 @@ class _MessagePageState extends State<MessagePage> {
     super.dispose();
   }
 
-  void searchMessages() {
-    String searchText = searchController.text;
+  void searchParticipants() {
+    String searchText = searchController.text.toLowerCase();
     if (searchText.isEmpty) {
       setState(() {
-        filteredMessages = messages;
+        filteredConversations = conversations;
       });
     } else {
       setState(() {
-        filteredMessages = messages
-            .where((message) => message['name']!
+        filteredConversations = conversations
+            .where((participant) => participant.receiver.fullname
                 .toLowerCase()
-                .contains(searchText.toLowerCase()))
+                .contains(searchText))
             .toList();
       });
     }
@@ -65,62 +60,64 @@ class _MessagePageState extends State<MessagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: SizedBox(
-              height: 40, // Adjust the height of the input field
-              child: TextField(
-                controller: searchController,
-                style: const TextStyle(fontSize: 16), // Adjust text size
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 8), // Adjust vertical padding
-                  hintText: 'Search',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+    return BlocConsumer<MessageBloc, MessageState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state is ConversationLoadSuccess) {
+          conversations = state.conversations;
+          filteredConversations = conversations;
+        }
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: SizedBox(
+                  height: 40,
+                  child: TextField(
+                    controller: searchController,
+                    style: const TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                      hintText: 'Search',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredConversations.length,
+                  itemBuilder: (context, index) {
+                    Conversation participant = filteredConversations[index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                          child: Text(participant.receiver.id.toString())),
+                      title: Text(participant.receiver.fullname),
+                      subtitle: Text(participant.content),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                              projectId: widget.projectId,
+                              recipientId: participant.id,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: filteredMessages.length,
-                itemBuilder: (context, index) {
-                  String formattedDate = DateFormat('dd/MM/yyyy')
-                      .format(DateTime.parse(filteredMessages[index]['date']!));
-
-                  return ListTile(
-                    leading: CircleAvatar(
-                        child: Text(filteredMessages[index]['name']![0])),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(filteredMessages[index]['name']!),
-                        Text(formattedDate,
-                            style: const TextStyle(fontSize: 13)),
-                      ],
-                    ),
-                    subtitle: Text(filteredMessages[index]['message']!),
-                    onTap: () {
-                      // Navigate to the message details page
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => MessageDetailsPage(message: filteredMessages[index]),
-                      //   ),
-                      // );
-                    },
-                  );
-                }),
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 }
