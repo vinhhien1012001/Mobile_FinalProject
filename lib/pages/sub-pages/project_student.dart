@@ -3,7 +3,6 @@ import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project_mobile/pages/favorite_project.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part "../../widgets/search_bar.dart";
@@ -267,7 +266,7 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => (),
           color: Colors.black12,
         ),
@@ -275,13 +274,13 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
           onPressed: () => (),
           child: Text(
             currentPage.toString(),
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         IconButton(
-          icon: Icon(Icons.arrow_forward),
+          icon: const Icon(Icons.arrow_forward),
           onPressed: () => _fetchProjectsPage(currentPage + 1),
         ),
       ],

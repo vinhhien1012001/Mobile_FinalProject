@@ -49,7 +49,7 @@ class SearchBar extends StatelessWidget {
             color: Colors.blue,
           ),
         // Filter icon (conditionally rendered)
-        if (isTyping)
+        if (true)
           IconButton(
             onPressed: onFilterPressed,
             iconSize: 24, // Adjust the size of the icon
