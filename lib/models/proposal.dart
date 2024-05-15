@@ -82,22 +82,22 @@ class Student extends Equatable {
   final String? transcript;
   final User? user;
   final TechStack? techStack;
-  final List<Education> educations;
+  final List<String>? educations;
 
   const Student({
     required this.id,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.deletedAt,
-    required this.userId,
-    required this.techStackId,
-    required this.resume,
-    required this.transcript,
-    required this.user,
-    required this.techStack,
-    required this.educations,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.userId,
+    this.techStackId,
+    this.resume,
+    this.transcript,
+    this.user,
+    this.techStack,
+    this.educations,
   });
-
+// Error on education => Later
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
       id: json['id'],
@@ -110,9 +110,7 @@ class Student extends Equatable {
       transcript: json['transcript'],
       user: User.fromJson(json['user']),
       techStack: TechStack.fromJson(json['techStack']),
-      educations: (json['educations'] as List<dynamic>)
-          .map((e) => Education.fromJson(e))
-          .toList(),
+      // educations: json['educations'],
     );
   }
 
@@ -128,7 +126,7 @@ class Student extends Equatable {
       'transcript': transcript,
       'user': user?.toJson(),
       'techStack': techStack?.toJson(),
-      'educations': educations.map((e) => e.toJson()).toList(),
+      // 'educations': educations,
     };
   }
 
@@ -149,26 +147,26 @@ class Student extends Equatable {
 }
 
 class User extends Equatable {
-  final String fullName;
+  final String fullname;
 
   const User({
-    required this.fullName,
+    required this.fullname,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      fullName: json['fullname'],
+      fullname: json['fullname'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'fullname': fullName,
+      'fullname': fullname,
     };
   }
 
   @override
-  List<Object?> get props => [fullName];
+  List<Object?> get props => [fullname];
 }
 
 class TechStack extends Equatable {

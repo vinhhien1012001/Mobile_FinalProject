@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:final_project_mobile/models/student.dart';
 
+enum Role { Student, Company }
+
 class UserProfile extends Equatable {
   const UserProfile({
     required this.id,
@@ -34,25 +36,25 @@ class UserProfile extends Equatable {
 }
 
 class Company extends Equatable {
-  const Company({
-    required this.id,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.userId,
-    required this.companyName,
-    required this.website,
-    required this.size,
-    required this.description,
-  });
+  final int? id;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? userId;
+  final String? companyName;
+  final String? website;
+  final int? size;
+  final String? description;
 
-  final int id;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int userId;
-  final String companyName;
-  final String website;
-  final int size;
-  final String description;
+  const Company({
+    this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.userId,
+    this.companyName,
+    this.website,
+    this.size,
+    this.description,
+  });
 
   @override
   List<Object?> get props => [
@@ -77,5 +79,16 @@ class Company extends Equatable {
       size: json['size'],
       description: json['description'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'companyName': companyName,
+      'website': website,
+      'size': size,
+      'description': description,
+    };
   }
 }

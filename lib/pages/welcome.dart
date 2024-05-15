@@ -1,5 +1,6 @@
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/features/user/repos/user_repository.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/sub-pages/dashboard.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class _WelcomeViewState extends State<WelcomeView> {
     return BlocBuilder<UserProfileBloc, UserProfileState>(
         builder: (context, state) {
       return Scaffold(
-        appBar: const CustomAppBar(),
+        appBar: const AppBarNoBack(),
         body: Center(
           child: Padding(
               padding: const EdgeInsets.all(20),
@@ -87,11 +88,12 @@ class _WelcomeViewState extends State<WelcomeView> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const DashboardScreen()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             const DashboardScreen()));
+                          Navigator.pushNamed(context, Routes.dashboard);
                         },
                         style: ButtonStyle(
                           shape: MaterialStateProperty.all(

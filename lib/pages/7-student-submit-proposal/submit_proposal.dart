@@ -60,7 +60,7 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
         }
       },
       child: Scaffold(
-        appBar: const CustomAppBar(),
+        appBar: const AppBarBack(),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -83,7 +83,7 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
               const SizedBox(height: 10),
               TextField(
                 controller: _coverLetterController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Cover letter',
                 ),

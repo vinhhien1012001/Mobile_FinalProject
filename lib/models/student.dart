@@ -112,3 +112,42 @@ class TechStack {
     );
   }
 }
+
+class Language {
+  const Language({
+    this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.studentId,
+    this.languageName,
+    this.level,
+  });
+
+  final int? id;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? studentId;
+  final String? languageName;
+  final String? level;
+
+  static Language fromJson(Map<String, dynamic> json) {
+    return Language(
+      id: json['id'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      languageName: json['languageName'],
+      level: json['level'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      // 'id': id,
+      // 'createdAt': createdAt,
+      // 'updatedAt': updatedAt,
+      // 'studentId': studentId,
+      'languageName': languageName,
+      'level': level,
+    };
+  }
+}

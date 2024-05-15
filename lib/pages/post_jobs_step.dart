@@ -5,6 +5,7 @@ import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/sub-pages/dashboard.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class _PostJobStepScreenState extends State<PostJobStepScreen> {
           return BlocListener<ProjectBloc, ProjectState>(
             listener: (context, state) {},
             child: Scaffold(
-              appBar: const CustomAppBar(),
+              appBar: const AppBarBack(),
               body: Container(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -102,11 +103,12 @@ class _PostJobStepScreenState extends State<PostJobStepScreen> {
                                   .read<ProjectBloc>()
                                   .add(CreateProject(project: project));
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DashboardScreen()));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             const DashboardScreen()));
+                              Navigator.pushNamed(context, Routes.dashboard);
                             },
                           ),
                       ],

@@ -6,6 +6,7 @@ import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/post_jobs_step.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +31,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
   }
 
   List<Project> projects = [];
+  List<Project> workingProjects = [];
+  List<Project> archivedProjects = [];
   @override
   Widget build(BuildContext context) {
     List<Project> archivedProjects = [];
@@ -41,6 +44,10 @@ class _DashboardCompanyState extends State<DashboardCompany> {
           builder: (context, state) {
             if (state is MyProjectLoadSuccess) {
               projects = state.projects;
+              workingProjects =
+                  projects.where((project) => project.typeFlag == 1).toList();
+              archivedProjects =
+                  projects.where((project) => project.typeFlag == 2).toList();
             }
             return Padding(
               padding: const EdgeInsets.all(20),
@@ -59,12 +66,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                         padding: const EdgeInsets.only(top: 20, left: 10),
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const PostJobStepScreen(),
-                              ),
-                            );
+                            Navigator.pushNamed(context, Routes.postJobsStep);
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(
@@ -83,13 +85,14 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                   const SizedBox(height: 30),
                   Expanded(
                     child: DefaultTabController(
-                      length: 2,
+                      length: 3,
                       child: Column(
                         children: [
                           const TabBar(
                             tabs: [
                               Tab(text: 'All projects'),
-                              Tab(text: 'Archived projects'),
+                              Tab(text: 'Working '),
+                              Tab(text: 'Archived '),
                             ],
                           ),
                           Expanded(
@@ -97,6 +100,8 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                               children: [
                                 ProjectWidgets.buildProjectList(
                                     projects), // All projects tab
+                                ProjectWidgets.buildProjectList(
+                                    workingProjects), // All projects tab
                                 ProjectWidgets.buildProjectList(
                                     archivedProjects), // Archived projects tab
                               ],

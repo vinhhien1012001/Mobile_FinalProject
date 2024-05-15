@@ -4,6 +4,7 @@ import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/pages/sub-pages/dashboard_company.dart';
 import 'package:final_project_mobile/pages/sub-pages/dashboard_student.dart';
 import 'package:final_project_mobile/pages/sub-pages/message.dart';
@@ -74,22 +75,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final companyId = userProfileState.userProfile.company?.id;
     return BlocBuilder<RoleBloc, RoleState>(
       builder: (context, state) {
-        if (state.roleId == 1) {
-          // Company role
-          _widgetOptions = <Widget>[
-            const ProjectStudentContent(),
-            const DashboardCompany(),
-            const MessagePage(),
-            const NotificationPage(),
-          ];
-        } else {
-          // Student role
-          _widgetOptions = <Widget>[
-            const ProjectStudentContent(),
-            const StudentDashboardContent(),
-            const MessagePage(),
-            const NotificationPage(),
-          ];
+        if (state is RoleLoaded) {
+          if (state.role == Role.Company) {
+            // Company role
+            _widgetOptions = <Widget>[
+              const ProjectStudentContent(),
+              const DashboardCompany(),
+              const MessagePage(
+                projectId: 0,
+              ),
+              const NotificationPage(),
+            ];
+          } else if (state.role == Role.Student) {
+            // Student role
+            _widgetOptions = <Widget>[
+              const ProjectStudentContent(),
+              StudentDashboardContent(),
+              const MessagePage(
+                projectId: 0,
+              ),
+              const NotificationPage(),
+            ];
+          }
         }
         return BlocListener<ProjectBloc, ProjectState>(
           listener: (context, state) {
@@ -102,7 +109,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: BlocBuilder<ProjectBloc, ProjectState>(
             builder: (context, projectState) {
               return Scaffold(
-                appBar: const CustomAppBar(),
+                appBar: const AppBarBackProfile(),
                 body: IndexedStack(
                   index: _selectedIndex,
                   children: _widgetOptions,

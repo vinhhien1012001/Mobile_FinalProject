@@ -1,14 +1,21 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:final_project_mobile/features/default/bloc/default_bloc.dart';
 import 'package:final_project_mobile/features/default/bloc/default_event.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/student.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_experiences.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
-import 'package:final_project_mobile/widgets/custom_multiselect.dart';
+import 'package:final_project_mobile/routes/routes.dart';
+import 'package:final_project_mobile/widgets/custom_app_bar.dart';
+// import 'package:final_project_mobile/widgets/custom_multiselect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:toastification/toastification.dart';
 
 class Skill {
   final String name;
@@ -51,6 +58,10 @@ class _EducationInputState extends State<EducationInput> {
 
   int startYear = DateTime.now().year;
   int endYear = DateTime.now().year;
+
+  List<Map<String, String>> getSchools() {
+    return _schools;
+  }
 
   void _addSchool() {
     showDialog(
@@ -262,7 +273,9 @@ class _LanguageInputState extends State<LanguageInput> {
   final _selectedLanguages = <Map<String, String>>[];
   final _formKey = GlobalKey<FormState>();
 
-  // void _addLanguage() {}
+  List<Map<String, String>> getLanguages() {
+    return _selectedLanguages;
+  }
 
   void _addLanguage() {
     showDialog(
@@ -419,74 +432,244 @@ class StudentProfileInputPage extends StatefulWidget {
 class StudentProfileInputState extends State<StudentProfileInputPage> {
   List<TechStack> techStacks = [];
   List<String?> techStackNames = [];
-  List<SkillSet> skillSets = [];
-  List<Skill> skillSetOptions = [];
-  TechStack? selectedTechStack;
 
-  final MultiSelectController<Skill> _controller = MultiSelectController();
-  final List<ValueItem> _selectedOptions = [];
+  TechStack? selectedTechStack;
+  List<int> selectedOptionIds = [];
+
+  final MultiSelectController _controller = MultiSelectController();
+  final Completer<void> _updateProfileCompleter = Completer<void>();
+
+  /* *************** LANGUAGE VARIABLE  **********************  */
+  final _languageLevels = ['Beginner', 'Intermediate', 'Advanced', 'Native'];
+  final _languages = [
+    'English',
+    'Spanish',
+    'French',
+    'German',
+    'Chinese',
+    'Japanese',
+    'Korean',
+    'Russian',
+    'Arabic',
+    'Portuguese',
+    'Italian',
+    'Dutch',
+    'Turkish',
+    'Polish',
+    'Swedish',
+    'Danish',
+    'Vietnamese',
+  ];
+  String _languageLevel = 'Beginner';
+  String _language = 'Vietnamese';
+  final _selectedLanguages = <Map<String, String>>[];
+  final _formKey = GlobalKey<FormState>();
+
+  void _addLanguage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              contentPadding: const EdgeInsets.all(16),
+              title: const Text('Add Language'),
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10, top: 5, right: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Language:',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                          DropdownButton<String>(
+                            value: _language,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _language = newValue!;
+                              });
+                            },
+                            items: _languages
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(bottom: 10, top: 5, right: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Level:',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                          DropdownButton<String>(
+                            value: _languageLevel,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _languageLevel = newValue!;
+                              });
+                            },
+                            items: _languageLevels
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      this.setState(() {
+                        _selectedLanguages.add({
+                          'level': _languageLevel,
+                          'name': _language,
+                        });
+                      });
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /* *************** EDUCATION VARIABLE  **********************  */
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
-      BlocProvider.of<DefaultBloc>(context).add(GetAllSkillSet());
-    });
-  }
-
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SwitchAccountPage()));
-          },
-        ),
-        //
-      ],
-    );
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    // });
+    BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DefaultBloc, DefaultState>(builder: (context, state) {
-      if (state is DefaultLoadSuccess) {
-        techStacks = state.stacks;
-        // techStackNames = techStacks.map((techStack) => techStack.name).toList()
-        //     as List<String>;
-        print('default load success');
-        print('TECHSTACKS: $techStacks');
-        if (techStacks.isNotEmpty) {
-          techStackNames = techStacks
-              .map((techStack) => techStack.name)
-              .where((name) => name != null)
-              .toList()
-              .cast<String>();
-          print('TECHSTACKS NAMES: $techStackNames');
+    return BlocListener<DefaultBloc, DefaultState>(
+      listener: (context, state) {
+        if (state is DefaultOperationFailure) {
+          if (state.error == "Role student existed") {
+            print('Role student existed khong hu');
+            final userProfileState = context.read<UserProfileBloc>().state;
+            log('userProfileState: ${userProfileState.userProfile.student!.id}');
+            BlocProvider.of<DefaultBloc>(context).add(
+              UpdateProfile(
+                studentId: userProfileState.userProfile.student!.id,
+                techStackId: selectedTechStack!.id!,
+                skillSets: selectedOptionIds,
+              ),
+            );
+          } else {
+            toastification.show(
+              context: context,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flat,
+              title: Text(
+                'Sign up failed!  ${state.error.toString().replaceFirst('Exception: ', '')}',
+                style: const TextStyle(
+                    fontSize: 16), // Increase the font size here
+              ),
+              alignment: Alignment.topCenter,
+              autoCloseDuration: const Duration(seconds: 4),
+              icon: const Icon(Icons.error,
+                  size: 40), // Increase the icon size here
+              borderRadius: BorderRadius.circular(12.0),
+              showProgressBar: true,
+            );
+          }
         }
-      }
-      if (state is SkillSetLoadSuccess) {
-        skillSets = state.skillsets;
-        // techStackNames = techStacks.map((techStack) => techStack.name).toList()
-        //     as List<String>;
-        print('skillSets: $skillSets');
-        skillSetOptions = skillSets
-            .map((item) => Skill(name: item.name!, id: item.id!))
-            .toList();
+        if (state is DefaultLoadSuccess) {
+          setState(() {
+            techStacks = state.stacks;
+            if (techStacks.isNotEmpty) {
+              techStackNames = techStacks
+                  .map((techStack) => techStack.name)
+                  .where((name) => name != null)
+                  .toList()
+                  .cast<String>();
+            }
+          });
+        }
+        if (state is UpdateProfileSuccess) {
+          log('Update profile success!');
+          _updateProfileCompleter.complete();
 
-        print('skillSetOptions: $skillSetOptions');
-      }
+          // toastification.show(
+          //   context: context,
+          //   type: ToastificationType.success,
+          //   style: ToastificationStyle.flat,
+          //   title: const Text(
+          //     'Update student profile success!',
+          //     style: TextStyle(fontSize: 16),
+          //   ),
+          //   alignment: Alignment.topCenter,
+          //   autoCloseDuration: const Duration(seconds: 6),
+          //   icon: const Icon(Icons.check, size: 40),
+          //   borderRadius: BorderRadius.circular(12.0),
+          //   showProgressBar: true,
+          // );
+        }
+        if (state is UpdateLanguageSuccess) {
+          toastification.show(
+            context: context,
+            type: ToastificationType.success,
+            style: ToastificationStyle.flat,
+            title: const Text(
+              'Update student profile success!',
+              style: TextStyle(fontSize: 16),
+            ),
+            alignment: Alignment.topCenter,
+            autoCloseDuration: const Duration(seconds: 6),
+            icon: const Icon(Icons.check, size: 40),
+            borderRadius: BorderRadius.circular(12.0),
+            showProgressBar: true,
+          );
 
-      return Scaffold(
-        appBar: appBar(context),
+          Navigator.pushReplacementNamed(
+            context,
+            Routes.studentProfileExperiences,
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: const AppBarBack(),
         body: Center(
           child: Padding(
               padding: const EdgeInsets.all(20),
@@ -579,61 +762,89 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                MultiSelectDropDown<Skill>(
-                                  controller: _controller,
-                                  clearIcon: const Icon(Icons.reddit),
-                                  onOptionSelected: (options) {},
-                                  options: skillSetOptions
-                                      .map((skill) => ValueItem(
-                                          label: skill.name, value: skill))
-                                      .toList(),
-                                  // .map((skill) => ValueItem(
-                                  //     label: skill.name, value: skill))
-                                  // .toList(),
-                                  // maxItems: 4,
-                                  singleSelectItemStyle: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                  chipConfig: const ChipConfig(
-                                      wrapType: WrapType.wrap,
-                                      backgroundColor: Colors.blue),
-                                  optionTextStyle:
-                                      const TextStyle(fontSize: 16),
-                                  selectedOptionIcon: const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.pink,
-                                  ),
-                                  searchEnabled: true,
-                                  selectedOptionBackgroundColor:
-                                      Colors.grey.shade300,
-                                  selectedOptionTextColor: Colors.blue,
-                                  dropdownMargin: 2,
-                                  onOptionRemoved: (index, option) {},
-                                  optionBuilder:
-                                      (context, valueItem, isSelected) {
-                                    return ListTile(
-                                      title: Text(valueItem.value!.name),
-                                      // subtitle: Text(valueItem.value.toString()),
-                                      trailing: isSelected
-                                          ? const Icon(Icons.check_circle)
-                                          : const Icon(
-                                              Icons.radio_button_unchecked),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MultiSelectDropDown.network(
+                                onOptionSelected:
+                                    (List<ValueItem> selectedOptions) {},
+                                networkConfig: NetworkConfig(
+                                    url:
+                                        "https://api.studenthub.dev/api/skillset/getAllSkillSet",
+                                    method: RequestMethod.get,
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                    }),
+                                selectionType: SelectionType.multi,
+                                chipConfig: const ChipConfig(
+                                    wrapType: WrapType.wrap,
+                                    backgroundColor: Colors.black),
+                                dropdownHeight: 250,
+                                optionTextStyle: const TextStyle(
+                                    fontSize: 14, color: Colors.black),
+                                selectedOptionIcon: Icon(Icons.check_circle),
+                                selectedOptionTextColor: Colors.black,
+                                dropdownMargin: 20.5,
+                                searchEnabled: true,
+                                borderWidth: 1,
+                                controller: _controller,
+                                responseParser: (response) {
+                                  final list =
+                                      (response["result"] as List<dynamic>)
+                                          .map<ValueItem>((e) {
+                                    final item = e as Map<String, dynamic>;
+                                    return ValueItem(
+                                      label: item["name"],
+                                      value: item["id"],
                                     );
-                                  },
-                                ),
-                              ],
-                            ),
+                                  }).toList();
+
+                                  return Future.value(list);
+                                },
+                              ),
+                            ],
                           ),
                         )
                       ],
                     ),
 
                     // Languages
-                    const LanguageInput(),
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 0, top: 0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Languages',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _addLanguage,
+                              icon: const Icon(Icons.add_outlined),
+                            ),
+                          ],
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _selectedLanguages.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(_selectedLanguages[index]['name']!),
+                              subtitle:
+                                  Text('${_selectedLanguages[index]['level']}'),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
 
                     // Education part
                     const EducationInput(),
@@ -649,14 +860,58 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                             child: SizedBox(
                               width: 140,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  print(
-                                      'Selected techstack: $selectedTechStack');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const StudentProfileExperiencePage()));
+                                onPressed: () async {
+                                  if (selectedTechStack != null) {
+                                    log('Selected techstack id: ${selectedTechStack!.id}');
+                                  } else {
+                                    log('No techstack selected');
+                                  }
+                                  if (selectedTechStack == null ||
+                                      _controller.selectedOptions.isEmpty) {
+                                    ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Please fill in all required fields'),
+                                        ),
+                                      );
+                                    // return;
+                                  } else {
+                                    selectedOptionIds = _controller
+                                        .selectedOptions
+                                        .map((item) => item.value)
+                                        .toList()
+                                        .cast<int>();
+
+                                    BlocProvider.of<DefaultBloc>(context).add(
+                                      CreateStudentProfile(
+                                        techStackId: selectedTechStack!.id!,
+                                        skillSets: selectedOptionIds,
+                                      ),
+                                    );
+                                  }
+
+                                  await _updateProfileCompleter.future;
+                                  if (!mounted) return; // Add this line
+
+                                  log('TIME TO HANDLE EDUCATION AND LANGUAGE');
+                                  // final Language = getLanguages();
+                                  final selectedLanguages = _selectedLanguages
+                                      .map((item) => Language(
+                                          languageName: item['name'],
+                                          level: item['level']))
+                                      .toList();
+                                  log('Selected languages: $selectedLanguages');
+                                  final userProfileState =
+                                      context.read<UserProfileBloc>().state;
+                                  BlocProvider.of<DefaultBloc>(context).add(
+                                    UpdateLanguage(
+                                      studentId: userProfileState
+                                          .userProfile.student!.id,
+                                      languages: selectedLanguages,
+                                    ),
+                                  );
                                 },
                                 style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
@@ -678,7 +933,7 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                 ),
               )),
         ),
-      );
-    });
+      ),
+    );
   }
 }

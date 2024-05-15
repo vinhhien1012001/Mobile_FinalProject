@@ -36,21 +36,47 @@ class DefaultOperationFailure extends DefaultState {
   List<Object?> get props => [error];
 }
 
-class UpdateProfileSuccess extends DefaultState {
-  // final List<SkillSet> skillsets;
-  // final String techStackId;
+class CreateCompanyProfileSuccess extends DefaultState {
+  final Company company;
 
-  // const UpdateProfileSuccess(
-  //     {required this.skillsets, required this.techStackId});
+  const CreateCompanyProfileSuccess({required this.company});
 
-  // @override
-  // List<Object?> get props => [skillsets, techStackId];
+  @override
+  List<Object?> get props => [company];
 }
 
-// class DefaultLoadingDone extends DefaultState {
-//   final String projectId;
-//   const DefaultLoadingDone({required this.projectId});
+class CreateProfileFailure extends DefaultState {
+  final String error;
 
-//   @override
-//   List<Object?> get props => [projectId];
-// }
+  const CreateProfileFailure({required this.error});
+
+  @override
+  List<Object?> get props => [error];
+}
+
+class CreateStudentProfileSuccess extends DefaultState {
+  final Student student;
+
+  const CreateStudentProfileSuccess({required this.student});
+
+  @override
+  List<Object?> get props => [student];
+}
+
+class UpdateProfileSuccess extends DefaultState {
+  // final Student student;
+
+  // const UpdateProfileSuccess({required this.student});
+
+  // @override
+  // List<Object?> get props => [student];
+}
+
+class UpdateLanguageSuccess extends DefaultState {
+  // final Language studentLanguage;
+
+  // const UpdateLanguageSuccess({required this.studentLanguage});
+
+  // @override
+  // List<Object?> get props => [studentLanguage];
+}

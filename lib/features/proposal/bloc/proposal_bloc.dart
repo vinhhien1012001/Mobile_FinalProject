@@ -18,6 +18,8 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
     on<SubmitProposal>(_submitProposal);
     on<UpdateProposal>(_updateProposal);
     on<GetProposalsByProjectId>(_getProposalsByProjectId);
+    on<SendHireOffer>(_sendHireOffer);
+    on<GetAllProposalsOfStudent>(_getAllProposalsOfStudent);
   }
 
   Future<void> _updateProposal(
@@ -45,7 +47,6 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
           message: 'Success ${event.projectId + event.studentId}',
           proposal: proposal));
     } catch (error) {
-      emit(ProposalInitial());
       emit(ProposalOperationFailure(error: error.toString()));
     }
   }
@@ -55,7 +56,37 @@ class ProposalBloc extends Bloc<ProposalEvent, ProposalState> {
     try {
       final List<Proposal> proposals =
           await proposalRepository.getProposalsByProjectId(event.projectId);
-      emit(ProposalsByProjectIdLoaded(proposals: proposals));
+      if (proposals.isEmpty) {
+        emit(ProposalOperationFailure(error: 'No proposals found'));
+      } else {
+        emit(ProposalsByProjectIdLoaded(
+            proposals: proposals, projectId: event.projectId));
+      }
+    } catch (error) {
+      emit(ProposalOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _sendHireOffer(
+      SendHireOffer event, Emitter<ProposalState> emit) async {
+    try {
+      final response = await proposalRepository.sendHireOffer(
+          event.proposalId, event.disableFlag, event.statusFlag);
+      log('SEND OFFER NE`: $response');
+      emit(SendHireOfferSuccess(proposal: response));
+    } catch (error) {
+      emit(ProposalOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _getAllProposalsOfStudent(
+      GetAllProposalsOfStudent event, Emitter<ProposalState> emit) async {
+    try {
+      final List<Proposal> proposals =
+          await proposalRepository.getAllProposalsOfStudent(event.studentId);
+
+      emit(GetAllProposalsOfStudentSuccess(
+          proposals: proposals, studentId: event.studentId));
     } catch (error) {
       emit(ProposalOperationFailure(error: error.toString()));
     }

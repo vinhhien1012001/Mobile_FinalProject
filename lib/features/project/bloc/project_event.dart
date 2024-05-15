@@ -28,8 +28,8 @@ class CreateProject extends ProjectEvent {
 
 class GetProjectsByCompanyId extends ProjectEvent {
   final String companyId;
-
-  const GetProjectsByCompanyId({required this.companyId});
+  final int? typeFlag;
+  const GetProjectsByCompanyId({required this.companyId, this.typeFlag});
 
   @override
   List<Object?> get props => [companyId];
@@ -103,4 +103,24 @@ class UpdateFavoriteProject extends ProjectEvent {
 
   @override
   List<Object?> get props => [studentId, projectId, disableFlag];
+}
+
+class StartWorkingOnProject extends ProjectEvent {
+  final String projectId;
+  final Project updatedProject;
+
+  const StartWorkingOnProject(
+      {required this.projectId, required this.updatedProject});
+
+  @override
+  List<Object?> get props => [projectId, updatedProject];
+}
+
+class GetAllProjectsByStudentId extends ProjectEvent {
+  final int studentId;
+
+  const GetAllProjectsByStudentId({required this.studentId});
+
+  @override
+  List<Object?> get props => [studentId];
 }

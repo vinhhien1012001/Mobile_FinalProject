@@ -1,4 +1,5 @@
 import 'package:final_project_mobile/notifiers/auth_notifier.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/screens/join_as.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const AppBarBack(),
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(20),
@@ -33,6 +34,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+
+                    // Username or Email
                     TextField(
                       decoration: const InputDecoration(
                         labelText: 'Username or Email',
@@ -43,6 +46,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
+
+                    // Password
                     TextField(
                       decoration: const InputDecoration(
                         labelText: 'Password',
@@ -60,10 +65,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: () {
-                                ref.read(authNotifierProvider.notifier).login(
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                    context: context);
+                                if (emailController.text.isEmpty ||
+                                    passwordController.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('Please fill in all fields')),
+                                  );
+                                } else {
+                                  ref.read(authNotifierProvider.notifier).login(
+                                        email: emailController.text,
+                                        password: passwordController.text,
+                                        context: context,
+                                      );
+                                }
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
@@ -88,10 +103,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const Text('Don\'t have an StudentHub account?'),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const JoinAs()));
+                          Navigator.pushNamed(context, Routes.joinAs);
                         },
                         style: ButtonStyle(
                           shape: MaterialStateProperty.all(

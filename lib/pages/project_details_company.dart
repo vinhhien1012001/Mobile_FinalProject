@@ -1,19 +1,21 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/models/proposal.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
+import 'package:final_project_mobile/pages/sub-pages/message.dart';
+import 'package:final_project_mobile/pages/sub-pages/message_conversation.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 
 class ProjectDetailsCompany extends StatefulWidget {
   final Project project;
 
-  const ProjectDetailsCompany({Key? key, required this.project})
-      : super(key: key);
+  const ProjectDetailsCompany({super.key, required this.project});
 
   @override
   State<ProjectDetailsCompany> createState() => _ProjectDetailsCompanyState();
@@ -75,20 +77,47 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  BlocBuilder<ProposalBloc, ProposalState>(
+                  BlocConsumer<ProposalBloc, ProposalState>(
                     builder: (context, state) {
-                      if (state is ProposalsByProjectIdLoaded) {
+                      if (state is ProposalsByProjectIdLoaded &&
+                          state.projectId == project?.id) {
+                        print('project id: ${project?.id}');
                         proposals = state.proposals;
+                        return ListView.builder(
+                          shrinkWrap: true, // Set shrinkWrap to true
+                          physics:
+                              const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+                          itemCount: proposals.length,
+                          itemBuilder: (context, index) {
+                            return StudentProfileCard(
+                                proposal: proposals[index]);
+                          },
+                        );
+                      } else if (state is ProposalOperationFailure) {
+                        return const Center(
+                          child: Text("No proposals found"),
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
-                      return ListView.builder(
-                        shrinkWrap: true, // Set shrinkWrap to true
-                        physics:
-                            const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
-                        itemCount: proposals.length,
-                        itemBuilder: (context, index) {
-                          return StudentProfileCard(proposal: proposals[index]);
-                        },
-                      );
+                    },
+                    listener: (BuildContext context, ProposalState state) {
+                      if (state is SendHireOfferSuccess) {
+                        toastification.show(
+                          context: context,
+                          type: ToastificationType.success,
+                          style: ToastificationStyle.flat,
+                          title: Text(
+                              'Send hire offer to student with id : ${state.proposal.student?.id ?? 0} successfully !'),
+                          alignment: Alignment.bottomRight,
+                          autoCloseDuration: const Duration(seconds: 4),
+                          icon: const Icon(Icons.check),
+                          borderRadius: BorderRadius.circular(12.0),
+                          showProgressBar: true,
+                        );
+                      }
                     },
                   ),
                 ],
@@ -113,7 +142,10 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
                 BuildProjectDetails(project: project ?? Project()),
               ],
             ),
-            const Center(child: Text('Message Tab')),
+            Center(
+                child: MessagePage(
+              projectId: project?.id ?? 0,
+            )),
             const Center(child: Text('Hired Tab')),
           ],
         ),
@@ -123,21 +155,23 @@ class _ProjectDetailsCompanyState extends State<ProjectDetailsCompany>
 }
 
 class StudentProfileCard extends StatefulWidget {
-  StudentProfileCard({super.key, required this.proposal});
-  Proposal proposal;
+  const StudentProfileCard({super.key, required this.proposal});
+  final Proposal proposal;
 
   @override
   State<StudentProfileCard> createState() => _StudentProfileCardState();
 }
 
 class _StudentProfileCardState extends State<StudentProfileCard> {
-  Proposal? proposal;
   late int randomAvatarNumber = 1;
+  late bool hireSent;
+
   @override
   void initState() {
     super.initState();
-    proposal = widget.proposal;
     randomAvatarNumber = Random().nextInt(10) + 1;
+    print('Proposal status flag: ${widget.proposal.statusFlag}');
+    hireSent = widget.proposal.statusFlag == 2;
   }
 
   @override
@@ -157,7 +191,7 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
                   radius: 30,
                   // Replace with actual image
                   backgroundImage: NetworkImage(
-                      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-${randomAvatarNumber}.png'),
+                      'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-$randomAvatarNumber.png'),
                 ),
                 const SizedBox(width: 10),
                 // Student name and number of years student
@@ -165,12 +199,12 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${widget.proposal.student?.user?.fullName ?? 0}',
+                      widget.proposal.student?.user?.fullname ?? '',
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
-                    Text('No education yet'),
+                    const Text('No education yet'),
                   ],
                 ),
               ],
@@ -183,10 +217,10 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  proposal?.student?.techStack?.name ?? 'No title yet !',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  widget.proposal.student?.techStack?.name ?? 'No title yet !',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   'Level: Excellent',
                   style: TextStyle(color: Colors.green),
                 ),
@@ -195,8 +229,7 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
             const SizedBox(height: 10),
             // Self proposal
             Text(
-              proposal?.coverLetter.toString().toCapitalized() ??
-                  'No cover letter yet !',
+              widget.proposal.coverLetter.toString().toCapitalized(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -204,19 +237,35 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
             // Buttons
             Row(
               children: [
-                // Button 1
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Send message
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => MessagesDetails(
+                      //         projectId: widget.proposal.projectId ?? 0,
+                      //         recipientId:
+                      //             widget.proposal.student?.userId ?? 0),
+                      //   ),
+                      // );
+                      Navigator.pushNamed(context, Routes.messageConversation,
+                          arguments: {
+                            'projectId': widget.proposal.projectId ?? 0,
+                            'recipientId': widget.proposal.student?.userId ?? 0
+                          });
+                    },
                     child: const Text('Message'),
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Button 2
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Hire'),
+                    onPressed: hireSent
+                        ? null
+                        : () => _showConfirmationDialog(context),
+                    child: Text(hireSent ? 'Sent hired offer' : 'Hire'),
                   ),
                 ),
               ],
@@ -224,6 +273,42 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Hire offer"),
+          content: const Text(
+              "Do you really want to send a hire offer for this project?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                // Send hire offer
+                BlocProvider.of<ProposalBloc>(context).add(SendHireOffer(
+                  proposalId: widget.proposal.id.toString(),
+                  disableFlag: 0,
+                  statusFlag: 2,
+                ));
+                setState(() {
+                  hireSent = true;
+                });
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text("Send"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

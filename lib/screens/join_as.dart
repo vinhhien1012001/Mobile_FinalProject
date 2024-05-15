@@ -1,3 +1,5 @@
+import 'package:final_project_mobile/models/user_profile.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/login.dart';
 import 'package:final_project_mobile/pages/sign_up.dart';
@@ -10,7 +12,7 @@ class JoinAs extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const AppBarBack(),
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(20),
@@ -30,10 +32,7 @@ class JoinAs extends ConsumerWidget {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignUpPage()));
+                        Navigator.pushNamed(context, Routes.signUp);
                       },
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all(
@@ -53,11 +52,12 @@ class JoinAs extends ConsumerWidget {
                           const SizedBox(width: 10),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginScreen()));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             const LoginScreen()));
+                              Navigator.pushNamed(context, Routes.login);
                             },
                             style: ButtonStyle(
                               textStyle: MaterialStateProperty.all(
@@ -80,7 +80,7 @@ class JoinAs extends ConsumerWidget {
   }
 }
 
-final selectedRoleProvider = StateProvider<RoleEnum>((ref) => RoleEnum.student);
+final selectedRoleProvider = StateProvider<Role>((ref) => Role.Student);
 
 class RoleRadio extends ConsumerStatefulWidget {
   const RoleRadio({super.key});
@@ -88,7 +88,7 @@ class RoleRadio extends ConsumerStatefulWidget {
   ConsumerState<RoleRadio> createState() => _CompanyOrStudentRole();
 }
 
-enum RoleEnum { company, student }
+// enum Role { company, student }
 
 class _CompanyOrStudentRole extends ConsumerState<RoleRadio> {
   @override
@@ -103,7 +103,7 @@ class _CompanyOrStudentRole extends ConsumerState<RoleRadio> {
             onTap: () {
               ref
                   .read(selectedRoleProvider.notifier)
-                  .update((state) => RoleEnum.company);
+                  .update((state) => Role.Company);
             },
             child: Container(
               decoration: BoxDecoration(
@@ -122,13 +122,13 @@ class _CompanyOrStudentRole extends ConsumerState<RoleRadio> {
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ),
-                  Radio<RoleEnum>(
-                    value: RoleEnum.company,
+                  Radio<Role>(
+                    value: Role.Company,
                     groupValue: selectedRole,
-                    onChanged: (RoleEnum? value) {
+                    onChanged: (Role? value) {
                       ref
                           .read(selectedRoleProvider.notifier)
-                          .update((state) => RoleEnum.company);
+                          .update((state) => Role.Company);
                     },
                   ),
                 ],
@@ -140,7 +140,7 @@ class _CompanyOrStudentRole extends ConsumerState<RoleRadio> {
           onTap: () {
             ref
                 .read(selectedRoleProvider.notifier)
-                .update((state) => RoleEnum.student);
+                .update((state) => Role.Student);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -158,13 +158,13 @@ class _CompanyOrStudentRole extends ConsumerState<RoleRadio> {
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ),
-                Radio<RoleEnum>(
-                  value: RoleEnum.student,
+                Radio<Role>(
+                  value: Role.Student,
                   groupValue: selectedRole,
-                  onChanged: (RoleEnum? value) {
+                  onChanged: (Role? value) {
                     ref
                         .read(selectedRoleProvider.notifier)
-                        .update((state) => RoleEnum.student);
+                        .update((state) => Role.Student);
                   },
                 ),
               ],

@@ -38,3 +38,26 @@ class GetProposalsByProjectId extends ProposalEvent {
   @override
   List<Object> get props => [projectId];
 }
+
+class SendHireOffer extends ProposalEvent {
+  final String proposalId;
+  final int disableFlag;
+  final int statusFlag;
+
+  const SendHireOffer(
+      {required this.proposalId,
+      required this.disableFlag,
+      required this.statusFlag});
+
+  @override
+  List<Object> get props => [proposalId, disableFlag, statusFlag];
+}
+
+class GetAllProposalsOfStudent extends ProposalEvent {
+  final int studentId;
+
+  const GetAllProposalsOfStudent({required this.studentId});
+
+  @override
+  List<Object> get props => [studentId];
+}

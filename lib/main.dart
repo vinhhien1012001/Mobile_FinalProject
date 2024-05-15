@@ -1,5 +1,7 @@
 import 'package:final_project_mobile/features/default/bloc/default_bloc.dart';
 import 'package:final_project_mobile/features/default/repos/default_repository.dart';
+import 'package:final_project_mobile/features/message/bloc/message_bloc.dart';
+import 'package:final_project_mobile/features/message/repos/message_repo.dart';
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/repos/project_repository.dart';
 import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
@@ -7,12 +9,13 @@ import 'package:final_project_mobile/features/proposal/repos/proposal_repository
 import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/features/user/repos/user_repository.dart';
-import 'package:final_project_mobile/widgets/custom_app_bar.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/home.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -46,8 +49,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (_) => RoleBloc(
-            const RoleInitial(0),
+          create: (_) => RoleBloc(RoleInitial()),
+        ),
+        BlocProvider(
+          create: (_) => MessageBloc(
+            messageRepository: MessageRepository(),
           ),
         ),
       ],
@@ -55,9 +61,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'Poppins'),
         navigatorKey: Routes.mainNavigatorKey,
+        // routes: Routes.routes,
         onGenerateRoute: Routes.generateRoute,
         home: const Scaffold(
-          appBar: CustomAppBar(),
+          // appBar: AppBarBack(),
           body: HomePage(),
         ),
       ),
