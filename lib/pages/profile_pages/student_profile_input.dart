@@ -8,6 +8,8 @@ import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/student.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_experiences.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
+import 'package:final_project_mobile/routes/routes.dart';
+import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 // import 'package:final_project_mobile/widgets/custom_multiselect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -578,26 +580,6 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
     BlocProvider.of<DefaultBloc>(context).add(GetAllTechStack());
   }
 
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SwitchAccountPage()));
-          },
-        ),
-        //
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<DefaultBloc, DefaultState>(
@@ -680,15 +662,14 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
             showProgressBar: true,
           );
 
-          Navigator.pushReplacement(
+          Navigator.pushReplacementNamed(
             context,
-            MaterialPageRoute(
-                builder: (context) => const StudentProfileExperiencePage()),
+            Routes.studentProfileExperiences,
           );
         }
       },
       child: Scaffold(
-        appBar: appBar(context),
+        appBar: const AppBarBack(),
         body: Center(
           child: Padding(
               padding: const EdgeInsets.all(20),
@@ -931,12 +912,6 @@ class StudentProfileInputState extends State<StudentProfileInputPage> {
                                       languages: selectedLanguages,
                                     ),
                                   );
-
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) =>
-                                  //             const StudentProfileExperiencePage()));
                                 },
                                 style: ButtonStyle(
                                   shape: MaterialStateProperty.all(

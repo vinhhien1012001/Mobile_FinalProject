@@ -5,6 +5,7 @@ import 'package:final_project_mobile/features/message/bloc/message_event.dart';
 import 'package:final_project_mobile/features/message/bloc/message_state.dart';
 import 'package:final_project_mobile/models/message.dart';
 import 'package:final_project_mobile/pages/sub-pages/message_conversation.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -100,14 +101,19 @@ class MessagePageState extends State<MessagePage> {
                       title: Text(participant.receiver.fullname),
                       subtitle: Text(participant.content ?? ''),
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => MessagesDetails(
-                              projectId: widget.projectId,
-                              recipientId: participant.receiver.id,
-                            ),
-                          ),
+                          Routes.messageConversation,
+                          arguments: {
+                            'projectId': widget.projectId,
+                            'recipientId': participant.receiver.id,
+                          },
+                          // MaterialPageRoute(
+                          //   builder: (context) => MessagesDetails(
+                          //     projectId: widget.projectId,
+                          //     recipientId: participant.receiver.id,
+                          //   ),
+                          // ),
                         );
                       },
                     );

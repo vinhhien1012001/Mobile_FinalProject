@@ -109,7 +109,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: BlocBuilder<ProjectBloc, ProjectState>(
             builder: (context, projectState) {
               return Scaffold(
-                appBar: const CustomAppBar(),
+                appBar: const AppBarBackProfile(),
                 body: IndexedStack(
                   index: _selectedIndex,
                   children: _widgetOptions,

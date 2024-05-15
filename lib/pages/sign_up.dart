@@ -1,4 +1,5 @@
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/screens/join_as.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
@@ -29,7 +30,6 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     return BlocListener<UserProfileBloc, UserProfileState>(
         listener: (context, state) {
           if (state is SignUpSuccess) {
-            print('SIGN UP SUCCESS STATE');
             toastification.show(
               context: context,
               type: ToastificationType.success,
@@ -44,13 +44,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
               borderRadius: BorderRadius.circular(12.0),
               showProgressBar: true,
             );
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
+            // Navigator.pushReplacement(
+            //   context,
+            //   'login',
+            // );
+            Navigator.pushNamed(context, Routes.login);
           } else if (state is SignUpFailure) {
-            print('SIGN UP FAILURE STATE');
-            print('ERROR: ${state.error}');
+            // print('SIGN UP FAILURE STATE');
+            // print('ERROR: ${state.error}');
             toastification.show(
               context: context,
               type: ToastificationType.error,
@@ -70,7 +71,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
           }
         },
         child: Scaffold(
-          appBar: const CustomAppBar(),
+          appBar: const AppBarBack(),
           body: Center(
             child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -173,11 +174,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                               const SizedBox(width: 2),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginScreen()));
+                                  Navigator.pushNamed(context, Routes.login);
                                 },
                                 style: ButtonStyle(
                                   textStyle: MaterialStateProperty.all(

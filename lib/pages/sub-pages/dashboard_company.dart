@@ -6,6 +6,7 @@ import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/post_jobs_step.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,12 +66,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
                         padding: const EdgeInsets.only(top: 20, left: 10),
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const PostJobStepScreen(),
-                              ),
-                            );
+                            Navigator.pushNamed(context, Routes.postJobsStep);
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(

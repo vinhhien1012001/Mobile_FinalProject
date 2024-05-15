@@ -60,7 +60,7 @@ class _SubmitProposalScreenState extends State<SubmitProposalScreen> {
         }
       },
       child: Scaffold(
-        appBar: const CustomAppBar(),
+        appBar: const AppBarBack(),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(

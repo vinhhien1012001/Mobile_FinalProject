@@ -1,6 +1,7 @@
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/favorite_project.dart';
 import 'package:final_project_mobile/widgets/project_widgets.dart';
@@ -49,12 +50,7 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
   }
 
   void _onFavoriteProjectsClicked() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const FavoriteProjectsScreen(),
-      ),
-    );
+    Navigator.pushNamed(context, Routes.favoriteProject);
   }
 
   void _showFilterModal() {
