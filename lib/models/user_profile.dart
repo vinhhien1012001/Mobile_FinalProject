@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:final_project_mobile/models/student.dart';
 
+enum Role { Student, Company }
+
 class UserProfile extends Equatable {
   const UserProfile({
     required this.id,

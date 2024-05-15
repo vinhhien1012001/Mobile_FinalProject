@@ -1,4 +1,5 @@
 import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/models/activity.dart';
 import 'package:final_project_mobile/src/providers/provider.dart';
@@ -86,8 +87,8 @@ class HomePage extends ConsumerWidget {
             width: 120,
             child: ElevatedButton(
               onPressed: () {
-                context.read<RoleBloc>().add(const RoleSelect(1));
-                Navigator.pushNamed(context, Routes.login);
+                context.read<RoleBloc>().add(SetRole(Role.Company));
+                Navigator.pushNamed(context, 'login');
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -105,8 +106,8 @@ class HomePage extends ConsumerWidget {
             width: 120,
             child: ElevatedButton(
               onPressed: () {
-                context.read<RoleBloc>().add(const RoleSelect(0));
-                Navigator.pushNamed(context, Routes.login);
+                context.read<RoleBloc>().add(SetRole(Role.Student));
+                Navigator.pushNamed(context, 'login');
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(

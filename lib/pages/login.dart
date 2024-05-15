@@ -102,10 +102,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const Text('Don\'t have an StudentHub account?'),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const JoinAs()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const JoinAs()));
+                          Navigator.pushNamed(context, 'join_as');
                         },
                         style: ButtonStyle(
                           shape: MaterialStateProperty.all(

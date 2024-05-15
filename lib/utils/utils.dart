@@ -1,10 +1,10 @@
-import 'package:final_project_mobile/screens/join_as.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 
-String getRoleDisplayName(RoleEnum role) {
+String getRoleDisplayName(Role role) {
   switch (role) {
-    case RoleEnum.student:
+    case Role.Student:
       return 'Student';
-    case RoleEnum.company:
+    case Role.Company:
       return 'Company';
     default:
       return '';
