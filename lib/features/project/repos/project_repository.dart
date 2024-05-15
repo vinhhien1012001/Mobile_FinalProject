@@ -219,4 +219,46 @@ class ProjectRepository {
     );
     log('Favorite project updated successfully');
   }
+
+  Future<List<Project>> searchProjects({
+    String? title,
+    int? projectScopeFlag,
+    int? numberOfStudents,
+    int? proposalsLessThan,
+    int? page = 1, // Default value for page
+    int? perPage = 10, // Default value for perPage
+  }) async {
+    // Construct the base URL
+    String url = '$baseUrl/project';
+
+    // Add query parameters if provided
+    url +=
+        '?page=$page&perPage=$perPage'; // Include page and perPage in the URL
+
+    if (proposalsLessThan != null && proposalsLessThan != 0) {
+      url += '&proposalsLessThan=$proposalsLessThan';
+    }
+    if (numberOfStudents != null && numberOfStudents != 0) {
+      url += '&numberOfStudents=$numberOfStudents';
+    }
+    if (projectScopeFlag != null && projectScopeFlag != 4) {
+      url += '&projectScopeFlag=$projectScopeFlag';
+    }
+    if (title != null && title.isNotEmpty) {
+      url += '&title=$title';
+    }
+
+    log('url: $url');
+    // Make the HTTP request
+    final response = await httpService.request(
+      method: RequestMethod.get,
+      url: url,
+    );
+    List<dynamic> _projects = (response['result'] as List);
+    final projects = (response['result'] as List)
+        .map((json) => Project.fromJson(json))
+        .toList();
+    log('projects searchs here: $projects');
+    return projects;
+  }
 }

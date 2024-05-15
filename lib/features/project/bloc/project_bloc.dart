@@ -25,6 +25,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<GetFavoriteProjectsByStudentId>(_getFavoriteProjectsByStudentId);
     on<StartWorkingOnProject>(_startWorkingOnProject);
     on<GetAllProjectsByStudentId>(_getAllProjectsOfStudents);
+    on<SearchProjects>(_searchProjects);
   }
 
   Future<void> _getProject(GetProject event, Emitter<ProjectState> emit) async {
@@ -163,6 +164,24 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
           await projectRepository.getAllProjectsOfStudents(event.studentId);
       emit(GetAllProjectsByStudentIdSuccess(
           projects: projects, studentId: event.studentId));
+    } catch (error) {
+      emit(ProjectOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _searchProjects(
+      SearchProjects event, Emitter<ProjectState> emit) async {
+    try {
+      final projects = await projectRepository.searchProjects(
+        numberOfStudents: event.numberOfStudents,
+        projectScopeFlag: event.projectScopeFlag,
+        page: event.page ?? 1,
+        perPage: event.perPage ?? 10,
+        proposalsLessThan: event.proposalsLessThan,
+        title: event.title,
+      );
+      emit(SearchProjectsSuccess(
+          projects: projects, currentPage: event.page ?? 1));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

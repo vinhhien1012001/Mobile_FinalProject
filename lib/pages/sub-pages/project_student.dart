@@ -17,25 +17,28 @@ class ProjectStudentContent extends StatefulWidget {
 class _ProjectStudentContentState extends State<ProjectStudentContent> {
   List<Project> projects = [];
   List<Project> filteredProjects = [];
-  bool isFilterApplied = false;
+
   String projectLengthFilter = '';
   int studentNeededFilter = 0;
   int proposalLessThanFilter = 0;
-  bool _isTyping = false;
-
+  String searchTitle = '';
   int currentPage = 1;
   int totalPages = 1;
+
+  bool isKeepingState = true;
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ProjectBloc>(context).add(GetProject(page: currentPage));
+    BlocProvider.of<ProjectBloc>(context)
+        .add(SearchProjects(page: currentPage, perPage: 10));
   }
 
   void _onSearchTextChanged(String searchText) {
     setState(() {
-      _isTyping = searchText.isNotEmpty;
+      // _isTyping = searchText.isNotEmpty;
+      searchTitle = searchText;
       filteredProjects.clear();
-      if (searchText.isEmpty) {
+      if (searchTitle.isEmpty) {
         filteredProjects.addAll(projects);
       } else {
         filteredProjects.addAll(projects.where((project) {
@@ -147,13 +150,17 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            isFilterApplied = false;
+                            // isFilterApplied = false;
+                            currentPage = 1;
+                            totalPages = 1;
                             projectLengthFilter = '';
                             studentNeededFilter = 0;
                             proposalLessThanFilter = 0;
+                            searchTitle = '';
                           });
                           Navigator.pop(context);
-                          _applyFilters();
+                          BlocProvider.of<ProjectBloc>(context)
+                              .add(SearchProjects(page: 1, perPage: 10));
                         },
                         child: const Text('Clear Filter'),
                       ),
@@ -177,54 +184,55 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
   }
 
   void _applyFilters() {
+    // Clear the existing filteredProjects list
     filteredProjects.clear();
-    filteredProjects.addAll(projects.where((project) {
-      bool meetsCriteria = true;
-      meetsCriteria = _checkProjectLength(project);
-      meetsCriteria = meetsCriteria && _checkStudentNeeded(project);
-      meetsCriteria = meetsCriteria && _checkProposalCount(project);
-      return meetsCriteria;
-    }));
+
+    // Store the filter settings
+    final appliedFilters = SearchProjects(
+      page: currentPage,
+      perPage: 10,
+      title: searchTitle,
+      projectScopeFlag: projectLengthFilter.isNotEmpty &&
+              getProjectScopeFlag(projectLengthFilter) != 4
+          ? getProjectScopeFlag(projectLengthFilter)
+          : null,
+      numberOfStudents: studentNeededFilter,
+      proposalsLessThan: proposalLessThanFilter,
+    );
+
+    // Dispatch the SearchProjects event with the new filter settings
+    BlocProvider.of<ProjectBloc>(context).add(appliedFilters);
+  }
+
+  void _fetchProjectsPage(int page) {
     setState(() {
-      isFilterApplied = true;
+      currentPage = page;
     });
-  }
 
-  bool _checkProjectLength(Project project) {
-    if (projectLengthFilter.isEmpty) {
-      return true; // No filter applied, so all projects pass
+    // Increment totalPages only if currentPage is incremented
+    if (currentPage > totalPages) {
+      totalPages++;
     }
 
-    switch (projectLengthFilter) {
-      case 'Less than 1 month':
-        return project.projectScopeFlag == 0;
-      case '1 to 3 months':
-        return project.projectScopeFlag == 1;
-      case '3 to 6 months':
-        return project.projectScopeFlag == 2;
-      case 'More than 6 months':
-        return project.projectScopeFlag == 3;
-      default:
-        return true; // Default to true if the filter doesn't match any case
-    }
-  }
-
-  bool _checkStudentNeeded(Project project) {
-    if (project.numberOfStudents == null) {
-      return true;
-    }
-    return project.numberOfStudents! >= studentNeededFilter;
-  }
-
-  bool _checkProposalCount(Project project) {
-    return project.countProposals! <= proposalLessThanFilter;
+    // Dispatch the SearchProjects event with the current filter settings and updated page number
+    BlocProvider.of<ProjectBloc>(context).add(SearchProjects(
+      page: currentPage,
+      perPage: 10,
+      title: searchTitle,
+      projectScopeFlag: projectLengthFilter.isNotEmpty &&
+              getProjectScopeFlag(projectLengthFilter) != 4
+          ? getProjectScopeFlag(projectLengthFilter)
+          : null,
+      numberOfStudents: studentNeededFilter,
+      proposalsLessThan: proposalLessThanFilter,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProjectBloc, ProjectState>(
       builder: (context, state) {
-        if (state is ProjectLoadSuccess && state.currentPage >= totalPages) {
+        if (state is SearchProjectsSuccess && state.currentPage >= totalPages) {
           projects = state.projects;
           filteredProjects.addAll(projects);
         }
@@ -246,8 +254,6 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
               SearchBar(
                 onChanged: _onSearchTextChanged,
                 onFavoritePressed: _onFavoriteProjectsClicked,
-                isFilterApplied: isFilterApplied,
-                isTyping: _isTyping,
                 onFilterPressed: _showFilterModal,
               ),
               Expanded(
@@ -287,11 +293,18 @@ class _ProjectStudentContentState extends State<ProjectStudentContent> {
     );
   }
 
-  void _fetchProjectsPage(int page) {
-    setState(() {
-      currentPage = page;
-    });
-    BlocProvider.of<ProjectBloc>(context).add(GetProject(page: page));
-    totalPages++;
+  getProjectScopeFlag(String projectLengthFilter) {
+    switch (projectLengthFilter) {
+      case 'Less than 1 month':
+        return 0;
+      case '1 to 3 months':
+        return 1;
+      case '3 to 6 months':
+        return 2;
+      case 'More than 6 months':
+        return 3;
+      default:
+        return 4;
+    }
   }
 }

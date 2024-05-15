@@ -124,3 +124,31 @@ class GetAllProjectsByStudentId extends ProjectEvent {
   @override
   List<Object?> get props => [studentId];
 }
+
+class SearchProjects extends ProjectEvent {
+  final String? title;
+  final int? projectScopeFlag;
+  final int? numberOfStudents;
+  final int? proposalsLessThan;
+  final int? page;
+  final int? perPage;
+
+  const SearchProjects({
+    this.title,
+    this.projectScopeFlag,
+    this.numberOfStudents,
+    this.proposalsLessThan,
+    this.page,
+    this.perPage,
+  });
+
+  @override
+  List<Object?> get props => [
+        title,
+        projectScopeFlag,
+        numberOfStudents,
+        proposalsLessThan,
+        page,
+        perPage
+      ];
+}

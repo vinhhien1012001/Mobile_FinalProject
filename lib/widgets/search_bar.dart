@@ -3,16 +3,16 @@ part of "../pages/sub-pages/project_student.dart";
 class SearchBar extends StatelessWidget {
   final Function(String) onChanged;
   final Function()? onFavoritePressed;
-  final bool isFilterApplied;
-  final bool isTyping;
+  // final bool isFilterApplied;
+  // final bool isTyping;
   final Function()? onFilterPressed;
 
   const SearchBar({
     super.key,
     required this.onChanged,
     this.onFavoritePressed,
-    this.isFilterApplied = false,
-    required this.isTyping,
+    // this.isFilterApplied = false,
+    // required this.isTyping,
     this.onFilterPressed,
   });
 
