@@ -127,4 +127,59 @@ class MessageRepository {
     );
     log('Response from sending message: $response');
   }
+
+  // Checked
+  Future<void> disableInterview(int interviewId) async {
+    String url = '$baseUrl/interview/$interviewId/disable';
+    final response = await httpService
+        .request(method: RequestMethod.patch, url: url, body: {});
+    log('Response from disable interviewId: $response');
+  }
+
+  // Checked
+  Future<void> deleteInterview(int interviewId) async {
+    log('delete Interview here');
+    String url = '$baseUrl/interview/$interviewId';
+    final response = await httpService.request(
+      method: RequestMethod.delete,
+      url: url,
+    );
+    log('Response from delete interviewId: $response');
+  }
+
+  // Not checked yet
+  Future<List<Interview>> getAllInterviewsOfUserByUserId(int userId) async {
+    log('Getting all interviews of user by userId');
+    String url = '$baseUrl/interview/user/$userId';
+    final response = await httpService.request(
+      method: RequestMethod.get,
+      url: url,
+    );
+    log('Response from getting all interviews of user by userId: $response');
+    final interviews = (response['result'] as List)
+        .map((json) => Interview.fromJson(json))
+        .toList();
+    log('Interviews: $interviews');
+    return interviews;
+  }
+
+  Future<void> updateInterview(
+    int interviewId,
+    String title,
+    String startTime,
+    String endTime,
+  ) async {
+    log('updateInterview here');
+    String url = '$baseUrl/interview/$interviewId';
+    final response = await httpService.request(
+      method: RequestMethod.patch,
+      url: url,
+      body: {
+        'title': title,
+        'startTime': startTime,
+        'endTime': endTime,
+      },
+    );
+    log('Response from update interviewId: $response');
+  }
 }

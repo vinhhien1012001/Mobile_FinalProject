@@ -88,3 +88,57 @@ class CreateNewInterview extends MessageEvent {
   List<Object?> get props =>
       [projectId, title, startTime, endTime, roomCode, roomId];
 }
+
+class DisableInterview extends MessageEvent {
+  final int interviewId;
+  final int projectId;
+  final int recipientId;
+  const DisableInterview(this.interviewId, this.projectId, this.recipientId);
+
+  @override
+  List<Object?> get props => [interviewId];
+}
+
+class DeleteInterview extends MessageEvent {
+  final int interviewId;
+  final int projectId;
+  final int recipientId;
+  const DeleteInterview(this.interviewId, this.projectId, this.recipientId);
+
+  @override
+  List<Object?> get props => [interviewId];
+}
+
+class UpdateInterview extends MessageEvent {
+  final int interviewId;
+  final String title;
+  final String startTime;
+  final String endTime;
+  final int projectId;
+  final int recipientId;
+  const UpdateInterview({
+    required this.projectId,
+    required this.recipientId,
+    required this.interviewId,
+    required this.title,
+    required this.startTime,
+    required this.endTime,
+  });
+
+  @override
+  List<Object?> get props => [
+        interviewId,
+        title,
+        startTime,
+        endTime,
+      ];
+}
+
+class GetAllInterviewsOfUserByUserId extends MessageEvent {
+  final int userId;
+
+  const GetAllInterviewsOfUserByUserId(this.userId);
+
+  @override
+  List<Object?> get props => [userId];
+}

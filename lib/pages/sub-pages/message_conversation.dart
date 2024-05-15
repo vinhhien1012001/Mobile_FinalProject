@@ -6,6 +6,7 @@ import 'package:final_project_mobile/models/message.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/widgets/interview.dart';
 import 'package:final_project_mobile/widgets/interview_input.dart';
+import 'package:final_project_mobile/widgets/update_interview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -75,15 +76,45 @@ class _MessagesDetailsState extends State<MessagesDetails> {
                       if (isInterview) {
                         // If it's an interview, display it differently
                         final interview = conversation.interview!;
-
-                        return InterviewCard(
-                          title: interview.title ?? '',
-                          roomCode:
-                              interview.meetingRoom?.meetingRoomCode ?? '',
-                          roomId: interview.meetingRoom?.meetingRoomId ?? '',
-                          startTime: interview.startTime ?? '',
-                          endTime: interview.endTime ?? '',
-                        );
+                        if (interview.deletedAt != null) {
+                          return const SizedBox.shrink();
+                        } else {
+                          return InterviewCard(
+                              id: interview.id,
+                              disableFlag: interview.disableFlag ?? 0,
+                              title: interview.title ?? '',
+                              roomCode:
+                                  interview.meetingRoom?.meetingRoomCode ?? '',
+                              roomId:
+                                  interview.meetingRoom?.meetingRoomId ?? '',
+                              startTime: interview.startTime ?? '',
+                              endTime: interview.endTime ?? '',
+                              onDisable: () {
+                                // Disable interview
+                                BlocProvider.of<MessageBloc>(context).add(
+                                  DisableInterview(interview.id,
+                                      widget.projectId, widget.recipientId),
+                                );
+                              },
+                              // Delete interview
+                              onDelete: () {
+                                BlocProvider.of<MessageBloc>(context).add(
+                                  DeleteInterview(interview.id,
+                                      widget.projectId, widget.recipientId),
+                                );
+                              },
+                              onUpdate: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => UpdateInterviewDialog(
+                                    interviewId: interview.id,
+                                    projectId: widget.projectId,
+                                    receiverId: widget.recipientId,
+                                    senderId: sender.id,
+                                  ),
+                                );
+                              });
+                        }
                       } else {
                         // Regular message
                         String senderName = conversation.sender.fullname ?? '';
