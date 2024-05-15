@@ -33,7 +33,7 @@ class _FavoriteProjectsScreenState extends State<FavoriteProjectsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const AppBarBackProfile(),
       body: BlocListener<ProjectBloc, ProjectState>(
         listener: (context, state) {
           if (state is FavoriteProjectsLoadSuccess) {

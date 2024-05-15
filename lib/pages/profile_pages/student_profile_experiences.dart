@@ -1,6 +1,8 @@
 import 'package:final_project_mobile/pages/profile_pages/student_profile_cv.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:final_project_mobile/pages/welcome.dart';
+import 'package:final_project_mobile/routes/routes.dart';
+import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
@@ -672,30 +674,10 @@ class StudentProfileExperiencePage extends StatefulWidget {
 }
 
 class StudentProfileInputState extends State<StudentProfileExperiencePage> {
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      title: const Text('StudentHub'),
-      centerTitle: false,
-      backgroundColor: Colors.blue,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SwitchAccountPage()));
-          },
-        ),
-        //
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context),
+      appBar: const AppBarBack(),
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(20),
@@ -764,11 +746,12 @@ class StudentProfileInputState extends State<StudentProfileExperiencePage> {
                             width: 140,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const WelcomeScreen()));
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             const WelcomeScreen()));
+                                Navigator.pushNamed(context, Routes.welcome);
                               },
                               style: ButtonStyle(
                                 shape: MaterialStateProperty.all(

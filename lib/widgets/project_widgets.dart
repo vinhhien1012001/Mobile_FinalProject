@@ -8,6 +8,7 @@ import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
 import 'package:final_project_mobile/pages/project_details_company.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,19 +39,23 @@ class ProjectWidgets {
               onTap: () {
                 // Navigate to project detail screen when clicked
                 if (state is RoleLoaded && state.role == Role.Student) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ProjectDetailsStudent(project: project)),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           ProjectDetailsStudent(project: project)),
+                  // );
+                  Navigator.pushNamed(context, Routes.projectDetailStudent,
+                      arguments: project);
                 } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ProjectDetailsCompany(project: project)),
-                  );
+                  Navigator.pushNamed(context, Routes.projectDetailsCompany,
+                      arguments: project);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           ProjectDetailsCompany(project: project)),
+                  // );
                 }
               },
               child: ProjectWidgets.buildProjectCard(

@@ -2,6 +2,7 @@ import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/pages/profile_pages/student_profile_input.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/profile.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
             },
             child: MaterialApp(
               home: Scaffold(
-                appBar: const CustomAppBar2(),
+                appBar: const AppBarBack(),
                 body: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -175,11 +176,13 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
                                         //     : "Company",
                                         titleTextStyle: boldTextStyle(),
                                         onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const ProfileCompanyCreatePage()));
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             const ProfileCompanyCreatePage()));
+                                          Navigator.pushNamed(
+                                              context, Routes.companyProfile);
                                         },
                                         trailing: Icon(
                                             Icons.arrow_forward_ios_rounded,
@@ -197,24 +200,24 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
                         // Company role
                         if (role == Role.Company) {
                           log('companyProfile: $companyProfile');
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ProfileLoggedInPage()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             const ProfileLoggedInPage()));
+                          Navigator.pushNamed(
+                              context, Routes.companyUpdateProfile);
                         }
                         // Student role
                         else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const StudentProfileInputPage()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             const StudentProfileInputPage()));
+                          Navigator.pushNamed(
+                              context, Routes.studentProfileInput);
                         }
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => const ProfileNotLoggedInPage()));
                       },
                       icon: const Icon(Icons.account_circle),
                       label: const Text('Profiles'),
@@ -247,7 +250,7 @@ class _SwitchAccountPageState extends State<SwitchAccountPage> {
                       onPressed: () {
                         BlocProvider.of<UserProfileBloc>(context)
                             .add(const SignOut());
-                        Navigator.pushReplacementNamed(context, '/login');
+                        Navigator.pushReplacementNamed(context, Routes.login);
                       },
                       icon: const Icon(Icons.logout),
                       label: const Text('Logout'),

@@ -10,7 +10,6 @@ import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/features/user/repos/user_repository.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
-import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_mobile/pages/home.dart';
@@ -61,11 +60,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'Poppins'),
-        navigatorKey: navigatorKey,
-        routes: Routes.routes,
-        // onGenerateRoute: Routes.generateRoute,
+        navigatorKey: Routes.mainNavigatorKey,
+        // routes: Routes.routes,
+        onGenerateRoute: Routes.generateRoute,
         home: const Scaffold(
-          appBar: CustomAppBar(),
+          // appBar: AppBarBack(),
           body: HomePage(),
         ),
       ),

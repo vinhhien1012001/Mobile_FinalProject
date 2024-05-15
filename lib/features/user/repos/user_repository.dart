@@ -76,6 +76,7 @@ class UserRepository {
       if (response.statusCode > 400) {
         throw ('${jsonDecode(response.body)['errorDetails']}');
       }
+      await SecureStorage().deleteSecureData('jwt');
       return jsonDecode(response.body);
     } catch (e) {
       log(e.toString());

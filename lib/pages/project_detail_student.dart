@@ -2,6 +2,7 @@ import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/pages/7-student-submit-proposal/submit_proposal.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -150,7 +151,7 @@ class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
       builder: (context, state) {
         final projectDetails = widget.project;
         return Scaffold(
-          appBar: const CustomAppBar(),
+          appBar: const AppBarBack(),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -174,11 +175,11 @@ class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
                         text: 'Apply Now',
                         width: 140,
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SubmitProposalScreen(
-                                      project: projectDetails)));
+                          Navigator.pushNamed(context, Routes.submitProposal,
+                              arguments: projectDetails);
+                          // MaterialPageRoute(
+                          //     builder: (context) => SubmitProposalScreen(
+                          //         project: projectDetails)));
                         },
                       )
                     ],

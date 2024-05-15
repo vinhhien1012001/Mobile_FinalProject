@@ -1,6 +1,7 @@
 import 'package:final_project_mobile/features/default/bloc/default_bloc.dart';
 import 'package:final_project_mobile/features/default/bloc/default_event.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:final_project_mobile/pages/switch_account.dart';
 import 'package:final_project_mobile/pages/welcome.dart';
@@ -14,7 +15,7 @@ class ProfileLoggedInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const AppBarBack(),
       body: Center(
         child: Padding(
             padding: const EdgeInsets.all(20),
@@ -138,11 +139,7 @@ class ProfileLoggedInPage extends StatelessWidget {
                           width: 100,
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const WelcomeScreen()));
+                              Navigator.pushNamed(context, Routes.welcome);
                             },
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all(
@@ -202,10 +199,11 @@ class _ProfileCompanyCreatePageState extends State<ProfileCompanyCreatePage> {
             borderRadius: BorderRadius.circular(12.0),
             showProgressBar: true,
           );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+          // );
+          Navigator.pushNamed(context, Routes.welcome);
         } else if (state is CreateProfileFailure) {
           print('ERROR: ${state.error}');
           toastification.show(
@@ -227,7 +225,7 @@ class _ProfileCompanyCreatePageState extends State<ProfileCompanyCreatePage> {
         }
       },
       child: Scaffold(
-        appBar: const CustomAppBar(),
+        appBar: const AppBarBack(),
         body: Center(
           child: Padding(
               padding: const EdgeInsets.all(20),
@@ -386,12 +384,6 @@ class _ProfileCompanyCreatePageState extends State<ProfileCompanyCreatePage> {
                                         )));
                                   }
                                 },
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) =>
-                                //             const WelcomeScreen()));
-                                // },
                                 style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(

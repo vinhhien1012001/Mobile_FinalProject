@@ -6,6 +6,7 @@ import 'package:final_project_mobile/models/proposal.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
 import 'package:final_project_mobile/pages/sub-pages/message.dart';
 import 'package:final_project_mobile/pages/sub-pages/message_conversation.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -240,15 +241,20 @@ class _StudentProfileCardState extends State<StudentProfileCard> {
                   child: ElevatedButton(
                     onPressed: () {
                       // Send message
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MessagesDetails(
-                              projectId: widget.proposal.projectId ?? 0,
-                              recipientId:
-                                  widget.proposal.student?.userId ?? 0),
-                        ),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => MessagesDetails(
+                      //         projectId: widget.proposal.projectId ?? 0,
+                      //         recipientId:
+                      //             widget.proposal.student?.userId ?? 0),
+                      //   ),
+                      // );
+                      Navigator.pushNamed(context, Routes.messageConversation,
+                          arguments: {
+                            'projectId': widget.proposal.projectId ?? 0,
+                            'recipientId': widget.proposal.student?.userId ?? 0
+                          });
                     },
                     child: const Text('Message'),
                   ),

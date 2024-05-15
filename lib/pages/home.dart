@@ -1,8 +1,9 @@
 import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
-import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/models/activity.dart';
+import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/src/providers/provider.dart';
+import 'package:final_project_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,11 +15,12 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<Activity> activity = ref.watch(activityProvider);
     return Scaffold(
+        appBar: const AppBarNoBack(),
         body: switch (activity) {
-      AsyncData(:final value) => _buildBody(context, value),
-      AsyncError() => const Text('Oops, something unexpected happened'),
-      _ => const Center(child: CircularProgressIndicator()),
-    });
+          AsyncData(:final value) => _buildBody(context, value),
+          AsyncError() => const Text('Oops, something unexpected happened'),
+          _ => const Center(child: CircularProgressIndicator()),
+        });
   }
 
   Widget _buildBody(BuildContext context, Activity activity) {
@@ -88,7 +90,7 @@ class HomePage extends ConsumerWidget {
             child: ElevatedButton(
               onPressed: () {
                 context.read<RoleBloc>().add(SetRole(Role.Company));
-                Navigator.pushNamed(context, 'login');
+                Navigator.pushNamed(context, Routes.login);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
@@ -107,7 +109,7 @@ class HomePage extends ConsumerWidget {
             child: ElevatedButton(
               onPressed: () {
                 context.read<RoleBloc>().add(SetRole(Role.Student));
-                Navigator.pushNamed(context, 'login');
+                Navigator.pushNamed(context, Routes.login);
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
