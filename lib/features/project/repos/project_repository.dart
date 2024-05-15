@@ -102,20 +102,46 @@ class ProjectRepository {
     );
   }
 
-  // Can not use now
-  Future<void> updateProject(String projectId, Project updatedProject) async {
+  Future<void> updateProject(
+    int projectId,
+    int numberOfStudents,
+    int? projectScopeFlag,
+    String? description,
+    String title,
+    int? typeFlag,
+    int? status,
+  ) async {
     log('Updating project');
+
+    // Create a map for the body
+    final Map<String, dynamic> body = {
+      'numberOfStudents': numberOfStudents,
+    };
+
+    // Add non-null fields to the body
+    if (projectScopeFlag != null && projectScopeFlag != 4) {
+      body['projectScopeFlag'] = projectScopeFlag;
+    }
+    if (title != null && title.isNotEmpty && title != '') {
+      body['title'] = title;
+    }
+    if (description != null) {
+      body['description'] = description;
+    }
+    if (typeFlag != null) {
+      body['typeFlag'] = typeFlag;
+    }
+    if (status != null) {
+      body['status'] = status;
+    }
+
+    // Make the HTTP request
     final result = await httpService.request(
-        method: RequestMethod.patch,
-        url: '$baseUrl/project/$projectId',
-        body: {
-          'projectScopeFlag': updatedProject.projectScopeFlag,
-          'title': updatedProject.title,
-          'description': updatedProject.description,
-          'numberOfStudents': updatedProject.numberOfStudents,
-          'typeFlag': updatedProject.typeFlag,
-          'status': updatedProject.status,
-        });
+      method: RequestMethod.patch,
+      url: '$baseUrl/project/$projectId',
+      body: body,
+    );
+
     log('Updated project: $result');
   }
 

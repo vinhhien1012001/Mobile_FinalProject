@@ -88,9 +88,14 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       UpdateProject event, Emitter<ProjectState> emit) async {
     try {
       await projectRepository.updateProject(
-          event.projectId, event.updatedProject);
-      final projects = await projectRepository.getProjects();
-      emit(ProjectLoadSuccess(projects: projects, currentPage: 1));
+        event.projectId,
+        event.numberOfStudents,
+        event.projectScopeFlag ?? 4,
+        event.description,
+        event.title ?? '',
+        event.typeFlag,
+        event.status,
+      );
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }
