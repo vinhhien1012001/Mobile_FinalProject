@@ -54,13 +54,13 @@ class ProjectWidgets {
                 }
               },
               child: ProjectWidgets.buildProjectCard(
-                projectId: project.id!,
+                projectId: project.id ?? 0,
                 title: project.title ?? '',
-                created: project.createdAt!,
-                proposalsCount: project.countProposals!,
+                created: project.createdAt ?? '',
+                proposalsCount: project.countProposals ?? 0,
                 messages: project.countMessages ?? 0,
                 hired: project.countHired ?? 0,
-                description: project.description!,
+                description: project.description ?? '',
                 isFavorite: project.isFavorite ?? false,
                 numberOfStudent: project.numberOfStudents ?? 0,
                 projectScopeFlag: project.projectScopeFlag ?? 0,

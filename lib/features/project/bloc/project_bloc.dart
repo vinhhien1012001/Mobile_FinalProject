@@ -6,6 +6,7 @@ import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/project/repos/project_repository.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
+import 'package:nb_utils/nb_utils.dart';
 part 'project_state.dart';
 
 class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
@@ -23,6 +24,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<UpdateFavoriteProject>(_updateFavoriteProject);
     on<GetFavoriteProjectsByStudentId>(_getFavoriteProjectsByStudentId);
     on<StartWorkingOnProject>(_startWorkingOnProject);
+    on<GetAllProjectsByStudentId>(_getAllProjectsOfStudents);
   }
 
   Future<void> _getProject(GetProject event, Emitter<ProjectState> emit) async {
@@ -62,6 +64,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   Future<void> _getProjectById(
       GetProjectById event, Emitter<ProjectState> emit) async {
     try {
+      emit(ProjectLoading(projectId: event.projectId.toInt()));
       final project = await projectRepository.getProjectById(event.projectId);
       emit(ProjectLoadingDone(project: project));
     } catch (error) {
@@ -147,6 +150,19 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       final projects = await projectRepository.getProjectsByCompanyId(
           event.updatedProject.companyId ?? '', null);
       emit(MyProjectLoadSuccess(projects: projects));
+    } catch (error) {
+      emit(ProjectOperationFailure(error: error.toString()));
+    }
+  }
+
+  Future<void> _getAllProjectsOfStudents(
+      GetAllProjectsByStudentId event, Emitter<ProjectState> emit) async {
+    try {
+      emit(GetAllProjectsByStudentIdLoading(studentId: event.studentId));
+      final projects =
+          await projectRepository.getAllProjectsOfStudents(event.studentId);
+      emit(GetAllProjectsByStudentIdSuccess(
+          projects: projects, studentId: event.studentId));
     } catch (error) {
       emit(ProjectOperationFailure(error: error.toString()));
     }

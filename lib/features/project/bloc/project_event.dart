@@ -115,3 +115,12 @@ class StartWorkingOnProject extends ProjectEvent {
   @override
   List<Object?> get props => [projectId, updatedProject];
 }
+
+class GetAllProjectsByStudentId extends ProjectEvent {
+  final int studentId;
+
+  const GetAllProjectsByStudentId({required this.studentId});
+
+  @override
+  List<Object?> get props => [studentId];
+}
