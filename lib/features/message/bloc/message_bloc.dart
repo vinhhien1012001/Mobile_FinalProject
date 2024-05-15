@@ -14,6 +14,9 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     on<GetAllMessagesInConversation>(_getAllMessagesInConversation);
     on<SendMessage>(_sendMessage);
     on<CreateNewInterview>(_createNewInterview);
+    on<DisableInterview>(_disableInterview);
+    on<DeleteInterview>(_deleteInterview);
+    on<UpdateInterview>(_updateInterview);
   }
 
   Future<void> _getAllConversationsByProjectId(
@@ -77,6 +80,48 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       emit(InterviewCreateSuccess(event.roomCode));
       final conversations = await messageRepository.getMessagesInConversation(
           event.projectId, event.receiverId);
+      emit(AllMessagesInConversationLoadSuccess(conversations));
+    } catch (error) {
+      emit(InterviewOperationFailure(error.toString()));
+    }
+  }
+
+  Future<void> _disableInterview(
+      DisableInterview event, Emitter<MessageState> emit) async {
+    try {
+      await messageRepository.disableInterview(event.interviewId);
+      final conversations = await messageRepository.getMessagesInConversation(
+          event.projectId, event.recipientId);
+      emit(InterviewDisableSuccess(event.interviewId));
+      emit(AllMessagesInConversationLoadSuccess(conversations));
+    } catch (error) {
+      emit(InterviewOperationFailure(error.toString()));
+    }
+  }
+
+  Future<void> _deleteInterview(
+      DeleteInterview event, Emitter<MessageState> emit) async {
+    log('Delete interview: $event');
+    try {
+      await messageRepository.deleteInterview(event.interviewId);
+      final conversations = await messageRepository.getMessagesInConversation(
+          event.projectId, event.recipientId);
+      emit(InterviewDeleted(event.interviewId));
+      emit(AllMessagesInConversationLoadSuccess(conversations));
+    } catch (error) {
+      emit(InterviewOperationFailure(error.toString()));
+    }
+  }
+
+  Future<void> _updateInterview(
+      UpdateInterview event, Emitter<MessageState> emit) async {
+    log('Delete interview: $event');
+    try {
+      await messageRepository.updateInterview(
+          event.interviewId, event.title, event.startTime, event.endTime);
+      final conversations = await messageRepository.getMessagesInConversation(
+          event.projectId, event.recipientId);
+      emit(InterviewUpdateSuccess(event.interviewId));
       emit(AllMessagesInConversationLoadSuccess(conversations));
     } catch (error) {
       emit(InterviewOperationFailure(error.toString()));
