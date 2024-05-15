@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:final_project_mobile/services/http_service.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
+import 'package:final_project_mobile/services/secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class UserRepository {
   final String baseUrl = 'https://api.studenthub.dev/api';
@@ -59,8 +61,25 @@ class UserRepository {
   }
 
   Future<void> signOut() async {
-    log('Signing out');
-    await httpService.request(
-        method: RequestMethod.post, url: '$baseUrl/auth/logout');
+    late http.Client client;
+    client = http.Client();
+    try {
+      http.Response response;
+
+      final uri = Uri.parse('$baseUrl/auth/logout');
+      final jwt = await SecureStorage().readSecureData('jwt');
+      final headers = {
+        'Authorization': 'Bearer $jwt',
+        // 'Content-type': "Application/json"
+      };
+      response = await client.post(uri, headers: headers);
+      if (response.statusCode > 400) {
+        throw ('${jsonDecode(response.body)['errorDetails']}');
+      }
+      return jsonDecode(response.body);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 }

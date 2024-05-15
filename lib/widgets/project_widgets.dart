@@ -5,6 +5,7 @@ import 'package:final_project_mobile/features/project/bloc/project_event.dart';
 import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/pages/project_detail_student.dart';
 import 'package:final_project_mobile/pages/project_details_company.dart';
 import 'package:final_project_mobile/utils/utils.dart';
@@ -36,7 +37,7 @@ class ProjectWidgets {
             return GestureDetector(
               onTap: () {
                 // Navigate to project detail screen when clicked
-                if (state is RoleSelected && state.roleId == 0) {
+                if (state is RoleLoaded && state.role == Role.Student) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
