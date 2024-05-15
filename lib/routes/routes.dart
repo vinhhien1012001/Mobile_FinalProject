@@ -83,8 +83,7 @@ class Routes {
       case dashboardCompany:
         return MaterialPageRoute(builder: (_) => const DashboardCompany());
       case dashboardStudent:
-        return MaterialPageRoute(
-            builder: (_) => const StudentDashboardContent());
+        return MaterialPageRoute(builder: (_) => StudentDashboardContent());
       case notification:
         return MaterialPageRoute(builder: (_) => const NotificationPage());
       case projectStudent:
