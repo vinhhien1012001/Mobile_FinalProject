@@ -2,6 +2,8 @@ import 'package:final_project_mobile/features/default/bloc/default_bloc.dart';
 import 'package:final_project_mobile/features/default/repos/default_repository.dart';
 import 'package:final_project_mobile/features/message/bloc/message_bloc.dart';
 import 'package:final_project_mobile/features/message/repos/message_repo.dart';
+import 'package:final_project_mobile/features/notification/bloc/notification_bloc.dart';
+import 'package:final_project_mobile/features/notification/repos/notification_repository.dart';
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/repos/project_repository.dart';
 import 'package:final_project_mobile/features/proposal/bloc/proposal_bloc.dart';
@@ -49,11 +51,16 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (_) => RoleBloc(RoleInitial()),
+          create: (_) => RoleBloc(),
         ),
         BlocProvider(
           create: (_) => MessageBloc(
             messageRepository: MessageRepository(),
+          ),
+        ),
+        BlocProvider(
+          create: (_) => NotificationBloc(
+            repository: NotificationRepository(),
           ),
         ),
       ],

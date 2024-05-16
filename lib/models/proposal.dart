@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 
 class Proposal extends Equatable {
   final int? id;
@@ -146,28 +147,28 @@ class Student extends Equatable {
       ];
 }
 
-class User extends Equatable {
-  final String fullname;
+// class User extends Equatable {
+//   final String fullname;
 
-  const User({
-    required this.fullname,
-  });
+//   const User({
+//     required this.fullname,
+//   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      fullname: json['fullname'],
-    );
-  }
+//   factory User.fromJson(Map<String, dynamic> json) {
+//     return User(
+//       fullname: json['fullname'],
+//     );
+//   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'fullname': fullname,
-    };
-  }
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'fullname': fullname,
+//     };
+//   }
 
-  @override
-  List<Object?> get props => [fullname];
-}
+//   @override
+//   List<Object?> get props => [fullname];
+// }
 
 class TechStack extends Equatable {
   final int? id;

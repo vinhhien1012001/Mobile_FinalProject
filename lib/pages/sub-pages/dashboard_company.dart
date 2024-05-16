@@ -40,6 +40,7 @@ class _DashboardCompanyState extends State<DashboardCompany> {
       listener: (context, state) {},
       builder: (context, state) {
         log('RoleBloc listener: $state');
+        log('GET IN DASHBOARD COMPANY');
         return BlocBuilder<ProjectBloc, ProjectState>(
           builder: (context, state) {
             if (state is MyProjectLoadSuccess) {

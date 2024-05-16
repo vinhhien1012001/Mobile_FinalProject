@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:final_project_mobile/models/interview.dart';
+import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/models/proposal.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 
 class Student extends Equatable {
   const Student({

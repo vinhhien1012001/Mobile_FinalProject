@@ -20,8 +20,6 @@ class ProjectRepository {
     int? projectScopeFlag,
     String? title,
   }) async {
-    log('Getting projects');
-    log('Getting PageNumber: $pageNumber');
     // Construct the base URL
     String url = '$baseUrl/project';
 
@@ -42,7 +40,6 @@ class ProjectRepository {
       url += '&title=$title';
     }
 
-    log('url: $url');
     // Make the HTTP request
     final response = await httpService.request(
       method: RequestMethod.get,
@@ -52,24 +49,20 @@ class ProjectRepository {
     final projects = (response['result'] as List)
         .map((json) => Project.fromJson(json))
         .toList();
-    log('projects 2 here: $projects');
     return projects;
   }
 
   Future<Project> createProject(Project project) async {
-    log('Creating project');
     final newProject = await httpService.request(
       method: RequestMethod.post,
       url: '$baseUrl/project',
       body: project.toJson(),
     );
-    log('newProject: $newProject');
     return newProject;
   }
 
   Future<List<Project>> getProjectsByCompanyId(
       String companyId, int? typeFlag) async {
-    log('Getting projects by company ID; $companyId');
     String url = '$baseUrl/project/company/$companyId';
     if (typeFlag != null) {
       url += '?typeFlag=$typeFlag';
@@ -81,12 +74,10 @@ class ProjectRepository {
     final projects = (response['result'] as List)
         .map((json) => Project.fromJson(json))
         .toList();
-    log('projects ne`: $projects');
     return projects;
   }
 
   Future<Project> getProjectById(String projectId) async {
-    log('Getting project by ID $projectId');
     final response = await httpService.request(
       method: RequestMethod.get,
       url: '$baseUrl/project/$projectId',
@@ -95,7 +86,6 @@ class ProjectRepository {
   }
 
   Future<void> deleteProject(String projectId) async {
-    log('Deleting project');
     await httpService.request(
       method: RequestMethod.delete,
       url: '$baseUrl/project/$projectId',
@@ -104,7 +94,6 @@ class ProjectRepository {
 
   // Can not use now
   Future<void> updateProject(String projectId, Project updatedProject) async {
-    log('Updating project');
     final result = await httpService.request(
         method: RequestMethod.patch,
         url: '$baseUrl/project/$projectId',
@@ -116,12 +105,10 @@ class ProjectRepository {
           'typeFlag': updatedProject.typeFlag,
           'status': updatedProject.status,
         });
-    log('Updated project: $result');
   }
 
   Future<void> startWorkingOnThisProject(
       String projectId, Project updatedProject) async {
-    log('start working on this project');
     final Map<String, dynamic> requestBody = {
       'projectScopeFlag': updatedProject.projectScopeFlag,
       'title': updatedProject.title,
@@ -138,11 +125,9 @@ class ProjectRepository {
         method: RequestMethod.patch,
         url: '$baseUrl/project/$projectId',
         body: requestBody);
-    log('start project: $result');
   }
 
   Future<List<Project>> getProjectsByProjectIds(List<String> projectIds) async {
-    log('Getting projects by project IDs');
     List<Project> projects = [];
     for (var projectId in projectIds) {
       final response = await httpService.request(
@@ -156,7 +141,6 @@ class ProjectRepository {
 
   Future<List<Project>> getProjectsByStudentId(
       int studentId, List<int> typeFlag) async {
-    log('Getting projects by student ID');
     List<Project> projects = [];
     for (var type in typeFlag) {
       final response = await httpService.request(
@@ -167,13 +151,10 @@ class ProjectRepository {
           .map((json) => Project.fromJson(json))
           .toList();
     }
-    log('projects by studentId ne`: $projects');
-    log('TypeFlag ne`: $typeFlag');
     return projects;
   }
 
   Future<List<Project>> getFavoriteProjectsByStudentID(int studentId) async {
-    log('Getting favorite projects for student ID: $studentId');
     final response = await httpService.request(
       method: RequestMethod.get,
       url: '$baseUrl/favoriteProject/$studentId',
@@ -181,13 +162,11 @@ class ProjectRepository {
     final projects = (response['result'] as List)
         .map((item) => Project.fromJson(item['project']))
         .toList();
-    log('Favorite projects: $projects');
     return projects;
   }
 
   Future<void> updateFavoriteProject(
       int studentId, int projectId, int disableFlag) async {
-    log('Updating favorite project for student ID: $studentId');
     final body = {
       'projectId': projectId,
       'disableFlag': disableFlag,
@@ -197,6 +176,5 @@ class ProjectRepository {
       url: '$baseUrl/favoriteProject/$studentId',
       body: body,
     );
-    log('Favorite project updated successfully');
   }
 }

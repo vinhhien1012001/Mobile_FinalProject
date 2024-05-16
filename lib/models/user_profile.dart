@@ -92,3 +92,31 @@ class Company extends Equatable {
     };
   }
 }
+
+class User {
+  final int id;
+  final String fullname;
+
+  User({
+    required this.id,
+    required this.fullname,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      fullname: json['fullname'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'fullname': fullname,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'User{id: $id, fullname: $fullname}';
+  }
+}

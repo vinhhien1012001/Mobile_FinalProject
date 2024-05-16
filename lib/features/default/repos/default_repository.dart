@@ -15,7 +15,6 @@ class DefaultRepository {
   }
 
   Future<List<TechStack>> getTechStack() async {
-    log('Getting techstacks');
     final response = await httpService.request(
       method: RequestMethod.get,
       url: '$baseUrl/techstack/getAllTechStack',
@@ -23,12 +22,10 @@ class DefaultRepository {
     final stacks = (response['result'] as List)
         .map((json) => TechStack.fromJson(json))
         .toList();
-    log('stacks IN REPO: $stacks');
     return stacks;
   }
 
   Future<List<SkillSet>> getSkillSet() async {
-    log('Getting techstacks');
     final response = await httpService.request(
       method: RequestMethod.get,
       url: '$baseUrl/skillset/getAllSkillSet',
@@ -36,13 +33,11 @@ class DefaultRepository {
     final skillset = (response['result'] as List)
         .map((json) => SkillSet.fromJson(json))
         .toList();
-    log('skillset IN REPO: $skillset');
     return skillset;
   }
 
   Future<void> updateProfile(
       int studentId, int techStackId, List<int> skillSets) async {
-    log('Update student profile in repository');
     await httpService.request(
       method: RequestMethod.put,
       url: '$baseUrl/profile/student/$studentId',
@@ -55,7 +50,6 @@ class DefaultRepository {
 
   Future<void> createStudentProfile(
       int techStackId, List<int> skillSets) async {
-    log('Create student profile in repository');
     await httpService.request(
       method: RequestMethod.post,
       url: '$baseUrl/profile/student',
@@ -68,7 +62,6 @@ class DefaultRepository {
 
   Future<Company> createCompanyProfile(Company company) async {
     try {
-      log('Create company profile');
       final newCompany = await httpService.request(
         method: RequestMethod.post,
         url: '$baseUrl/profile/company',
@@ -80,19 +73,14 @@ class DefaultRepository {
         throw Exception(errorDetails);
       }
 
-      log('newCompany: $newCompany');
       return newCompany;
     } catch (e) {
-      log('ERRORS CATCH:');
-      log(e.toString());
       rethrow;
     }
   }
 
   Future<void> updateLanguage(int studentId, List<Language> languages) async {
     try {
-      log('Update language');
-      log('language list parameter: ${languages.map((item) => item.toJson()).toList()}');
       final newLanguage = await httpService.request(
         method: RequestMethod.put,
         url: '$baseUrl/language/updateByStudentId/$studentId',
@@ -106,8 +94,6 @@ class DefaultRepository {
         throw Exception(errorDetails);
       }
     } catch (e) {
-      log('ERRORS CATCH:');
-      log(e.toString());
       rethrow;
     }
   }
