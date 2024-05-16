@@ -29,27 +29,42 @@ part 'role_state.dart';
 //   }
 // }
 
+// class RoleBloc extends Bloc<RoleEvent, RoleState> {
+//   // RoleBloc() : super(RoleInitial()) {
+//   //   on<SetRole>((event, emit) {
+//   //     // Handle the SetRole event here
+//   //     // You can access the role with event.role
+//   //     // Then you can emit a new state with emit(newState)
+//   //     if (event.role == Role.Student) {
+//   //       emit(RoleLoaded(Role.Student));
+//   //     } else if (event.role == Role.Company) {
+//   //       emit(RoleLoaded(Role.Company));
+//   //     }
+//   //   });
+//   // }
+//   RoleBloc(super.initialState) {
+//     on<SetRole>((event, emit) {
+//       // Handle the SetRole event here
+//       // You can access the role with event.role
+//       // Then you can emit a new state with emit(newState)
+//       if (event.role == Role.Student) {
+//         emit(RoleLoaded(Role.Student));
+//       } else if (event.role == Role.Company) {
+//         emit(RoleLoaded(Role.Company));
+//       }
+//     });
+//   }
+// }
+
 class RoleBloc extends Bloc<RoleEvent, RoleState> {
-  // RoleBloc() : super(RoleInitial()) {
-  //   on<SetRole>((event, emit) {
-  //     // Handle the SetRole event here
-  //     // You can access the role with event.role
-  //     // Then you can emit a new state with emit(newState)
-  //     if (event.role == Role.Student) {
-  //       emit(RoleLoaded(Role.Student));
-  //     } else if (event.role == Role.Company) {
-  //       emit(RoleLoaded(Role.Company));
-  //     }
-  //   });
-  // }
-  RoleBloc(super.initialState) {
+  Role _currentRole = Role.Student; // Default role
+
+  RoleBloc() : super(RoleInitial()) {
     on<SetRole>((event, emit) {
-      // Handle the SetRole event here
-      // You can access the role with event.role
-      // Then you can emit a new state with emit(newState)
-      if (event.role == Role.Student) {
+      _currentRole = event.role;
+      if (_currentRole == Role.Student) {
         emit(RoleLoaded(Role.Student));
-      } else if (event.role == Role.Company) {
+      } else if (_currentRole == Role.Company) {
         emit(RoleLoaded(Role.Company));
       }
     });

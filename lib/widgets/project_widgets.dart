@@ -101,7 +101,6 @@ class ProjectWidgets {
     required int numberOfStudent,
   }) {
     String createdAt = DateFormat('dd/MM/yyyy').format(DateTime.parse(created));
-    log('Project ID: $projectId');
     final userProfile = context.read<UserProfileBloc>().state.userProfile;
     return BlocListener<ProjectBloc, ProjectState>(
       listener: (context, state) {

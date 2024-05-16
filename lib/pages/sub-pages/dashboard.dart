@@ -76,6 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return BlocBuilder<RoleBloc, RoleState>(
       builder: (context, state) {
         if (state is RoleLoaded) {
+          log('ROLE IN DASHBOARD: ${state.role}');
           if (state.role == Role.Company) {
             // Company role
             _widgetOptions = <Widget>[
