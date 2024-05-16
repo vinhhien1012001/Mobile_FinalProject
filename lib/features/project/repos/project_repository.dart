@@ -102,20 +102,46 @@ class ProjectRepository {
     );
   }
 
-  // Can not use now
-  Future<void> updateProject(String projectId, Project updatedProject) async {
+  Future<void> updateProject(
+    int projectId,
+    int numberOfStudents,
+    int? projectScopeFlag,
+    String? description,
+    String title,
+    int? typeFlag,
+    int? status,
+  ) async {
     log('Updating project');
+
+    // Create a map for the body
+    final Map<String, dynamic> body = {
+      'numberOfStudents': numberOfStudents,
+    };
+
+    // Add non-null fields to the body
+    if (projectScopeFlag != null && projectScopeFlag != 4) {
+      body['projectScopeFlag'] = projectScopeFlag;
+    }
+    if (title != null && title.isNotEmpty && title != '') {
+      body['title'] = title;
+    }
+    if (description != null) {
+      body['description'] = description;
+    }
+    if (typeFlag != null) {
+      body['typeFlag'] = typeFlag;
+    }
+    if (status != null) {
+      body['status'] = status;
+    }
+
+    // Make the HTTP request
     final result = await httpService.request(
-        method: RequestMethod.patch,
-        url: '$baseUrl/project/$projectId',
-        body: {
-          'projectScopeFlag': updatedProject.projectScopeFlag,
-          'title': updatedProject.title,
-          'description': updatedProject.description,
-          'numberOfStudents': updatedProject.numberOfStudents,
-          'typeFlag': updatedProject.typeFlag,
-          'status': updatedProject.status,
-        });
+      method: RequestMethod.patch,
+      url: '$baseUrl/project/$projectId',
+      body: body,
+    );
+
     log('Updated project: $result');
   }
 
@@ -218,5 +244,47 @@ class ProjectRepository {
       body: body,
     );
     log('Favorite project updated successfully');
+  }
+
+  Future<List<Project>> searchProjects({
+    String? title,
+    int? projectScopeFlag,
+    int? numberOfStudents,
+    int? proposalsLessThan,
+    int? page = 1, // Default value for page
+    int? perPage = 10, // Default value for perPage
+  }) async {
+    // Construct the base URL
+    String url = '$baseUrl/project';
+
+    // Add query parameters if provided
+    url +=
+        '?page=$page&perPage=$perPage'; // Include page and perPage in the URL
+
+    if (proposalsLessThan != null && proposalsLessThan != 0) {
+      url += '&proposalsLessThan=$proposalsLessThan';
+    }
+    if (numberOfStudents != null && numberOfStudents != 0) {
+      url += '&numberOfStudents=$numberOfStudents';
+    }
+    if (projectScopeFlag != null && projectScopeFlag != 4) {
+      url += '&projectScopeFlag=$projectScopeFlag';
+    }
+    if (title != null && title.isNotEmpty) {
+      url += '&title=$title';
+    }
+
+    log('url: $url');
+    // Make the HTTP request
+    final response = await httpService.request(
+      method: RequestMethod.get,
+      url: url,
+    );
+    List<dynamic> _projects = (response['result'] as List);
+    final projects = (response['result'] as List)
+        .map((json) => Project.fromJson(json))
+        .toList();
+    log('projects searchs here: $projects');
+    return projects;
   }
 }

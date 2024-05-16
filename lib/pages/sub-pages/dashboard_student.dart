@@ -73,6 +73,13 @@ class _StudentDashboardContentState extends State<StudentDashboardContent> {
                           if (state is GetAllProposalsOfStudentSuccess) {
                             allProposal = state.proposals;
                           }
+                          if (state is ProposalCreateNE) {
+                            BlocProvider.of<ProposalBloc>(context).add(
+                                GetAllProposalsOfStudent(
+                                    studentId: userProfileBloc
+                                            .state.userProfile.student?.id ??
+                                        0));
+                          }
                           return Column(
                             children: [
                               _buildActiveProposalBox(
@@ -86,11 +93,13 @@ class _StudentDashboardContentState extends State<StudentDashboardContent> {
                                     BlocConsumer<ProposalBloc, ProposalState>(
                                   listener: (context, state) {}, // Consume here
                                   builder: (context, state) {
+                                    final reversedProposals =
+                                        allProposal.reversed.toList();
                                     return ListView.builder(
                                       itemCount: allProposal.length,
                                       itemBuilder: (context, index) {
                                         return ProposalWidget(
-                                            proposal: allProposal[index]);
+                                            proposal: reversedProposals[index]);
                                       },
                                     );
                                   },

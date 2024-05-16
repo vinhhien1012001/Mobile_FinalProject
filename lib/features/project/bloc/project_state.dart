@@ -109,3 +109,14 @@ class GetAllProjectsByStudentIdLoading extends ProjectState {
   final int studentId;
   const GetAllProjectsByStudentIdLoading({required this.studentId});
 }
+
+class SearchProjectsSuccess extends ProjectState {
+  final List<Project> projects;
+  final int currentPage;
+
+  const SearchProjectsSuccess(
+      {required this.projects, required this.currentPage});
+
+  @override
+  List<Object?> get props => [projects, currentPage];
+}
