@@ -94,4 +94,16 @@ class ProposalRepository {
           // TechStack.fromJson(response['result']['student']['techStack']),
         ));
   }
+
+  Future<List<Proposal>> getAllProposalsOfStudent(int studentId) async {
+    final response = await httpService.request(
+      method: RequestMethod.get,
+      url: '$baseUrl/proposal/student/$studentId',
+    );
+    final List<dynamic> jsonProposals = response['result'];
+    log('PROPOSALS: $jsonProposals');
+    final f = jsonProposals.map((json) => Proposal.fromJson(json)).toList();
+    log('PROPOSALS: $f');
+    return f;
+  }
 }

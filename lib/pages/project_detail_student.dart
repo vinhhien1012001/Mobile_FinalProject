@@ -1,6 +1,8 @@
 import 'package:final_project_mobile/features/project/bloc/project_bloc.dart';
 import 'package:final_project_mobile/features/project/bloc/project_event.dart';
+import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
+import 'package:final_project_mobile/models/user_profile.dart';
 import 'package:final_project_mobile/pages/7-student-submit-proposal/submit_proposal.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/widgets/custom_app_bar.dart';
@@ -135,9 +137,12 @@ class ProjectDetailsStudent extends StatefulWidget {
 }
 
 class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
+  late UserProfile userProfile =
+      context.read<UserProfileBloc>().state.userProfile;
   @override
   void initState() {
     super.initState();
+
     BlocProvider.of<ProjectBloc>(context)
         .add(GetProjectById(projectId: (widget.project.id!).toString()));
   }
@@ -167,8 +172,17 @@ class _ProjectDetailsStudentState extends State<ProjectDetailsStudent> {
                   padding: const EdgeInsets.only(bottom: 45.0),
                   child: Row(
                     children: [
-                      const CustomButton(
-                        text: 'Saved',
+                      CustomButton(
+                        text: 'Save',
+                        onPressed: () {
+                          BlocProvider.of<ProjectBloc>(context).add(
+                            UpdateFavoriteProject(
+                              projectId: projectDetails.id ?? 0,
+                              studentId: userProfile.student?.id ?? 0,
+                              disableFlag: 0,
+                            ),
+                          );
+                        },
                       ),
                       const Spacer(),
                       CustomButton(

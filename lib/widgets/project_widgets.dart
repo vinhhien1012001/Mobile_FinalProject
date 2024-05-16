@@ -6,8 +6,6 @@ import 'package:final_project_mobile/features/selectRole/bloc/role_bloc.dart';
 import 'package:final_project_mobile/features/user/bloc/user_bloc.dart';
 import 'package:final_project_mobile/models/project.dart';
 import 'package:final_project_mobile/models/user_profile.dart';
-import 'package:final_project_mobile/pages/project_detail_student.dart';
-import 'package:final_project_mobile/pages/project_details_company.dart';
 import 'package:final_project_mobile/routes/routes.dart';
 import 'package:final_project_mobile/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -59,13 +57,13 @@ class ProjectWidgets {
                 }
               },
               child: ProjectWidgets.buildProjectCard(
-                projectId: project.id!,
+                projectId: project.id ?? 0,
                 title: project.title ?? '',
-                created: project.createdAt!,
-                proposalsCount: project.countProposals!,
+                created: project.createdAt ?? '',
+                proposalsCount: project.countProposals ?? 0,
                 messages: project.countMessages ?? 0,
                 hired: project.countHired ?? 0,
-                description: project.description!,
+                description: project.description ?? '',
                 isFavorite: project.isFavorite ?? false,
                 numberOfStudent: project.numberOfStudents ?? 0,
                 projectScopeFlag: project.projectScopeFlag ?? 0,
@@ -169,6 +167,50 @@ class ProjectWidgets {
                               DeleteProject(projectId: projectId.toString()));
                           break;
                         case ProjectAction.editPosting:
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Close project'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                        'Select the result of closing the project:'),
+                                    ListTile(
+                                      title: const Text('Success'),
+                                      onTap: () {
+                                        BlocProvider.of<ProjectBloc>(context)
+                                            .add(
+                                          UpdateProject(
+                                            projectId: projectId,
+                                            numberOfStudents: numberOfStudent,
+                                            status: 1,
+                                          ),
+                                        );
+                                        Navigator.pop(context, 'Success');
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: const Text('Fail'),
+                                      onTap: () {
+                                        BlocProvider.of<ProjectBloc>(context)
+                                            .add(
+                                          UpdateProject(
+                                            projectId: projectId,
+                                            numberOfStudents: numberOfStudent,
+                                            status: 2,
+                                          ),
+                                        );
+                                        Navigator.pop(context, 'Fail');
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                           break;
                         case ProjectAction.startWorkingOnThisProject:
                           BlocProvider.of<ProjectBloc>(context)
@@ -195,7 +237,7 @@ class ProjectWidgets {
                       ),
                       const PopupMenuItem<ProjectAction>(
                         value: ProjectAction.editPosting,
-                        child: Text('Edit posting'),
+                        child: Text('Close project'),
                       ),
                       const PopupMenuItem<ProjectAction>(
                         value: ProjectAction.startWorkingOnThisProject,
@@ -289,5 +331,60 @@ class ProjectWidgets {
         Text(label),
       ],
     );
+  }
+
+  void _showCloseProjectDialog(BuildContext context, int projectId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Close project'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Select the result of closing the project:'),
+              ListTile(
+                title: const Text('Success'),
+                onTap: () {
+                  Navigator.pop(context, 'Success');
+                },
+              ),
+              ListTile(
+                title: const Text('Fail'),
+                onTap: () {
+                  Navigator.pop(context, 'Fail');
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(
+                    context, 'Submit'); // Close the dialog and return "Submit"
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      if (value == 'Success') {
+        // Handle success action
+      } else if (value == 'Fail') {
+        // Handle fail action
+      } else if (value == 'Submit') {
+        // Handle submit action
+        // Here you can retrieve the selected option and perform necessary actions
+        // For example, dispatch an event to your bloc to close the project
+      }
+    });
   }
 }

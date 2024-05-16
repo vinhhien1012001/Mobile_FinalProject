@@ -91,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             // Student role
             _widgetOptions = <Widget>[
               const ProjectStudentContent(),
-              const StudentDashboardContent(),
+              StudentDashboardContent(),
               const MessagePage(
                 projectId: 0,
               ),

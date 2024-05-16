@@ -54,13 +54,34 @@ class DeleteProject extends ProjectEvent {
 }
 
 class UpdateProject extends ProjectEvent {
-  final String projectId;
-  final Project updatedProject;
+  final int projectId;
+  final int numberOfStudents;
+  final int? projectScopeFlag;
+  final String? description;
+  final String? title;
+  final int? typeFlag;
+  final int? status;
 
-  const UpdateProject({required this.projectId, required this.updatedProject});
+  const UpdateProject({
+    required this.projectId,
+    required this.numberOfStudents,
+    this.projectScopeFlag,
+    this.description,
+    this.typeFlag,
+    this.status,
+    this.title,
+  });
 
   @override
-  List<Object?> get props => [projectId, updatedProject];
+  List<Object?> get props => [
+        projectId,
+        projectScopeFlag,
+        numberOfStudents,
+        description,
+        typeFlag,
+        status,
+        title
+      ];
 }
 
 class GetProjectsByProjectIds extends ProjectEvent {
@@ -114,4 +135,41 @@ class StartWorkingOnProject extends ProjectEvent {
 
   @override
   List<Object?> get props => [projectId, updatedProject];
+}
+
+class GetAllProjectsByStudentId extends ProjectEvent {
+  final int studentId;
+
+  const GetAllProjectsByStudentId({required this.studentId});
+
+  @override
+  List<Object?> get props => [studentId];
+}
+
+class SearchProjects extends ProjectEvent {
+  final String? title;
+  final int? projectScopeFlag;
+  final int? numberOfStudents;
+  final int? proposalsLessThan;
+  final int? page;
+  final int? perPage;
+
+  const SearchProjects({
+    this.title,
+    this.projectScopeFlag,
+    this.numberOfStudents,
+    this.proposalsLessThan,
+    this.page,
+    this.perPage,
+  });
+
+  @override
+  List<Object?> get props => [
+        title,
+        projectScopeFlag,
+        numberOfStudents,
+        proposalsLessThan,
+        page,
+        perPage
+      ];
 }

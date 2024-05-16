@@ -1,6 +1,6 @@
 part of 'proposal_bloc.dart';
 
-abstract class ProposalState extends Equatable {
+abstract class ProposalState {
   const ProposalState();
 
   @override
@@ -50,4 +50,14 @@ class SendHireOfferSuccess extends ProposalState {
 
   @override
   List<Object?> get props => [proposal];
+}
+
+class GetAllProposalsOfStudentSuccess extends ProposalState {
+  final List<Proposal> proposals;
+  final int studentId;
+  const GetAllProposalsOfStudentSuccess(
+      {required this.proposals, required this.studentId});
+
+  @override
+  List<Object?> get props => [proposals, studentId];
 }
